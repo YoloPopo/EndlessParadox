@@ -1,0 +1,28 @@
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1.1}{\ignorespaces Latency requirements for robotic control loops at different frequencies.}}{7}{table.caption.8}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Roles of digital twins in sim-to-real pipelines.}}{25}{table.caption.11}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Denavit-Hartenberg parameters for the 4-DOF manipulator.}}{34}{table.caption.13}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Effect of robot pixel weight on FFKSM performance.}}{44}{table.caption.23}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces FFKSM training hyperparameters.}}{45}{table.caption.25}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces FFKSM quantitative performance metrics.}}{46}{table.caption.27}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces Condition number evolution during anisotropic training.}}{50}{table.caption.35}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces K-3DGS quantitative performance metrics.}}{51}{table.caption.39}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Baseline self-modeling architecture performance comparison.}}{52}{table.caption.42}%
+\contentsline {table}{\numberline {3.8}{\ignorespaces Supervision efficiency comparison across baseline architectures.}}{53}{table.caption.43}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces Local overfit test results for NeuroKin-3D.}}{64}{table.caption.63}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Base NeuroKin training hyperparameters.}}{65}{table.caption.66}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces NeuroKin-3D training hyperparameters.}}{66}{table.caption.69}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Base NeuroKin quantitative performance metrics.}}{66}{table.caption.70}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces NeuroKin-3D quantitative performance metrics.}}{66}{table.caption.71}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Nominal performance comparison (no faults, 100 trials).}}{77}{table.caption.75}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Progressive fault injection parameters by stage tier.}}{84}{table.caption.77}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Sequential swarm performance comparison (100 stages, progressive fault injection, from the simulation framework).}}{88}{table.caption.82}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces Comparison of swarm coordination mechanisms.}}{91}{table.caption.84}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {7.1}{\ignorespaces Comparison of swarm coordination mechanisms along key scalability and communication axes.}}{99}{table.caption.86}%
+\addvspace {10\p@ }

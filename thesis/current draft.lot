@@ -1,0 +1,40 @@
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1.1}{\ignorespaces Latency requirements for robotic control loops at different frequencies.}}{7}{table.caption.6}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Roles of digital twins in sim-to-real pipelines.}}{25}{table.caption.11}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Denavit-Hartenberg parameters for the 4-DOF manipulator.}}{35}{table.caption.13}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Effect of robot pixel weight on FFKSM performance.}}{46}{table.caption.23}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces FFKSM training hyperparameters.}}{47}{table.caption.25}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces FFKSM quantitative performance metrics.}}{48}{table.caption.27}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces Condition number evolution during anisotropic training.}}{52}{table.caption.35}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces K-3DGS quantitative performance metrics.}}{54}{table.caption.39}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Baseline self-modeling architecture performance comparison.}}{55}{table.caption.42}%
+\contentsline {table}{\numberline {3.8}{\ignorespaces Supervision efficiency comparison across baseline architectures.}}{55}{table.caption.43}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces NeuroKin parameter distribution by component.}}{64}{table.caption.56}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Local overfit test results for NeuroKin-3D.}}{69}{table.caption.64}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Base NeuroKin training hyperparameters.}}{70}{table.caption.67}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces NeuroKin-3D training hyperparameters.}}{71}{table.caption.70}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Base NeuroKin quantitative performance metrics.}}{71}{table.caption.71}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces NeuroKin-3D quantitative performance metrics.}}{72}{table.caption.72}%
+\contentsline {table}{\numberline {4.7}{\ignorespaces ResNeuroKin-D quantitative performance metrics.}}{72}{table.caption.73}%
+\contentsline {table}{\numberline {4.8}{\ignorespaces Effect of noise augmentation on NeuroKin performance.}}{73}{table.caption.74}%
+\contentsline {table}{\numberline {4.9}{\ignorespaces Effect of decoder depth on NeuroKin performance.}}{73}{table.caption.75}%
+\contentsline {table}{\numberline {4.10}{\ignorespaces Effect of latent dimension on NeuroKin performance.}}{74}{table.caption.76}%
+\contentsline {table}{\numberline {4.11}{\ignorespaces Supervision efficiency comparison across architectures.}}{74}{table.caption.77}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Nominal performance comparison (no faults, mean $\pm $ std over 100 trials).}}{89}{table.caption.83}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Fault-tolerant performance comparison (100 trials, random fault magnitude $\pm 5^\circ $ to $\pm 20^\circ $).}}{93}{table.caption.87}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Success rate by fault magnitude (50 trials per magnitude).}}{94}{table.caption.88}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces NeuroKin-3D joint angle estimation error under fault (mean $\pm $ std, degrees).}}{94}{table.caption.89}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Comparison to fault-tolerant control methods in the literature.}}{96}{table.caption.91}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces NeuroKin-3D estimation error under structural damage before and after fine-tuning.}}{98}{table.caption.92}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Progressive fault injection parameters by stage tier.}}{107}{table.caption.98}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Sequential swarm performance comparison (100 stages, progressive fault injection, from Notebook B).}}{113}{table.caption.104}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces Failure mode distribution for NeuroKin sequential swarm (derived from Chapter 5 analysis).}}{115}{table.caption.106}%
+\contentsline {table}{\numberline {6.4}{\ignorespaces Comparison of swarm coordination mechanisms.}}{116}{table.caption.107}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {7.1}{\ignorespaces Comparison of swarm coordination mechanisms along key scalability and communication axes.}}{127}{table.caption.109}%
+\addvspace {10\p@ }

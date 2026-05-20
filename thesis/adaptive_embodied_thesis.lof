@@ -1,0 +1,40 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces PyBullet simulation setup with robotic arm, target marker, and virtual camera geometry.}}{17}{figure.caption.7}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces End-to-end data generation and preprocessing pipeline.}}{17}{figure.caption.8}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Lorenz System Trajectory generating smooth, chaotic workspace exploration.}}{18}{figure.caption.9}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Representative simulated robot poses used for visual self-model training and validation.}}{19}{figure.caption.10}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces FFKSM target versus render showing visual discrepancies.}}{20}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces K-3DGS iteration metrics highlighting FPS limitations.}}{21}{figure.caption.12}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces K-3DGS render artifacts and spatial difference map.}}{21}{figure.caption.13}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Proposed convolutional neural network architecture for direct sensorimotor decoding.}}{27}{figure.caption.16}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Supplementary CNN architecture schematic emphasizing the convolutional feature extraction and prediction pathway used for direct sensorimotor decoding.}}{28}{figure.caption.17}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Synchronized dual-camera observations mapping to end-effector coordinates.}}{30}{figure.caption.18}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Target and current end-effector position estimated in 3D from synchronized observations.}}{31}{figure.caption.19}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Correlation of true versus predicted spatial coordinates.}}{32}{figure.caption.20}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces End-effector error, target-prediction trajectory agreement, and training-validation loss for spatial recovery.}}{33}{figure.caption.21}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces MSE loss converging near zero during NeuroKin training.}}{33}{figure.caption.22}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces High-fidelity NeuroKin renders versus Target Images.}}{34}{figure.caption.23}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Validation true and predicted positions during NeuroKin spatial training.}}{35}{figure.caption.24}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Standard closed-loop control flow integrating the self-model.}}{39}{figure.caption.26}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Baseline error convergence over time steps.}}{40}{figure.caption.27}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces End-effector trajectory during closed-loop reaching.}}{41}{figure.caption.28}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Joint error convergence during closed-loop reaching.}}{42}{figure.caption.29}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Dynamic error recovery following structural damage injected at Step 5.}}{42}{figure.caption.30}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Decentralized control loop enabling temporal coordination across sequential agents.}}{47}{figure.caption.32}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Algorithm efficiency in steps for the no-fault 100-stage comparison.}}{48}{figure.caption.33}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Algorithm Efficiency in Steps under injected faults. The IK baseline fails structurally (capped at 201 steps), while the NeuroKin swarm reads shared states and adapts behavior, maintaining efficiency between 20-40 steps.}}{50}{figure.caption.34}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {7.1}{\ignorespaces Pareto frontier illustrating the optimal trade-off between model accuracy and computational parameter count.}}{55}{figure.caption.36}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }

@@ -1,0 +1,861 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.3.5)  17 MAY 2026 03:56
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**./adaptive_embodied_thesis.tex
+(adaptive_embodied_thesis.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2025-12-24>
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/base\report.cls
+Document Class: report 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/base\size12.clo
+File: size12.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count275
+\c@chapter=\count276
+\c@section=\count277
+\c@subsection=\count278
+\c@subsubsection=\count279
+\c@paragraph=\count280
+\c@subparagraph=\count281
+\c@figure=\count282
+\c@table=\count283
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen148
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.sty
+Package: inputenc 2024/02/08 v1.3d Input encoding file
+\inpenc@prehook=\toks17
+\inpenc@posthook=\toks18
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+Package: fontenc 2025/07/18 v2.1d Standard LaTeX package
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+Package: amsmath 2025/07/09 v2.17z AMS math features
+\@mathmargin=\skip51
+
+For additional information on amsmath, use the `?' option.
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+Package: amstext 2024/11/17 v2.01 AMS text
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks19
+\ex@=\dimen149
+)) (C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.st
+y
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen150
+) (C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count284
+LaTeX Info: Redefining \frac on input line 233.
+\uproot@=\count285
+\leftroot@=\count286
+LaTeX Info: Redefining \overline on input line 398.
+LaTeX Info: Redefining \colon on input line 409.
+\classnum@=\count287
+\DOTSCASE@=\count288
+LaTeX Info: Redefining \ldots on input line 495.
+LaTeX Info: Redefining \dots on input line 498.
+LaTeX Info: Redefining \cdots on input line 619.
+\Mathstrutbox@=\box53
+\strutbox@=\box54
+LaTeX Info: Redefining \big on input line 721.
+LaTeX Info: Redefining \Big on input line 722.
+LaTeX Info: Redefining \bigg on input line 723.
+LaTeX Info: Redefining \Bigg on input line 724.
+\big@size=\dimen151
+LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
+\macc@depth=\count289
+LaTeX Info: Redefining \bmod on input line 904.
+LaTeX Info: Redefining \pmod on input line 909.
+LaTeX Info: Redefining \smash on input line 939.
+LaTeX Info: Redefining \relbar on input line 969.
+LaTeX Info: Redefining \Relbar on input line 970.
+\c@MaxMatrixCols=\count290
+\dotsspace@=\muskip17
+\c@parentequation=\count291
+\dspbrk@lvl=\count292
+\tag@help=\toks20
+\row@=\count293
+\column@=\count294
+\maxfields@=\count295
+\andhelp@=\toks21
+\eqnshift@=\dimen152
+\alignsep@=\dimen153
+\tagshift@=\dimen154
+\tagwidth@=\dimen155
+\totwidth@=\dimen156
+\lineht@=\dimen157
+\@envbody=\toks22
+\multlinegap=\skip52
+\multlinetaggap=\skip53
+\mathdisplay@stack=\toks23
+LaTeX Info: Redefining \[ on input line 2950.
+LaTeX Info: Redefining \] on input line 2951.
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.st
+y
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.st
+y
+Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks24
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.st
+y
+Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
+ (C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphic
+s.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 106.
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.
+def
+File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen158
+\Gin@req@width=\dimen159
+)
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/geometry\geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+Package: iftex 2024/12/12 v1.0g TeX engine tests
+))
+\Gm@cnth=\count296
+\Gm@cntv=\count297
+\c@Gm@tempcnt=\count298
+\Gm@bindingoffset=\dimen160
+\Gm@wd@mp=\dimen161
+\Gm@odd@mp=\dimen162
+\Gm@even@mp=\dimen163
+\Gm@layoutwidth=\dimen164
+\Gm@layoutheight=\dimen165
+\Gm@layouthoffset=\dimen166
+\Gm@layoutvoffset=\dimen167
+\Gm@dimlist=\toks25
+
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/geometry\geometry.cfg))
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/setspace\setspace.sty
+Package: setspace 2022/12/04 v6.7b set line spacing
+)
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/booktabs\booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen168
+\lightrulewidth=\dimen169
+\cmidrulewidth=\dimen170
+\belowrulesep=\dimen171
+\belowbottomsep=\dimen172
+\aboverulesep=\dimen173
+\abovetopsep=\dimen174
+\cmidrulesep=\dimen175
+\cmidrulekern=\dimen176
+\defaultaddspace=\dimen177
+\@cmidla=\count299
+\@cmidlb=\count300
+\@aboverulesep=\dimen178
+\@belowrulesep=\dimen179
+\@thisruleclass=\count301
+\@lastruleclass=\count302
+\@thisrulewidth=\dimen180
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
+\col@sep=\dimen181
+\ar@mcellbox=\box55
+\extrarowheight=\dimen182
+\NC@list=\toks26
+\extratabsurround=\skip54
+\backup@length=\skip55
+\ar@cellbox=\box56
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable.sty
+Package: longtable 2025-10-13 v4.24 Multi-page Table package (DPC)
+\LTleft=\skip56
+\LTright=\skip57
+\LTpre=\skip58
+\LTpost=\skip59
+\LTchunksize=\count303
+\LTcapwidth=\dimen183
+\LT@head=\box57
+\LT@firsthead=\box58
+\LT@foot=\box59
+\LT@lastfoot=\box60
+\LT@gbox=\box61
+\LT@cols=\count304
+\LT@rows=\count305
+\c@LT@tables=\count306
+\c@LT@chunks=\count307
+\LT@p@ftn=\toks27
+) (C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count308
+\float@exts=\toks28
+\float@box=\box62
+\@float@everytoks=\toks29
+\@floatcapt=\box63
+)
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/caption\caption.sty
+Package: caption 2023/08/05 v3.6o Customizing captions (AR)
+
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/caption\caption3.sty
+Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
+\caption@tempdima=\dimen184
+\captionmargin=\dimen185
+\caption@leftmargin=\dimen186
+\caption@rightmargin=\dimen187
+\caption@width=\dimen188
+\caption@indent=\dimen189
+\caption@parindent=\dimen190
+\caption@hangindent=\dimen191
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count309
+\c@continuedfloat=\count310
+Package caption Info: float package is loaded.
+Package caption Info: longtable package is loaded.
+
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/caption\ltcaption.sty
+Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
+))
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.c
+fg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.l
+tx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
+Package xcolor Info: Model `RGB' extended on input line 1365.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.st
+y
+Package: hyperref 2025-07-12 v7.01o Hypertext links for LaTeX
+ (C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+)
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/generic/kvdefinekeys\kvdefinekeys
+.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+)
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/generic/pdfescape\pdfescape.sty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexc
+mds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/generic/infwarerr\infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)) (C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/hycolor\hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+Package: nameref 2025-06-21 v2.57 Cross-referencing by name of section
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/refcount\refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/generic/gettitlestring\gettitlest
+ring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+))
+\c@section@level=\count311
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.st
+y
+Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count312
+)
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/generic/stringenc\stringenc.sty
+Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
+)
+)
+\@linkdim=\dimen192
+\Hy@linkcounter=\count313
+\Hy@pagecounter=\count314
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
+File: pd1enc.def 2025-07-12 v7.01o Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+) (C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/generic/intcalc\intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+\Hy@SavedSpaceFactor=\count315
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
+File: puenc.def 2025-07-12 v7.01o Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
+)
+Package hyperref Info: Hyper figures OFF on input line 4195.
+Package hyperref Info: Link nesting OFF on input line 4200.
+Package hyperref Info: Hyper index ON on input line 4203.
+Package hyperref Info: Plain pages OFF on input line 4210.
+Package hyperref Info: Backreferencing OFF on input line 4215.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4462.
+\c@Hy@tempcnt=\count316
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+\Urlmuskip=\muskip18
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 4801.
+\XeTeXLinkMargin=\dimen193
+
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/generic/bitset\bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/generic/bigintcalc\bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
+))
+\Fld@menulength=\count317
+\Field@Width=\dimen194
+\Fld@charsize=\dimen195
+Package hyperref Info: Hyper figures OFF on input line 6078.
+Package hyperref Info: Link nesting OFF on input line 6083.
+Package hyperref Info: Hyper index ON on input line 6086.
+Package hyperref Info: backreferencing OFF on input line 6093.
+Package hyperref Info: Link coloring OFF on input line 6098.
+Package hyperref Info: Link coloring with OCG OFF on input line 6103.
+Package hyperref Info: PDF/A mode OFF on input line 6108.
+\Hy@abspage=\count318
+\c@Item=\count319
+\c@Hfootnote=\count320
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+File: hpdftex.def 2025-07-12 v7.01o Hyperref driver for pdfTeX
+\Fld@listcount=\count321
+\c@bookmark@seq@number=\count322
+
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/rerunfilecheck\rerunfileche
+ck.sty
+Package: rerunfilecheck 2025-06-21 v1.11 Rerun checks for auxiliary files (HO)
+
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/generic/uniquecounter\uniquecount
+er.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+84.
+)
+\Hy@SectionHShift=\skip60
+)
+(C:\Users\Askeladd\AppData\Roaming\MiKTeX\tex/latex/enumitem\enumitem.sty
+Package: enumitem 2025/02/06 v3.11 Customized lists
+\labelindent=\skip61
+\enit@outerparindent=\dimen196
+\enit@toks=\toks30
+\enit@inbox=\box64
+\enit@count@id=\count323
+\enitdp@description=\count324
+)
+Package hyperref Info: Option `colorlinks' set `true' on input line 27.
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-
+pdftex.def
+File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count325
+) (adaptive_embodied_thesis.aux)
+\openout1 = `adaptive_embodied_thesis.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf
+.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count326
+\scratchdimen=\dimen197
+\scratchbox=\box65
+\nofMPsegments=\count327
+\nofMParguments=\count328
+\everyMPshowfont=\toks31
+\MPscratchCnt=\count329
+\MPscratchDim=\dimen198
+\MPnumerator=\count330
+\makeMPintoPDFobject=\count331
+\everyMPtoPDFconversion=\toks32
+)
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopd
+f-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sy
+s.cfg
+File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
+))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(72.26999pt, 452.9679pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=452.9679pt
+* \textheight=700.50687pt
+* \oddsidemargin=0.0pt
+* \evensidemargin=0.0pt
+* \topmargin=-37.0pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=35.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: hyperref package is loaded.
+Package caption Info: End \AtBeginDocument code.
+Package hyperref Info: Link coloring ON on input line 35.
+(adaptive_embodied_thesis.out) (adaptive_embodied_thesis.out)
+\@outlinefile=\write3
+\openout3 = `adaptive_embodied_thesis.out'.
+
+LaTeX Font Info:    Trying to load font information for U+msa on input line 39.
+
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 39.
+
+
+(C:\Users\Askeladd\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+[1
+
+{C:/Users/Askeladd/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
+[1
+
+
+] (adaptive_embodied_thesis.toc [2
+
+] [3] [4])
+\tf@toc=\write4
+\openout4 = `adaptive_embodied_thesis.toc'.
+
+ [5]
+(adaptive_embodied_thesis.lof [6
+
+])
+\tf@lof=\write5
+\openout5 = `adaptive_embodied_thesis.lof'.
+
+ [7] (adaptive_embodied_thesis.lot)
+\tf@lot=\write6
+\openout6 = `adaptive_embodied_thesis.lot'.
+
+ [8
+
+]
+Chapter 1.
+[1
+
+
+] [2] [3] [4] [5] [6] [7]
+Chapter 2.
+[8
+
+] [9] [10] [11] [12] [13] [14] [15]
+Chapter 3.
+<figures/pybullet_setup.png, id=727, 500.36937pt x 343.2825pt>
+File: figures/pybullet_setup.png Graphic file (type png)
+<use figures/pybullet_setup.png>
+Package pdftex.def Info: figures/pybullet_setup.png  used on input line 223.
+(pdftex.def)             Requested size: 416.72963pt x 285.91438pt.
+[16
+
+]
+<figures/data_pipeline.png, id=734, 1068.8733pt x 369.2997pt>
+File: figures/data_pipeline.png Graphic file (type png)
+<use figures/data_pipeline.png>
+Package pdftex.def Info: figures/data_pipeline.png  used on input line 232.
+(pdftex.def)             Requested size: 430.31812pt x 148.67522pt.
+ [17 <./figures/pybullet_setup.png> <./figures/data_pipeline.png>]
+<figures/lorenz_trajectories.png, id=741, 714.7503pt x 426.393pt>
+File: figures/lorenz_trajectories.png Graphic file (type png)
+<use figures/lorenz_trajectories.png>
+Package pdftex.def Info: figures/lorenz_trajectories.png  used on input line 24
+3.
+(pdftex.def)             Requested size: 371.43698pt x 221.589pt.
+<figures/sample_poses.png, id=742, 1107.8991pt x 569.4876pt>
+File: figures/sample_poses.png Graphic file (type png)
+<use figures/sample_poses.png>
+Package pdftex.def Info: figures/sample_poses.png  used on input line 252.
+(pdftex.def)             Requested size: 407.66833pt x 209.55138pt.
+ [18 <./figures/lorenz_trajectories.png>]
+<figures/ffksm_results.png, id=748, 1123.0758pt x 569.4876pt>
+File: figures/ffksm_results.png Graphic file (type png)
+<use figures/ffksm_results.png>
+Package pdftex.def Info: figures/ffksm_results.png  used on input line 267.
+(pdftex.def)             Requested size: 430.31812pt x 218.2063pt.
+ [19 <./figures/sample_poses.png>] [20 <./figures/ffksm_results.png>]
+<figures/3dgs loss speed fps.png, id=759, 1290.7422pt x 354.123pt>
+File: figures/3dgs loss speed fps.png Graphic file (type png)
+<use figures/3dgs loss speed fps.png>
+Package pdftex.def Info: figures/3dgs loss speed fps.png  used on input line 28
+4.
+(pdftex.def)             Requested size: 407.66833pt x 111.84651pt.
+<figures/k3dgs_results.png, id=760, 1264.725pt x 640.3122pt>
+File: figures/k3dgs_results.png Graphic file (type png)
+<use figures/k3dgs_results.png>
+Package pdftex.def Info: figures/k3dgs_results.png  used on input line 293.
+(pdftex.def)             Requested size: 430.31812pt x 217.85959pt.
+ [21 <./figures/3dgs loss speed fps.png> <./figures/k3dgs_results.png>] [22] [2
+3] [24] [25]
+Chapter 4.
+[26
+
+]
+<figures/architecture diagram.png, id=799, 1413.28pt x 770.88pt>
+File: figures/architecture diagram.png Graphic file (type png)
+<use figures/architecture diagram.png>
+Package pdftex.def Info: figures/architecture diagram.png  used on input line 3
+91.
+(pdftex.def)             Requested size: 430.31812pt x 234.71225pt.
+<figures/CNN architecture.png, id=800, 432.86719pt x 615.80063pt>
+File: figures/CNN architecture.png Graphic file (type png)
+<use figures/CNN architecture.png>
+Package pdftex.def Info: figures/CNN architecture.png  used on input line 398.
+(pdftex.def)             Requested size: 416.72963pt x 592.87202pt.
+ [27 <./figures/architecture diagram.png>] [28 <./figures/CNN architecture.png>
+]
+<figures/2 view data generation sample.png, id=811, 492.1587pt x 860.013pt>
+File: figures/2 view data generation sample.png Graphic file (type png)
+<use figures/2 view data generation sample.png>
+Package pdftex.def Info: figures/2 view data generation sample.png  used on inp
+ut line 419.
+(pdftex.def)             Requested size: 272.5956pt x 476.34178pt.
+ [29]
+<figures/2 view end effector position.png, id=817, 422.0568pt x 426.393pt>
+File: figures/2 view end effector position.png Graphic file (type png)
+<use figures/2 view end effector position.png>
+Package pdftex.def Info: figures/2 view end effector position.png  used on inpu
+t line 428.
+(pdftex.def)             Requested size: 317.07614pt x 320.34698pt.
+ [30 <./figures/2 view data generation sample.png>]
+<figures/end-effector-position gt vs prediction.png, id=823, 642.4803pt x 642.4
+803pt>
+File: figures/end-effector-position gt vs prediction.png Graphic file (type png
+)
+<use figures/end-effector-position gt vs prediction.png>
+Package pdftex.def Info: figures/end-effector-position gt vs prediction.png  us
+ed on input line 437.
+(pdftex.def)             Requested size: 430.31812pt x 430.32231pt.
+ [31 <./figures/2 view end effector position.png>]
+<figures/end-effector-position-and-joint-angles-error.png, id=830, 952.5186pt x
+ 426.393pt>
+File: figures/end-effector-position-and-joint-angles-error.png Graphic file (ty
+pe png)
+<use figures/end-effector-position-and-joint-angles-error.png>
+Package pdftex.def Info: figures/end-effector-position-and-joint-angles-error.p
+ng  used on input line 446.
+(pdftex.def)             Requested size: 430.31812pt x 192.62979pt.
+ [32 <./figures/end-effector-position gt vs prediction.png>]
+<figures/neurokin 2d loss training.png, id=836, 1003.8303pt x 354.123pt>
+File: figures/neurokin 2d loss training.png Graphic file (type png)
+<use figures/neurokin 2d loss training.png>
+Package pdftex.def Info: figures/neurokin 2d loss training.png  used on input l
+ine 457.
+(pdftex.def)             Requested size: 398.61395pt x 140.62001pt.
+<figures/neurokin_results.png, id=837, 1120.185pt x 569.4876pt>
+File: figures/neurokin_results.png Graphic file (type png)
+<use figures/neurokin_results.png>
+Package pdftex.def Info: figures/neurokin_results.png  used on input line 466.
+(pdftex.def)             Requested size: 430.31812pt x 218.77112pt.
+ [33 <./figures/end-effector-position-and-joint-angles-error.png> <./figures/ne
+urokin 2d loss training.png>]
+<figures/neurokin_training_gt_prediction.png, id=844, 642.4803pt x 642.4803pt>
+File: figures/neurokin_training_gt_prediction.png Graphic file (type png)
+<use figures/neurokin_training_gt_prediction.png>
+Package pdftex.def Info: figures/neurokin_training_gt_prediction.png  used on i
+nput line 475.
+(pdftex.def)             Requested size: 430.31812pt x 430.32231pt.
+ [34 <./figures/neurokin_results.png>] [35 <./figures/neurokin_training_gt_pred
+iction.png>] [36] [37] [38]
+Chapter 5.
+<figures/control loop flowchart.png, id=872, 834.11626pt x 164.86594pt>
+File: figures/control loop flowchart.png Graphic file (type png)
+<use figures/control loop flowchart.png>
+Package pdftex.def Info: figures/control loop flowchart.png  used on input line
+ 527.
+(pdftex.def)             Requested size: 430.31812pt x 85.05405pt.
+[39
+
+ <./figures/control loop flowchart.png>]
+<figures/closedloop-endeffector-error.png, id=879, 570.933pt x 281.853pt>
+File: figures/closedloop-endeffector-error.png Graphic file (type png)
+<use figures/closedloop-endeffector-error.png>
+Package pdftex.def Info: figures/closedloop-endeffector-error.png  used on inpu
+t line 552.
+(pdftex.def)             Requested size: 398.61395pt x 196.79257pt.
+<figures/closedloop-endeffector-position-plot.png, id=880, 424.9476pt x 426.393
+pt>
+File: figures/closedloop-endeffector-position-plot.png Graphic file (type png)
+<use figures/closedloop-endeffector-position-plot.png>
+Package pdftex.def Info: figures/closedloop-endeffector-position-plot.png  used
+ on input line 561.
+(pdftex.def)             Requested size: 353.31439pt x 354.51768pt.
+ [40 <./figures/closedloop-endeffector-error.png>]
+<figures/closedloop-joint-error.png, id=887, 859.2903pt x 570.933pt>
+File: figures/closedloop-joint-error.png Graphic file (type png)
+<use figures/closedloop-joint-error.png>
+Package pdftex.def Info: figures/closedloop-joint-error.png  used on input line
+ 570.
+(pdftex.def)             Requested size: 398.61395pt x 264.84514pt.
+ [41 <./figures/closedloop-endeffector-position-plot.png>]
+<figures/closedloop-endeffector-error-with-damage.png, id=893, 642.4803pt x 354
+.123pt>
+File: figures/closedloop-endeffector-error-with-damage.png Graphic file (type p
+ng)
+<use figures/closedloop-endeffector-error-with-damage.png>
+Package pdftex.def Info: figures/closedloop-endeffector-error-with-damage.png  
+used on input line 581.
+(pdftex.def)             Requested size: 398.61395pt x 219.71068pt.
+
+[42 <./figures/closedloop-joint-error.png> <./figures/closedloop-endeffector-er
+ror-with-damage.png>] [43] [44] [45]
+Chapter 6.
+<figures/swarm control loop flowchart.png, id=915, 249.93375pt x 490.08093pt>
+File: figures/swarm control loop flowchart.png Graphic file (type png)
+<use figures/swarm control loop flowchart.png>
+Package pdftex.def Info: figures/swarm control loop flowchart.png  used on inpu
+t line 635.
+(pdftex.def)             Requested size: 242.93121pt x 476.35008pt.
+[46
+
+]
+<figures/Algorithm Efficiency in Steps.png, id=921, 614.295pt x 339.669pt>
+File: figures/Algorithm Efficiency in Steps.png Graphic file (type png)
+<use figures/Algorithm Efficiency in Steps.png>
+Package pdftex.def Info: figures/Algorithm Efficiency in Steps.png  used on inp
+ut line 644.
+(pdftex.def)             Requested size: 398.61395pt x 220.41425pt.
+ [47 <./figures/swarm control loop flowchart.png>] [48 <./figures/Algorithm Eff
+iciency in Steps.png>]
+<figures/Neurokin vs Basline with fault.png, id=932, 859.2903pt x 281.853pt>
+File: figures/Neurokin vs Basline with fault.png Graphic file (type png)
+<use figures/Neurokin vs Basline with fault.png>
+Package pdftex.def Info: figures/Neurokin vs Basline with fault.png  used on in
+put line 688.
+(pdftex.def)             Requested size: 425.79092pt x 139.66173pt.
+ [49] [50 <./figures/Neurokin vs Basline with fault.png>] [51] [52] [53]
+Chapter 7.
+<figures/pareto_frontier.png, id=959, 567.8013pt x 422.2977pt>
+File: figures/pareto_frontier.png Graphic file (type png)
+<use figures/pareto_frontier.png>
+Package pdftex.def Info: figures/pareto_frontier.png  used on input line 784.
+(pdftex.def)             Requested size: 407.66833pt x 303.20998pt.
+[54
+
+] [55 <./figures/pareto_frontier.png>] [56] [57] [58] [59] [60]
+Chapter 8.
+[61
+
+] [62] [63] [64]
+Appendix A.
+[65
+
+]
+Appendix B.
+[66
+
+]
+Appendix C.
+[67
+
+] [68] [69]
+Appendix D.
+[70
+
+] [71] [72]
+Appendix E.
+[73
+
+] [74]
+Appendix F.
+[75
+
+] [76] [77] [78]
+Appendix G.
+[79
+
+]
+Underfull \hbox (badness 6825) in paragraph at lines 1104--1104
+[]\T1/cmr/bx/n/17.28 Embodiment Scal-ing and Cross-Embodiment
+ []
+
+[80] [81] [82] [83] (references.bib [84
+
+] [85
+
+] [86] [87]
+Underfull \hbox (badness 1502) in paragraph at lines 126--127
+[]\T1/cmr/m/n/12 J. Wang, D. Wang, J. Hu, Q. Zhang, J. Yu, and L. Xu, ``Kine-ma
+t-ify:
+ []
+
+
+Underfull \hbox (badness 1337) in paragraph at lines 126--127
+\T1/cmr/m/n/12 Open-vocabulary syn-the-sis of high-DoF ar-tic-u-lated ob-jects,
+'' arXiv preprint
+ []
+
+[88]
+Underfull \hbox (badness 1221) in paragraph at lines 156--157
+\T1/cmr/m/n/12 bust dex-ter-ous grasp-ing in densely clut-tered en-vi-ron-ments
+,'' arXiv preprint
+ []
+
+[89] [90]
+Underfull \hbox (badness 1024) in paragraph at lines 246--247
+[]\T1/cmr/m/n/12 R. Jin \T1/cmr/m/it/12 et al.\T1/cmr/m/n/12 , ``Ground-ing sim
+-to-real gen-er-al-iza-tion in dex-ter-ous ma-nip-u-la-
+ []
+
+[91] [92] [93] [94]
+Underfull \hbox (badness 2057) in paragraph at lines 371--372
+\T1/cmr/m/n/12 da-tion model for ro-bust RGB-only hu-manoid lo-co-mo-tion,'' ar
+Xiv preprint
+ []
+
+[95]
+Underfull \hbox (badness 1688) in paragraph at lines 410--411
+[]\T1/cmr/m/n/12 Y. Yao, D. Howard, and P. Maiolino, ``Gen-er-al-ized task-driv
+en de-sign of
+ []
+
+[96]
+Underfull \hbox (badness 2600) in paragraph at lines 461--462
+\T1/cmr/m/n/12 VLM-guided sys-tem iden-ti-fi-ca-tion for sim-to-real trans-fer,
+'' arXiv preprint
+ []
+
+[97] [98] [99]) [100] (adaptive_embodied_thesis.aux)
+ ***********
+LaTeX2e <2025-11-01>
+L3 programming layer <2025-12-24>
+ ***********
+Package rerunfilecheck Info: File `adaptive_embodied_thesis.out' has not change
+d.
+(rerunfilecheck)             Checksum: F58A5FDA33C134A0FDA34257481805A7;20430.
+ ) 
+Here is how much of TeX's memory you used:
+ 13859 strings out of 467871
+ 223593 string characters out of 5416925
+ 639378 words of memory out of 5000000
+ 42141 multiletter control sequences out of 15000+600000
+ 642911 words of font info for 80 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 75i,8n,79p,1281b,577s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\Askeladd\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\e
+cti1200.pk> <C:\Users\Askeladd\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec
+/dpi600\ecbx1728.pk> <C:\Users\Askeladd\AppData\Local\MiKTeX\fonts/pk/ljfour/jk
+nappen/ec/dpi600\ecbx1200.pk> <C:\Users\Askeladd\AppData\Local\MiKTeX\fonts/pk/
+ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\Askeladd\AppData\Local\MiKTeX\
+fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\Askeladd\AppData\Loca
+l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk> <C:\Users\Askeladd\App
+Data\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\Ask
+eladd\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk><C:/U
+sers/Askeladd/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex
+10.pfb><C:/Users/Askeladd/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
+onts/cm/cmmi12.pfb><C:/Users/Askeladd/AppData/Local/Programs/MiKTeX/fonts/type1
+/public/amsfonts/cm/cmmi8.pfb><C:/Users/Askeladd/AppData/Local/Programs/MiKTeX/
+fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Askeladd/AppData/Local/Progr
+ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Askeladd/AppData/L
+ocal/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Askela
+dd/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/U
+sers/Askeladd/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols
+/msbm10.pfb>
+Output written on adaptive_embodied_thesis.pdf (109 pages, 4300492 bytes).
+PDF statistics:
+ 2069 PDF objects out of 2073 (max. 8388607)
+ 426 named destinations out of 1000 (max. 500000)
+ 934 words of extra memory for PDF output out of 10000 (max. 10000000)
+

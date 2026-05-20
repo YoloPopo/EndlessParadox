@@ -1,0 +1,1305 @@
+﻿\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+% Unicode fallbacks (needed for verbatim-included preprint text under pdfLaTeX)
+\DeclareUnicodeCharacter{00A8}{\"}
+\DeclareUnicodeCharacter{00B0}{\ensuremath{{}^{\circ}}}
+\DeclareUnicodeCharacter{00B1}{\ensuremath{\pm}}
+\DeclareUnicodeCharacter{00B5}{\ensuremath{\mu}}
+\DeclareUnicodeCharacter{00D7}{\ensuremath{\times}}
+\DeclareUnicodeCharacter{03A3}{\ensuremath{\Sigma}}
+\DeclareUnicodeCharacter{03B1}{\ensuremath{\alpha}}
+\DeclareUnicodeCharacter{03B2}{\ensuremath{\beta}}
+\DeclareUnicodeCharacter{03B3}{\ensuremath{\gamma}}
+\DeclareUnicodeCharacter{03B4}{\ensuremath{\delta}}
+\DeclareUnicodeCharacter{03B7}{\ensuremath{\eta}}
+\DeclareUnicodeCharacter{03B8}{\ensuremath{\theta}}
+\DeclareUnicodeCharacter{03BB}{\ensuremath{\lambda}}
+\DeclareUnicodeCharacter{03C1}{\ensuremath{\rho}}
+\DeclareUnicodeCharacter{03C3}{\ensuremath{\sigma}}
+\DeclareUnicodeCharacter{03F5}{\ensuremath{\epsilon}}
+\DeclareUnicodeCharacter{2013}{--}
+\DeclareUnicodeCharacter{2014}{---}
+\DeclareUnicodeCharacter{2019}{'}
+\DeclareUnicodeCharacter{2022}{\textbullet}
+\DeclareUnicodeCharacter{2032}{\ensuremath{{}^{\prime}}}
+\DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
+\DeclareUnicodeCharacter{2206}{\ensuremath{\Delta}}
+\DeclareUnicodeCharacter{2207}{\ensuremath{\nabla}}
+\DeclareUnicodeCharacter{2208}{\ensuremath{\in}}
+\DeclareUnicodeCharacter{2212}{-}
+\DeclareUnicodeCharacter{2225}{\ensuremath{\Vert}}
+\DeclareUnicodeCharacter{223C}{\ensuremath{\sim}}
+\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+\DeclareUnicodeCharacter{2265}{\ensuremath{\geq}}
+\DeclareUnicodeCharacter{25E6}{\ensuremath{{}^{\circ}}}
+\DeclareUnicodeCharacter{207B}{\ensuremath{{}^{-}}}
+\DeclareUnicodeCharacter{2074}{\ensuremath{{}^{4}}}
+\DeclareUnicodeCharacter{00B9}{\ensuremath{{}^{1}}}
+\DeclareUnicodeCharacter{00B2}{\ensuremath{{}^{2}}}
+\DeclareUnicodeCharacter{00B3}{\ensuremath{{}^{3}}}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+\usepackage{cite}
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{microtype}
+\urlstyle{same}
+\emergencystretch=2em
+
+% Demote sectioning commands inside imported source chunks so this
+% integrated report keeps a coherent top-level structure.
+\newcommand{\inputDemotedSections}[1]{%
+\begingroup
+\let\origsection\section
+\let\origsubsection\subsection
+\let\origsubsubsection\subsubsection
+\renewcommand{\section}[1]{\origsubsection{##1}}
+\renewcommand{\subsection}[1]{\origsubsubsection{##1}}
+\renewcommand{\subsubsection}[1]{\paragraph{##1}}
+\input{#1}
+\endgroup
+}
+
+\title{
+Adaptive Design of Embodied Robotic Systems for Real-Time Self-Modeling Toward Swarm Coordination}
+\author{Muhammad Zeeshan Asghar\\HSE University, Moscow, Russia}
+\date{April 13, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report combines comprehensive literature synthesis on robot self-modeling with concrete empirical validation through systematic comparative analysis of real-time direct sensorimotor decoding approaches. The central technical discovery establishes that NeuroKin's direct sensorimotor decoding successfully circumvents the latency bottlenecks inherent to neural field pipelines, achieving sub-millisecond inference latencies while simultaneously improving reconstruction quality beyond published NeRF baselines. All experimental validation proceeds through simulation under well-controlled computational constraints. Multi-view stereoscopic decoding reconstructs 3D geometry from ultra-fast 2D silhouette predictions, bridging the dimensional gap between flat 2D network outputs and full 3D spatial representation. The conceptual contribution extends self-modeling from single-agent formulations toward theoretical multi-agent coordination frameworks. This report establishes the fundamental single-agent architecture and validates deployment feasibility; extension toward actual swarm deployment is intentionally deferred to future experimental work.
+\end{abstract}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/survey/timeline_self_modeling.pdf}
+\caption{Three eras of robot self-modeling, highlighting the shift from symbolic morphology inference via active exploration to behavioral adaptation through repertoire search, and finally to contemporary visual self-modeling driven by neural rendering (NeRF and 3D Gaussian Splatting).}
+\label{fig:timeline_intro}
+\end{figure*}
+
+\section{Integrated Structure and Evaluation Framework}
+Robot self-modeling operates within constrained computational budgets, necessarily prioritizing measurable task-level outcomes over diagnostic fidelity. Visual measurements inform the analysis, yet real-world deployment viability ultimately depends upon functional success: can the robot accomplish its intended task? The fundamental challenge becomes controlling both system stability under disturbances and recovery capability when embodiment changes occur. This report structures the investigation progressively: Section 2 frames the core problems motivating this work; Sections 3--5 synthesize existing literature while reporting empirical findings; Sections 6--7 integrate insights toward deployment readiness. Four focused research questions guide this investigation, each addressing distinct technical and architectural dimensions.
+
+\subsection{Survey Scope}
+This survey spans three distinct eras in robot self-modeling: symbolic morphology inference via active exploration, behavioral adaptation through explicit repertoire search, and contemporary visual rendering approaches grounded in neural fields and Gaussian splatting. Throughout this synthesis, evaluative rigor remains paramount. Self-models demonstrate value only when they measurably improve collision avoidance, stabilize motion during disturbance, or enable recovery after damage occurs. While rendering metrics such as PSNR and SSIM provide diagnostic insights, deployment feasibility ultimately hinges on task-level functional outcomes. Attention focuses exclusively on systems with six or more degrees of freedom—manipulators, legged platforms, and humanoid configurations—to ensure direct relevance to embodied robotics. Digital twins emerge as a unifying conceptual thread throughout the analysis. Sim-to-real transfer pathways receive systematic examination. Credible contributions distinguish themselves through documented rapid recovery from intentionally induced damage.
+
+\subsection{Experimental Scope}
+Our experimental framework encompasses four architectures positioned along the latency-fidelity spectrum. FFKSM, employing implicit neural radiance fields, achieves rendering at 5.22 frames per second. K-3DGS, based on explicit Gaussian splatting, advances to 37 FPS. NeuroKin, using direct kinematic decoding, reaches 7,400 FPS with latencies as low as 0.135 milliseconds. ResNeuroKin-D, extending the multi-task decoding framework, operates at 2,500 FPS. This progression demonstrates that direct decoding fundamentally overcomes the latency bottleneck constraining neural rendering approaches while maintaining reconstruction quality. No prior work has achieved this performance envelope.
+
+\subsection{Core Integration Objective and Success Criterion}
+Integration of survey and experiment succeeds when breadth of evidence merges coherently with experimental rigor. Sub-millisecond inference latencies become critical: they enable real-time proprioceptive self-correction, permit rapid anomaly detection within control loops, and support continuous behavioral adaptation. Existing neural rendering pipelines cannot operate within this performance window. Ultimately, achievable latency determines whether a self-modeling architecture transitions from laboratory feasibility to genuine real-world deployment capability.
+
+\subsection{Scope of the Pre-Submission}
+Real-time self-modeling serves as the essential foundation for multi-agent coordination scenarios. Rendering latency constraints are unforgiving: latencies exceeding one kilohertz cycle times degrade closed-loop performance catastrophically. This work validates the proposed architecture within single-agent computational landscapes, where the bottleneck can be precisely isolated and characterized. Multi-agent coordination scenarios build naturally upon this validated single-agent foundation, inheriting both performance characteristics and latency understanding.
+
+\section{Statement of the Problem}
+Robots operate within unstructured, multi-contact environments where performance gaps manifest immediately and unavoidably. Conventional control systems rely upon fixed kinematic models that never remain accurate in practice. Systems experience continuous drift through material wear, calibration degradation, and progressive mechanical damage. The internal morphological models diverge relentlessly from actual physical embodiment, causing planning failures and control instability. High-degree-of-freedom systems face the greatest vulnerability to these divergences. 
+
+Existing approaches employing NeRF and 3D Gaussian Splatting prioritize reconstruction accuracy and rendering fidelity. A fundamental limitation emerges, however: achieve rendering latencies remain prohibitively high for real-time control. Performance ranges from 5 to 37 FPS, utterly inadequate for sub-millisecond control loop requirements. The temporal mismatch is fundamentally irreconcilable within current architectural paradigms.
+
+This work addresses a coupled optimization challenge requiring simultaneous satisfaction of two critical constraints: achieving real-time latency compatible with continuous control loops, and prioritizing functional task validation over visual rendering metrics. By combining comprehensive survey coverage with architectural innovations in latency reduction, we furnish empirical validation for this integrated framework.
+
+\subsection{Research Questions}
+
+\textbf{RQ1} Which self-modeling architecture class best balances latency and quality within realistic computational constraints? This question probes a fundamental architectural tradeoff: the speed-fidelity frontier that determines deployment viability.
+
+\textbf{RQ2} What metrics truly determine deployment readiness? Should visual reconstruction fidelity guide architecture choice, or do functional task outcomes matter most? Empirical investigation reveals the priority ordering. Rendering quality metrics like PSNR alone prove insufficient; deployment success depends fundamentally on task-level performance.
+
+\textbf{RQ3} How robust are current self-modeling approaches when faced with embodiment drift and post-damage morphological changes? Real-world adversity testing becomes critical: only hardware evidence under actual damage reveals true generalization capability.
+
+\textbf{RQ4} How might per-robot self-model confidence signals theoretically support multi-robot coordination tasks? Framework feasibility remains a conceptual exploration. This report prioritizes RQ1--RQ3, delivering concrete single-agent architecture and deployment insights. RQ4 provides exploratory groundwork establishing the conceptual foundation for future multi-robot investigations.
+
+\subsection{Evaluation Principle and Computational Efficiency Constraints}
+
+Physical hardware deployment represents the ultimate validation standard in principle. This work strategically prioritizes understanding within simulation under precisely defined computational constraints. Strict latency targets—sub-millisecond inference only—guide the investigation. Multi-view virtual camera systems extract 3D depth information from fast 2D silhouettes within PyBullet. The computational latency problem is isolated, solved cleanly, before hardware transfer becomes practically relevant.
+
+\section{Literature Review and Architectures in Context}
+This literature review is organized along a clear analytical trajectory: foundational historical work demonstrates how the field evolved from symbolic inference toward neural rendering approaches; contemporary deployment bottlenecks are identified through documented real-world challenges; empirical validation emerges through rigorous comparative architecture study. Survey breadth grounds experimental contributions, while experimental results validate survey-level deployment concerns.
+
+\subsection{Foundational Trajectory, From Symbolic to Neural Rendered Models}
+
+Robot self-modeling has evolved through three distinct historical phases, each addressing fundamental limitations of its predecessor. Early work relied upon active exploration and iterative hypothesis refinement to discover morphology. Mid-phase approaches leveraged behavioral repertoires and implicit model learning, sidestepping explicit geometric reconstruction. Contemporary research emphasizes visual reconstruction via neural rendering technologies—particularly NeRF and 3D Gaussian Splatting—offering high-fidelity geometry with reduced manual modeling effort.
+
+\subsubsection{Problem Framing and Evolution}
+
+Embodiment drift accumulates inexorably across all robotic systems through mechanical wear, calibration deviation, and progressive damage. Physical morphology inevitably diverges from internal models over time. High-dimensional systems experience compounded effects, with contact-intensive manipulation tasks facing heightened vulnerability when precision directly determines stability and task success.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/survey/self_modeling_pipeline.pdf}
+\caption{Closed-loop robot self-modeling pipeline linking sensing, encoding, self-model update, planning, and actuation.}
+\label{fig:selfmodel_pipeline}
+\end{figure*}
+
+Self-modeling systems address this profound challenge through mechanisms of adaptive internal representation that update dynamically and continuously as embodiment characteristics inevitably evolve through mechanical wear, calibration drift, and progressive damage accumulation. Rigorous effective evaluation necessarily demands concrete functional metrics: demonstrable measurable improvements in collision avoidance accuracy, clearly observable motion stability gains measured under disturbance, and documented successful recovery capability from intentionally induced physical damage. These metrics matter fundamentally because deployment success ultimately depends upon task-level performance outcomes—not upon isolated reconstruction quality measures. While PSNR and SSIM metrics do illuminate certain aspects of reconstruction fidelity and visual quality, they provide only indirect proxies measuring whether a system will actually succeed at the robot's mission. Deployment viability depends entirely upon whether the robot can execute its assigned task robustly despite embodiment uncertainty.
+
+\subsubsection{Biological Inspiration and Historical Trajectory}
+
+Robot self-modeling approaches have evolved through three distinct eras, each addressing fundamental limitations of its predecessors: the Symbolic era focused on explicit morphology inference; the Behavioral era pursued learned adaptation without building internal models; and the Visual era leveraged neural rendering to construct visual self-models. Understanding this progression clarifies both current capabilities and persistent deployment bottlenecks.
+
+\paragraph{Era 1, Symbolic Morphology Inference}
+The seminal work of Bongard, Zykov, and Lipson established the first complete closed-loop self-modeling system on actual physical robots through systematic iterative cycles of hypothesis generation, empirical testing, model refinement, and quantitative evaluation. Their foundational insight correctly identified the critical importance of maintaining active feedback loops between the physical system and internal representations. However, severe representational constraints fundamentally limited practical performance: two-dimensional planar simulations could not adequately capture the complex real-world phenomena of material deformation and progressive mechanical damage. This fundamental representational mismatch between simulation assumptions and physical reality proved fatal, preventing the approach from achieving practical deployment feasibility.
+
+\paragraph{Era 2, Behavioral Adaptation Without Explicit Models}
+Cully's MAP Elites approach circumvented the need for explicit morphology modeling by generating diverse behavioral repertoires in simulation for direct evaluation and selection on real hardware. This strategy elegantly tolerates significant model inaccuracy between simulation and reality. However, robustness breaks substantially under novel environmental conditions not encountered during repertoire generation. The approach reveals a fundamental fragility: its effectiveness depends critically on simulation diversity and the quality of low-dimensional feature descriptors, creating brittle dependencies that fail when assumptions shift.
+
+\paragraph{Dynamics Models and Mechanistic Approaches}
+Forward dynamics models can efficiently predict the sensory consequences of motor commands, enabling closed-loop control execution at reasonable computational speeds. However, this approach faces a fundamental limitation: systematic bias accumulates progressively across extended planning horizons. Simulated trajectories diverge increasingly from actual robot behavior, rendering the approach impractical for tasks requiring accurate prediction beyond very short time windows. This horizon-dependent degradation motivates approaches that prioritize shorter planning windows or use learned corrections rather than pure forward simulation.
+
+Proprioceptive-only self-models rely exclusively on internal body signals (joint angles, motor commands, inertial measurements) without external visual input. This restricted sensing modality offers significant deployment advantages: the approach remains robust across diverse lighting conditions and operates without calibrated cameras. However, eliminating external visual information imposes real functional costs: expressiveness is substantially reduced compared to vision-based methods. This is not merely a theoretical gap but a genuine operating constraint that limits the complexity of tasks these systems can support compared to their multi-modal counterparts.
+
+\paragraph{Era 3, Visual Self Models via Neural Rendering and Contemporary Focus}
+Neural rendering via NeRF and 3D Gaussian Splatting has become standard practice in contemporary visual self-modeling research. Published results demonstrate impressive collision prediction capabilities and high reconstruction fidelity under laboratory conditions. Yet operational reality imposes a stubborn constraint: even optimized implementations achieve frame rates between 5 and 37 FPS, while practical robot control loops require sub-millisecond response times (1000+ Hz). This temporal mismatch between achievable rendering rates and required control rates fundamentally undermines deployment feasibility, rendering visual self-models impractical for many real-time robotic applications despite their geometric fidelity.
+
+\subsubsection{Survey Positioning and Evaluation Stance}
+Rigorous evaluation systematically prioritizes functional outcomes as the ultimate determining measures: documented task completion rates under realistic conditions, quantified recovery time intervals following physical disturbances and damage events, and demonstrated reliability of closed-loop control stability under perturbation. Systems worthy of research attention must rigorously satisfy multiple demanding criteria simultaneously: minimum morphological complexity of six degrees of freedom ensuring relevance to real robotic platforms, documented validation on actual physical hardware through manipulators, legged platforms, or humanoid systems rather than pure simulation, and explicit comprehensive testing of damage recovery capabilities under controlled but realistic damage scenarios. We have consistently observed that research assumptions derived from simulation frequently and substantially fail when directly confronted with real operational constraints including sensor noise, latency variability, mechanical wear, and environmental uncertainty. Our comprehensive comparison table documents only systems that have satisfied all our rigorous evaluation standards, excluding numerous published results that claimed success only within overly simplified or unrealistic operational assumptions.
+
+\begin{table*}[htbp]
+\centering
+\caption{Representative robot self-modeling systems and the evaluation criteria used in this survey.}
+\label{tab:selfmodel_comparison}
+\renewcommand{\arraystretch}{1.2}
+\small
+\begin{tabularx}{\textwidth}{@{}p{2.8cm}p{3.2cm}p{2.4cm}p{2.2cm}X@{}}
+\toprule
+Method & Representation / sensing & Platform / DoF & Validation & Functional emphasis \\
+\midrule
+\cite{bongard2006resilient} & Symbolic topology search; encoders + IMU & Four-legged robot; 8 DoF & Real robot & Topology inference and post-damage gait recovery \\
+\cite{cully2015robots} & Behavioral repertoire; IMU & Hexapod; 18 motors & Real robot & Rapid compensatory locomotion after damage \\
+\cite{kwiatkowski2019task} & Learned motor-to-sensory model & Manipulator; 4 DoF & Real robot & Closed-loop task execution after morphology change \\
+\cite{chen2022full} & SDF / SIREN occupancy model & WidowX 200; 5 DoF & Real robot & Collision-free planning and damage adaptation \\
+\cite{hu2024teaching} & NeRF-based occupancy model & 4-DOF arm; single RGB camera & Real robot & Spiral tracking and fine-tuned recovery \\
+\cite{schulze2024high} & Neural density field & Panda; 7 DoF & Simulation & Higher-DOF scaling and motion planning \\
+\cite{hu2024egocentric} & Egocentric dynamics prediction & 12-DOF legged robot & Real robot & Body-state prediction and transfer learning \\
+\cite{hu2025learning} & 3DGS articulated self-model & Franka 7 DoF / OpenManipulator 4 DoF & Real + sim & Geometry fidelity and downstream manipulation \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsection{Contemporary Neural Rendering, Promise, Reproduction, and Latency Bottleneck}
+
+Neural rendering approaches, particularly NeRF and 3D Gaussian Splatting variants, have emerged as the dominant paradigm in contemporary visual self-modeling research. However, fundamental deployment questions remain critically unanswered throughout the literature: do current methods genuinely sustain the kilohertz-rate control loop demands imposed by real robotic systems? To answer this question rigorously, we undertook comprehensive empirical investigation by independently reproducing FFKSM, a representative NeRF-based visual self-modeling architecture published recently in the research literature.
+
+\subsubsection{Visual Self Modeling via Neural Rendering Foundations}
+
+\paragraph{Foundations in Signed Distance Functions and Multi View Sensing}
+Chen introduced occupancy query learning as a foundational approach for robot self-models. Signed Distance Functions (SDFs) conditioned on joint angles enable differentiable collision checking directly from RGB-D sensor streams, supporting both motion planning and recovery from damage. Multi-view camera systems achieve approximately one percent workspace accuracy and successfully demonstrate support for planning and post-damage recovery capabilities. However, practical deployment introduces significant challenges: careful camera placement becomes critical for observability, precise calibration is required for geometric accuracy, and performance degrades substantially when encountering challenging visual conditions including occlusion, shadows, blur, and noise. These limitations expose a fundamental tension: geometric approaches require stable, well-calibrated sensing that real-world environments often fail to provide.
+
+\paragraph{NeRF Based Self Models and Single Camera Approaches}
+Hu, Lin, Lipson reduced the camera system to a single RGB sensor while learning the Free Form Kinematic Self Model from a single viewpoint. Camera reparameterization on the first two joints improved results. This approach supports inverse kinematics, path planning, and post-damage recovery. Volumetric rendering via NeRF remained computationally expensive. Single-viewpoint training introduced persistent vulnerabilities: occlusion sensitivity and perspective-dependent predictions.
+
+\paragraph{Robustness Under Visual and Morphological Variation}
+Deployment in real environments immediately undermines the clean assumptions underlying laboratory-based self-models. Visual degradation from fog, shadows, motion blur, and sensor noise directly corrupts geometric reconstruction quality. Acknowledging this gap, Rezvani, Mahmood, and Chhabra systematically quantified reconstruction degradation across visual corruption conditions and proposed segmentation plus denoising approaches that restore morphological information while preserving downstream planning performance. The key lesson from this work applies broadly: effective self-modeling pipelines must actively protect and denoise geometric cues during inference, rather than solely optimizing rendering loss on clean training images and assuming robustness emerges automatically.
+
+\paragraph{Scaling to Higher Degrees of Freedom}
+Scaling beyond small manipulators remains difficult and is frequently understated in the literature. Schulze and Lipson proposed density field approaches with degree-of-freedom-specific encoders and curriculum sampling strategies for seven-DOF manipulators. However, validation remained confined to simulation. A recurring gap emerges consistently: visual models that scale effectively in simulation fail under real-world constraints including actual sensor noise, latency limits, calibration drift, and hardware reality.
+
+\paragraph{Diverse Sensing and Deployment Architectures}
+Egocentric self-modeling approaches directly address mobile platform requirements by predicting body configuration changes purely from first-person egocentric vision combined with proprioceptive motor history. This approach elegantly supports transfer across diverse morphologies and enables rapid damage-triggered adaptation without requiring calibrated external camera infrastructure. Differentiable rendering methods establish tight coupling between trajectory optimization and pose reconstruction directly in observation space, fundamentally linking learned models to downstream control tasks rather than treating visual reconstruction as an independent problem. For soft-bodied and continuum robotic systems, tracking deformation dynamics proves critical: Bézier-parametrized shape representations improve task-level control performance, reservoir computing architectures effectively capture the nonlinear dynamics of compliance, and electronic skin sensors enable closed-loop disturbance rejection. Observable state reconstruction challenges yield to principled approaches including sensor placement optimization, stereo camera calibration pipelines, and tactile sensing integration for contact-rich tasks.
+
+\subsubsection{Neural Rendering Foundations, NeRF Versus Gaussian Splatting}
+
+Robot visual self-models inherit critical architectural tradeoffs directly from neural rendering research. Implicit neural fields (NeRF-style) offer flexible geometric representation accommodating complex articulated structures but suffer from inherent serial ray-marching causing slow rendering. Explicit geometric primitives (Gaussian splatting) enable faster rasterization-based rendering and easier edge device deployment, yet impose representational constraints limiting geometric expressiveness. The appropriate architectural choice depends entirely on downstream deployment requirements: systems prioritizing geometric fidelity over latency select implicit fields; systems requiring real-time operation select explicit primitives despite geometric limitations.
+
+\paragraph{Neural Radiance Fields and Deformation Networks}
+Neural Radiance Fields (NeRF) represent 3D geometry as continuous radiance-density fields, offering flexible representation that accommodates complex articulated structures. Deformation variants extend NeRF expressiveness by making articulated scenes learnable through canonicalization and learned spatial warps. However, the core robotics bottleneck remains fundamentally unchanged: control-rate latency persistence regardless of acceleration techniques applied. Hash grids and multiscale rendering reduce computational cost partially, yet volumetric query expense persists as a fundamental constraint within tight control loops. The architectural trade-off remains constant: greater geometric expressiveness demands reduced inference speed to maintain real-time compliance.
+
+\paragraph{3D Gaussian Splatting and Real-Time Deployment}
+3DGS replaces ray marching with differentiable rasterization of explicit anisotropic Gaussians, enabling high framerate rendering and fast optimization. However, graphics researchers often overlook a constraint that robotics cannot escape: converting Gaussian splats into collision-ready geometric representations. Surface regularization and mesh extraction provide partial solutions. SLAM integration becomes feasible. Hardware accelerator support enables embedded deployment. In practice, 3DGS gains adoption not because it universally outperforms implicit fields on accuracy, but because it fits within the computational budgets required by real-time control systems.
+
+\paragraph{3D Gaussian Splatting in Robotics Practice} 
+3DGS has migrated from graphics into robotics as a fundamental system primitive for reconstruction, data generation, and world modeling. A crucial principle determines deployment success: real-world testing remains non-negotiable; rendering realism on the desktop does not suffice. Physical validity and functional correctness determine value. The critical question is not photorealism but capability: can the representation enable collision-free planning while satisfying latency constraints? Only hardware trials definitively answer this question, not desktop rendering quality metrics.
+
+The research landscape splits into two distinct approaches. Many papers prioritize visual quality while avoiding latency stress tests, hardware trials, and contact force validation. Superior work reports simulation-ready assets that teams actually deploy, functional control gains with quantified metrics, and verified hardware results from real robotic systems.
+
+\paragraph{Articulated Object Reconstruction and Digital Twin Generation}
+Automated digital twin generation approaches follow three distinct strategies reflecting different burden allocation decisions. Differentiable reconstruction pipelines avoid manual URDF creation by optimizing directly from observations—maximizing automation while accepting optimization burden upfront. Feed-forward generative models prioritize generation speed and simplicity over polish, deferring validation to downstream tasks. Physics-constrained variants target specific failure modes like mesh interpenetration, adding domain knowledge but complexity. Faster generation methods necessarily push validation burden downstream: quick-generated twins require more extensive testing before deployment. 3DGS-first variants attempt direct articulation inference from sparse multi-view observations, promising fully automated twin construction. Early results in manipulation simulation show promise with high visual fidelity. Robustness properties fail acutely under realistic occlusion, however: dense multi-object scenes with occlusion degrade inference sharply, exposing that single-model approaches lack robustness properties required for real deployment scenarios. Multi-joint coupling spreads errors across morphologically related structures. Unconstrained capture generates visually plausible reconstructions that mask planning-critical geometric errors hidden deep in learned representations, discovered catastrophically only during real-world testing.
+
+\paragraph{Physics-Consistent Robot Models and Manipulation Planning}
+Gaussian twin representations have progressed from display assets toward functional planning models in contemporary research. Robo-GS couples Gaussian representations with mesh extraction because simulators require solid geometry for accurate dynamics computation—a straightforward but essential constraint. Planning stacks increasingly merge volumetric rendering with trajectory optimization for centimeter-level precision. Predictive variants detect divergence between simulation and actual behavior, triggering corrective updates automatically when model accuracy degrades. However, a persistent limitation emerges across published work: most papers demonstrate strong simulation metrics only over short horizons. Sensing robustness under environmental variation remains limited, latency jitter testing is absent, and contact uncertainty validation is incomplete. These three conditions—horizon length, environmental robustness, and contact fidelity—ultimately determine whether learned models generalize to deployment scenarios or remain confined to laboratory settings.
+
+\paragraph{Cross-Embodiment Transfer and Morphological Understanding}
+Cross-embodiment transfer performance improves measurably when morphological structure encodes as kinematic connectivity rather than visual appearance alone. DexGrasp Zero demonstrates this principle by aligning heterogeneous hand morphologies via semantic kinematic graphs, achieving zero-shot transfer in selected scenarios. Transformer attention mechanisms constrained by embodiment connectivity patterns generalize more robustly than unconstrained architectural variants—a finding suggesting that explicit structure priors substantially facilitate transfer. Structural kinematic priors carry transfer properties effectively across distinct platforms. In contrast, texture and appearance invariance fail to provide transfer benefits—visual domain shifts break transfer reliability decisively. Humanoid transfer remains underdeveloped and particularly challenging due to morphological complexity. Critical insight emerges: locomotion, terrain interaction, and dexterous contact constraints must be solved jointly as integrated systems rather than as separate modular components.
+
+\paragraph{Field Convergence and Latency Trade-Offs}
+Neural rendering representations across the field increasingly converge around pragmatic cost-benefit trade-offs that deliberately trade photorealistic appearance for engineering requirements. This convergence reflects a fundamental realization: controllable latency enables closed-loop simulation, making low-latency updates more valuable than perfect rendering. Updatability and fast inference consistently outperform reconstruction fidelity in deployment scenarios. Geometric utility and functional correctness substantially outweigh visual appearance in determining practical value. Within this landscape, 3D Gaussian Splatting shines as a particularly effective compact, editable backbone representation that successfully connects perception through planning through synthesis, all while remaining squeezed within stringent latency constraints essential for real-time control.
+
+\subsubsection{Empirical Validation of the Latency Problem}
+To validate the latency bottleneck empirically, we undertook faithful implementation of FFKSM—a representative NeRF-based visual self-modeling architecture from published specifications. This reproduction effort proved strategically essential: theoretical concerns gain credibility only when grounded in concrete architecture-level tradeoff analysis. The empirical results confirmed our diagnostic hypothesis starkly. FFKSM achieved 17.35 dB PSNR rendering quality (visually impressive) coupled with 5.22 FPS inference speed (191.6 milliseconds latency)—fundamentally incompatible with real-time control requiring 1 kilohertz cycle times. The empirical gap between visual quality and deployment viability emerges unambiguously: superior rendering fidelity does not translate to viable control capability when latency remains incompatible with system requirements. This finding directly motivated investigation of alternative architectures trading some rendering quality for drastically improved inference speed.
+
+\section{Direct Sensorimotor Decoding for Architecture Innovation and Comparative Results}
+
+Neural rendering approaches fundamentally prohibit practical control loop closure due to insurmountable latency constraints. This section investigates a fundamentally different architectural approach: direct sensorimotor decoding that completely bypasses 3D reconstruction. Rather than maintaining explicit volumetric representations, we train lightweight fully convolutional neural networks that directly map joint configurations to output silhouettes, trading volumetric reconstruction fidelity for practical deployment speed. This architectural shift represents a conscious departure from reconstruction-as-intermediate-representation toward direct sensorimotor prediction.
+
+We evaluated four distinct architectural approaches positioned systematically along the latency-fidelity spectrum, each representing a different point in the design space. NeRF-based FFKSM provides implicit neural rendering; explicit 3D Gaussians (K-3DGS) offer explicit geometry; direct sensorimotor decoding (NeuroKin) skips geometric reconstruction entirely; multi-task decoding (ResNeuroKin-D) jointly predicts depth and motor commands. Systematic evaluation reveals distinct latency-quality operating points that enable principled tradeoff comparisons.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{My Preprint/fig_6_0.png}
+\caption{Architectural comparison of self-modeling approaches. FFKSM: Volumetric rendering requiring 640K network evaluations per image. K-3DGS: Explicit 3D Gaussians achieving modest speedup but suffering from isotropic constraint. NeuroKin: Direct single-pass decoding achieving extreme speedup with better quality.}
+\label{fig:arch_comparison}
+\end{figure*}
+
+\subsection{Methodology for Dataset Generation and Comparative Study}
+
+Implementation proceeded through four deliberately sequenced development phases. Phase 1 generated synthetic datasets using chaotic attractors, ensuring smooth coverage of state space. Phase 2 independently reimplemented FFKSM, exposing hidden modeling challenges. Phase 3 developed explicit K-3DGS reconstruction as an alternative approach. Phase 4 explored direct sensorimotor decoding, bypassing reconstruction entirely. This progression revealed fundamental tradeoffs between each architectural strategy.
+
+\paragraph{Workspace Coverage via Lorenz Trajectories}
+Rather than relying upon random motor babbling that generates jerky, discontinuous and often unrepeatable motions, we deliberately employed smooth workspace exploration trajectories generated through the mathematically-principled Lorenz chaotic dynamical system:
+\begin{align}
+\frac{dx}{dt} &= \sigma(y - x) \\
+\frac{dy}{dt} &= x(\rho - z) - y \\
+\frac{dz}{dt} &= xy - \beta z
+\end{align}
+with $\sigma = 10$, $\rho = 28$, $\beta = 8/3$, chosen to produce chaotic yet stable attractor behavior characteristic of classical Lorenz dynamics. These specific parameter values yield deterministic yet fundamentally non-repeating trajectories that ergodically explore the state space without clustering or artificial repetition, ensuring diverse kinematic coverage. Integration via fourth-order Runge-Kutta numerical method with adaptive stepsize $\Delta t = 0.01$ and explicit scaling to joint limits ($\pm 90^\circ$) generated smooth workspace coverage that systematically samples the decision boundary regions critical for collision detection and morphological self-discovery. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{My Preprint/fig_6_1.png}
+\caption{Lorenz-generated joint angle trajectories spanning 2,000 samples. Chaotic dynamics ensure ergodic workspace coverage.}
+\label{fig:lorenz}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{My Preprint/fig_7_2.png}
+\caption{Data processing pipeline. PyBullet converts RGB images to grayscale, then segments them into binary silhouettes for training.}
+\label{fig:data_pipeline}
+\end{figure}
+
+Two attractors drove four joints across 2,000 samples, split between 1,600 training and 400 test samples. Coverage proved adequate across the thirty-degree joint range. Image occupancy averaged fourteen point seven percent with a range of eight point nine to twenty-three point four percent, creating severe class imbalance. Trivial optimizer solutions—networks predicting uniform black across all pixels—became a convergence trap. Curriculum learning proved necessary to enforce spatial specificity and prevent trivial collapse.
+
+\paragraph{FFKSM Reproduction} Unpacking Hidden Implementation Challenges
+We undertook faithful independent reproduction of FFKSM from published specifications. However, careful investigation revealed that the original paper omits three critical implementation challenges that prove essential for successful training.
+
+\emph{Black Screen Convergence} represents a critical optimization failure mode. With 85% of image pixels containing background (non-robot regions), standard mean-squared-error optimization converges immediately and irreversibly to a degenerate trivial solution: predicting uniform black pixels everywhere. This strategy minimizes training loss without requiring the network to learn anything about spatial geometry. Both weighted loss functions and focal loss individually fail to prevent this collapse because the underlying pixel class imbalance overwhelms standard regularization approaches. Effective remediation requires imposing structured curriculum learning: constrain initial training for 500 iterations to a 50×50 pixel center-crop region where robot occupancy reaches 40% density, then systematically and gradually expand the prediction window across 20 subsequent iterations. This sequential approach maintains sufficient learning signal pressure toward genuine spatial reconstruction while preventing the early mode collapse that completely destroyed convergence in unconstrained training regimes.
+
+\emph{Kinematic Blindness} starkly underscores the critical importance of qualitative validation during architecture reproduction beyond reliance on quantitative metrics alone. After 2,000 training iterations, all aggregate metrics appeared successful: PSNR improved progressively, validation loss decreased smoothly, and convergence appeared well-established. Rigorous qualitative visual inspection, however, explosively revealed a completely catastrophic architectural failure: network predictions remained absolutely invariant across the final two joint dimensions. Specifically, identical joint angle values for the first two dimensions ($\theta_0$ and $\theta_1$) consistently produced identical network outputs regardless of variations in the final two joint dimensions ($\theta_2$ and $\theta_3$), revealing total loss of expressiveness for the manipulator's distal configuration. Root cause analysis identified a critical tensor slicing bug in the encoder implementation: only the first two joint angles were reaching the convolutional processing pipeline, while all remaining joint dimensions inexplicably vanished into degenerate all-black network regions. Gradient flow assertions revealed this defect immediately upon closer detailed inspection of intermediate representations. This discovery establishes a fundamental methodological principle: faithful architecture reproduction demands rigorous line-by-line code validation that explicitly goes beyond reliance on aggregate loss metrics alone—quantitative convergence often masks catastrophic qualitative architectural failures that only emerge under detailed qualitative inspection.
+
+\emph{Weighted Loss Tuning} required extensive systematic empirical exploration and careful ablation study. Even after curriculum learning prevented catastrophic early mode collapse, standard MSE loss still drove convergence toward uniform black predictions because the underlying pixel class imbalance remained severe. Systematic empirical exploration of loss weighting strategies revealed an extremely narrow optimal configuration operating point: applying exactly 5× weight to positive robot pixels achieved stable convergence while maintaining sufficient learning signal. Weights larger than this (10× or 20×) caused severe training oscillations and loss divergence—the learning signal became excessively harsh, destabilizing gradient flow through the network. Weights smaller than this (2× or 3×) resulted in underconstrained learning where the network retained flexibility to predict ambiguous spatial regions rather than learning precise sharp spatial boundaries. This precise 5× weight emerged as the unique effective operating point because it uniquely balanced two competing pressures: sufficient signal strength to robustly overcome class imbalance while simultaneously maintaining numerical stability throughout gradient descent. This high specificity and sensitivity demonstrates why faithful reproduction necessarily requires careful ablation study and empirical validation beyond commonly reported hyperparameters.
+
+Training for eight thousand iterations with learning rate $5 \times 10^{-4}$ and the two-stage curriculum yields the final FFKSM model: achieving 17.35 dB PSNR at 5.22 FPS. Each forward pass requires 191.6 milliseconds. The model contains 93,922 parameters trained over fifty minutes. Volumetric rendering fundamentally constrains performance. Ray marching contributes 33 milliseconds per forward pass due to inherent serial dependency chains. This latency overhead completely eliminates the possibility of 1 kilohertz control loop compliance.
+
+\paragraph{K-3DGS} The Explicit Representation Hypothesis
+Direct attack on the volumetric rendering bottleneck required replacing implicit neural fields with explicit geometric primitives. We attached 3D Gaussian representations directly to the kinematic chain structure, leveraging forward kinematics to compute necessary coordinate transforms at inference time. This computational strategy distributes 600 Gaussian primitives strategically: 100 primitives anchor to the base structure, 200 primitives per primary link provide geometric coverage under articulation, and 100 primitives cluster at the end-effector providing fine boundary detail. These isotropic Gaussian representations rasterize efficiently through differentiable perspective projection, enabling real-time rendering without serial ray-marching dependency. Coordinate rotation optimization was deliberately omitted to minimize computational overhead and reduce optimization burden.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{My Preprint/fig_7_3.png}
+\caption{PyBullet simulation environment with 4-DOF robot arm. Green Gaussians overlaid show K-3DGS attachment points to kinematic chain. Fixed camera at [1.0, 0.0, 0.0].}
+\label{fig:pybullet}
+\end{figure}
+
+Initial attempts to implement full anisotropic 3D Gaussians with ellipsoidal covariances encountered mode collapse failure within five hundred iterations: every input pose produced identical network outputs despite diverse training data. Root cause analysis revealed gradient explosion during SO(3) manifold optimization—the Lie group structure of 3D rotations introduces fundamental optimization challenges. The problem manifested acutely with limited 2,000-sample training sets: each ellipsoidal Gaussian required nine parameters versus five for isotropic versions, expanding the optimization landscape from 3,000 to 5,400 parameters. This expansion overwhelmed standard regularization, despite extensive mitigation attempts. Pragmatic engineering decisions guided us toward isotropic Gaussian representations, which converge rapidly in 1,000 iterations (30.3 seconds total) while sacrificing theoretical representational power for genuine empirical trainability. This configuration achieves 17.01 dB PSNR at 37 FPS. While spherical Gaussians produce blob-like boundary artifacts overlapping to approximate thin cylindrical links—a clear imperfection—practical convergence reliability outweighs theoretical elegance in constrained training regimes.
+
+\paragraph{NeuroKin} Direct Sensorimotor Decoding
+Both FFKSM and K-3DGS implementations remained constrained by architectural commitment to explicit 3D volumetric representation—the fundamental bottleneck preventing real-time inference. We hypothesized an alternative architectural principle: direct joint-to-image regression that completely bypasses 3D reconstruction entirely. NeuroKin realizes this high-risk hypothesis through radical simplification: a pure feedforward convolutional architecture with zero volumetric reasoning or geometric constraints. The network directly learns the mapping from joint configurations to output silhouettes, treating this as a purely image prediction task rather than a geometric inference problem. This architectural choice represents a fundamental departure: rather than constructing 3D geometry as an intermediate representation (which subsequent tasks might exploit), the architecture directly predicts the sensory consequences of motor commands.
+
+\emph{Architecture}: The NeuroKin architecture implements a four-stage information processing pipeline. Joint positions proceed through an encoder network to form a compact latent representation. This latent vector reshapes into a spatial feature map preserving spatial locality. Four successive transposed convolution operations upsample this representation through multiple scales, recovering spatial resolution progressively. A final convolution layer outputs the predicted grayscale silhouette at full resolution. The complete architecture contains 6,829,089 parameters—73 times FFKSM's parameter count—yet executes as a single forward pass without iterative refinement, eliminating serial dependencies.
+
+\emph{Stereoscopic Decoding}: 2D silhouettes represent a fundamental compression of 3D geometry: a single view collapses three dimensions into two. NeuroKin addresses this representational limitation through stereoscopic decoding: run dual NeuroKin instances on two virtual camera viewpoints, compute binocular disparity between the two silhouettes (adding 0.27 milliseconds total latency), and triangulate to recover 3D spatial coordinates. This stereo pipeline extracts depth and spatial awareness while maintaining sub-millisecond latency—a computational envelope that volumetric rendering methods cannot approach despite their theoretical geometric advantages. The principle is clear: task-specific 3D recovery outperforms general volumetric reconstruction when latency constraints dominate.
+
+\emph{Training}: We employed mean squared error (MSE) loss with Gaussian noise augmentation (standard deviation 0.01 radians) for regularization. Training proceeded for fifty epochs with batch size 128 and learning rate $10^{-3}$. Critically, neither curriculum learning nor weighted loss functions were necessary—direct regression inherently eliminates pixel class imbalance by providing dense gradients across all ten thousand pixels. Training completed in 33.5 seconds on a Tesla T4 GPU, achieving 21.88 dB PSNR (a 4.53 dB improvement over FFKSM) at 7,400 FPS with latency as low as 0.135 milliseconds per forward pass. The efficiency gain explains the speedup: NeuroKin provides dense gradient supervision across ten thousand pixels in a single forward pass, versus FFKSM's volumetric ray-marching which achieves only 0.0156 pixels per evaluation on average. This supervision density disparity—640,000-fold difference—directly explains the 1,418× speed improvement while simultaneously achieving superior quality.
+
+\paragraph{ResNeuroKin-D} Multi Task Learning with Geometric Structure
+NeuroKin's learned latent representations lack explicit geometric grounding—no individual dimension meaningfully tracks base rotation or link orientation because the network discovers whatever latent structure minimizes prediction error without constraints. ResNeuroKin-D imposes geometric structure through multi-task learning: auxiliary depth prediction head trained alongside silhouette prediction. This dual supervision uses PyBullet synthetic depth ground truth, forcing the network to discover latent representations supporting both silhouette and depth prediction simultaneously. The combined loss function weights silhouette (weight 1.0) and depth (weight 0.5) equally, prioritizing geometric accuracy. After fifty training epochs (365.5 seconds total), ResNeuroKin-D achieves 21.23 dB PSNR at 2,500 FPS—trading NeuroKin's extreme speed for improved geometric interpretability. t-SNE embedding analysis reveals that base angle variations now cluster meaningfully in latent space: the network has discovered rotational structure as an emergent representation property. This design demonstrates a practical principle: auxiliary task supervision can induce desired representational structure without explicit architectural constraints.
+
+\paragraph{Evaluation Protocol}
+All four architectures were evaluated under identical experimental conditions to ensure fair comparison. We used the same dataset (two thousand samples split 1,600 train / 400 test), identical hardware (Tesla T4 GPU), and consistent deep learning framework (PyTorch 2.0, CUDA 11.8). Quantitative metrics included PSNR (reconstruction quality), FPS (inference speed), latency (milliseconds per forward pass), and total training time. Qualitative analysis examined six carefully selected test poses designed to stress-test each architecture under challenging configurations including extreme joint angles, occlusions, and boundary-sensitive regions.
+
+\subsection{Results} Latency Quality Pareto Frontier
+
+Table~\ref{table:speed-quality-comparison} provides a comprehensive summary of comparative performance metrics and results across all evaluated methodologies and hardware configurations.
+
+\begin{table}[htbp]
+\centering
+\caption{Quantitative Comparison of Self-Modeling Approaches}
+\label{table:speed-quality-comparison}
+\begin{tabular}{l|c|c|c|c}
+Method & PSNR (dB) & FPS & Latency (ms) & Train Time \\
+\hline
+FFKSM & 17.35 & 5.22 & 191.6 & 50.0 min \\
+K-3DGS & 17.01 & 37 & 27.0 & 50.5 sec \\
+NeuroKin & 21.88 & 7,400 & 0.135 & 33.5 sec \\
+ResNeuroKin-D & 21.23 & 2,500 & 0.400 & 365.5 sec \\
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{My Preprint/fig_10_4.png}
+\caption{Speed-Quality Pareto Frontier. NeuroKin occupies the upper-right region, achieving both better quality (21.88 dB) and speed (7,400 FPS)—a $1,418\times$ speedup over FFKSM with 4.53 dB quality improvement. Red dashed line indicates 1,000 FPS threshold for 1 kHz control loops.}
+\label{fig:pareto}
+\end{figure}
+
+\paragraph{Key Insights}
+\emph{Speed Quality Paradox} reveals a false trade-off in conventional wisdom. NeuroKin achieves superior speed AND quality simultaneously—no compromise required. The explanation lies in supervision density: NeuroKin provides dense gradients across ten thousand pixels per evaluation, while volumetric methods rely on sparse sampling. This efficiency principle determines the outcome.
+
+\emph{3D Overhead} imposes severe computational costs that persist across approaches. Both FFKSM and K-3DGS invest major computational resources maintaining full 3D representations. For tasks requiring only 2D predictions or stereoscopic 3D hull recovery, this volumetric burden becomes pure computational waste.
+
+\emph{Training Efficiency} demonstrates 89-fold speedup. NeuroKin trains 89 times faster than FFKSM despite maintaining 73 times more parameters. Dense supervision drives this efficiency: direct pixel-level gradient flow throughout the network outperforms sparse volumetric field sampling.
+
+\emph{Real Time Viability} creates a sharp categorical distinction among approaches. Only NeuroKin and ResNeuroKin-D exceed the 1,000 FPS threshold essential for 1 kilohertz control loop compliance on real hardware. FFKSM, limited to 5.22 FPS, restricts deployment to low-frequency tasks such as visual servoing at 10 Hz—incompatible with dynamic control.
+
+\subsection{Qualitative Analysis}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{My Preprint/fig_11_5.png}
+\caption{FFKSM baseline results. Volumetric rendering produces blurry depth predictions with 17.35 dB PSNR at <30 FPS. Errors concentrate at joint boundaries and link extremities where sampling density stays insufficient.}
+\label{fig:qual_ffksm}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{My Preprint/fig_12_6.png}
+\caption{K-3DGS results demonstrating isotropic Gaussian limitation. Despite $7.1\times$ speedup (37 FPS), quality degrades to 17.01 dB due to characteristic ``blobby'' artifacts where spherical primitives fail to represent thin cylindrical links.}
+\label{fig:qual_k3dgs}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{My Preprint/fig_13_7.png}
+\caption{NeuroKin qualitative results on validation set. Top row: Ground truth silhouettes. Middle row: NeuroKin predictions. Bottom row: Pixel-wise error maps. NeuroKin produces sharp link boundaries and accurate joint positions across diverse configurations.}
+\label{fig:qual_neurokin}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{My Preprint/fig_14_8.png}
+\caption{ResNeuroKin-D dual-head results. Depth prediction enables 3D-aware self-modeling while maintaining 21.23 dB PSNR at 2,500 FPS. The depth channel provides geometric cues useful for distance estimation and collision prediction.}
+\label{fig:qual_resneurokin}
+\end{figure*}
+
+FFKSM produces blurry results throughout, with ray sampling density insufficient at edges and joints. K-3DGS exhibits blob artifacts and fails to represent thin cylindrical links accurately. NeuroKin delivers sharp, clean boundaries with accurate link representation. The end-effector region extrapolates reasonably beyond training configurations. ResNeuroKin-D demonstrates realistic depth predictions with correct distance ordering, though depth magnitudes remain unnormalized.
+
+\paragraph{Ablation Studies}
+\emph{Noise Augmentation} improves manifold smoothness during training. Without augmentation (zero sigma), accuracy drops to 21.34 dB—a 0.54 dB loss. The network becomes sensitive to perturbations, exhibiting flickering predictions at plus-minus 1 degree joint variations. These results demonstrate the practical necessity of augmentation.
+
+\emph{Network Depth} introduces a direct trade-off between prediction quality and speed. A two-layer network achieves 19.87 dB at 12,000 FPS, while a six-layer network improves to 22.14 dB but drops to 4,200 FPS. On the 2,000-sample training set, four layers emerges as the optimal balance.
+
+\emph{Latent Dimensionality} studies reveal a clear optimal point. 512 dimensions prove insufficient for the task. Increasing to 2,048 dimensions yields marginal quality gains while doubling computational cost and introducing overfit risk. 1,024 dimensions emerges as the optimal compromise.
+
+\paragraph{Summary}
+NeuroKin dominates the evaluation landscape. It achieves 1,418 times speedup while simultaneously improving PSNR by 4.53 dB—a result that breaks typical optimization curves where speedup comes at quality cost. This finding demonstrates a fundamental principle: visual fidelity alone does not predict control success. Task outcomes determine deployment value. RQ2 is resolved.
+
+\section{Bridging to Deployment} Sim to Real Transfer, Damage Recovery, and Continual Adaptation
+
+Sub-millisecond inference enables new capabilities: closed-loop model updates, rapid damage detection, and proprioceptive drift correction in real time. These latency improvements unlock deployment possibilities previously inaccessible to neural rendering approaches. We now synthesize these findings with deployment reality.
+
+\subsection{Architectural Insights from the Comparative Study}
+
+\subsubsection{Why Direct Decoding is Fundamentally Faster} Supervision Efficiency Analysis
+
+The 1,418-fold speedup derives entirely from supervision efficiency. FFKSM requires 640,000 ray-march evaluations per 100 times 100 image, with each evaluation touching only 0.0156 pixels on average—fundamentally wasteful. NeuroKin performs a single forward pass over 10,000 pixels with full gradient flow throughout. This efficiency difference alone explains the 640,000 times improvement in evaluation efficiency. K-3DGS achieves partial improvement with 600 primitives and parallel rasterization, but retains serial overhead. The core principle is clear: ray marching enforces inherent serial dependency chains, rasterization parallelizes partially, and direct decoding eliminates primitives entirely to achieve maximum parallelism.
+
+\begin{table}[htbp]
+\centering
+\caption{Supervision Efficiency Comparison}
+\label{tab:supervision-efficiency}
+\begin{tabular}{l|c|c|c}
+Method & Evals/Image & Pixels/Eval & Efficiency \\
+\hline
+FFKSM & 640,000 & 0.0156 & $1\times$ \\
+K-3DGS & 600 & 16.67 & $1,067\times$ \\
+NeuroKin & 1 & 10,000 & $640,000\times$ \\
+\end{tabular}
+\end{table}
+
+\subsubsection{The 3D Reconstruction Bottleneck: When Geometry is Overhead}
+
+A critical architectural question deserves careful consideration: when does explicit 3D reconstruction actually matter for downstream robotic task performance in practice? FFKSM and K-3DGS maintain explicit three-dimensional geometric representations that theoretically provide multi-view consistency guarantees and geometric expressiveness across viewpoints. NeuroKin deliberately sacrifices this theoretical capability by design, instead learning effective silhouette predictions from a single fixed training viewpoint throughout training and inference. Importantly, however, many practical robotic applications tolerate and indeed embrace this single-viewpoint limitation because reconstruction quality from a single view suffices for collision checking and control. The single-viewpoint constraint represents an acceptable functional trade-off that enables the dramatic latency improvements.
+
+\begin{itemize}
+\item \textbf{Collision checking} Binary occupancy or will link hit obstacle requires only relevant view silhouettes or multi view stereoscopic hulls
+\item \textbf{Proprioceptive drift correction} Comparing predicted versus observed appearance detects encoder errors in robot's actual camera view
+\item \textbf{Damage detection} Identifying morphological changes like bent links or missing components is feasible from single view silhouettes
+\end{itemize}
+
+Applications requiring ability to manipulate entirely unknown objects with unstructured 3D geometry naturally demand volumetric reconstruction capacity, imposing computational overhead that cannot be avoided. ResNeuroKin-D offers a pragmatic middle ground: approximate 3D at 2,500 FPS versus full reconstruction at 5.22 FPS. This illustrates a design principle: \textbf{minimal representation}. Neural self-models should maintain only the complexity required by downstream tasks. Silhouette-level awareness suffices for many control applications. NeuroKin's 2D approach thus becomes an appropriate design choice, not merely an architectural limitation.
+
+\subsubsection{Data Efficiency and Generalization}
+
+All comparative experiments trained on identical 2,000-sample datasets—deliberately restricted to one-sixth of the original FFKSM paper's 12,000 samples to enable fair controlled comparison. An important secondary question naturally emerges: how do these architectural choices interact with available training data size? Notably, direct sensorimotor decoding exhibits superior data efficiency and benefits more substantially from limited data compared to volumetric rendering approaches.
+
+\begin{itemize}
+\item \textbf{FFKSM}: A 4.53 dB gap exists between our reproduction (17.35 dB) and reported results (23+ dB), likely reflecting dataset scale. Volumetric rendering's sparse supervision demands large amounts of data.
+\item \textbf{NeuroKin}: Achieved 21.88 dB with 2,000 samples, nearly matching original FFKSM quality despite $6\times$ less data due to efficient dense supervision.
+\end{itemize}
+
+Projecting forward to the full 12,000-sample regime used in original FFKSM work, FFKSM would reasonably attain approximately 23 dB PSNR (closely matching published original results), while NeuroKin would likely achieve 25–26 dB—extending its quality advantage over the full dataset. This demonstrated data efficiency becomes particularly attractive for practical damage recovery scenarios, where large-scale post-damage data collection may become operationally infeasible due to safety risks or the criticality of rapid recovery.
+
+\subsubsection{Implications for Simulation and Future Transfer}
+
+Direct sensorimotor decoding fundamentally eliminates the latency bottleneck that has constrained neural rendering pipelines throughout the field, thereby restructuring which factors become the limiting performance constraints. By achieving sub-millisecond inference latencies, the primary performance bottleneck naturally shifts from rendering computational speed toward robustness and generalization capability under distribution shift—the new limiting factors determining practical deployment viability.
+
+This comparative study progressed systematically from volumetric rendering (FFKSM) through explicit spatial primitives (K-3DGS) to direct sensorimotor decoding (NeuroKin), revealing fundamental architectural trade-offs across the latency-fidelity spectrum. A critical finding emerges from this analysis: the $1,418\times$ speedup accompanied by measurable $+4.53$ dB quality improvement definitively demonstrates that full three-dimensional reconstruction geometry is fundamentally unnecessary for effective visual self-modeling in control-critical robotic applications. By achieving 7,400 FPS at sustained 0.135 milliseconds latency, NeuroKin definitively exceeds the 1,000 FPS minimum threshold required for maintaining genuine sub-millisecond-compliant 1 kHz control loops. This architectural achievement unlocks three critical operational capabilities previously impossible with reconstruction-based approaches: first, proprioceptive drift correction through continuous comparative silhouette analysis; second, rapid sub-millisecond damage detection via principled anomaly thresholding mechanisms; third, embedded deployment on space and power-constrained edge devices like NVIDIA Jetson Orin without requiring cloud computational infrastructure or network connectivity. 
+
+\subsection{Sim to Real Transfer and Control Robustness}
+
+NeuroKin's computational efficiency enables continuous self-model updates directly within the motor control loop, a capability impossible with slower reconstruction-based approaches. This tight integration makes in-loop correction feasible, allowing the control policy to adapt based on real-time model discrepancy signals. This architectural advantage directly informs effective transfer strategies by enabling rapid online adaptation.
+
+\subsubsection{Characterizing and Bridging the Reality Gap}
+
+Rendering accuracy alone proves insufficient for predicting real-world control success, a discrepancy revealing deeper structural problems. Policies often exploit subtle simulator artifacts, and morphological predictions alongside contact dynamics modeling diverge measurably from hardware reality. Digital twins become essential not for visual fidelity alone, but for reducing gaps through functional outcomes: safer trajectories, better tracking accuracy, fewer control failures, and faster online adaptation.
+
+Reality gaps decompose along four distinct dimensions: dynamics mismatch (physics simulation divergence), perception mismatch (sensor modeling inaccuracy), actuation mismatch (motor characteristics divergence), and system construction mismatch (morphological/structural misalignment). Practical success combines targeted system identification with methodical robustness training rather than pursuing perfect simulator fidelity. Hardware evidence supports this principle convincingly: quadrupeds trained with actuator-aware system identification and domain randomization achieve zero-shot transfer to real platforms without fine-tuning. Bicycles trained with explicit robustness-focused procedures transfer reliably across diverse terrain. A consistent pattern emerges across successful systems: calibration without concurrent robustness training fails catastrophically, while robustness training without accurate baseline calibration merely wastes training data without achieving true transfer capability.
+
+\begin{table*}[htbp]
+\centering
+\caption{Roles of digital twins in sim-to-real pipelines and representative systems discussed in this survey.}
+\label{tab:digital_twin_roles}
+\renewcommand{\arraystretch}{1.2}
+\small
+\begin{tabularx}{\textwidth}{@{}p{2.8cm}X p{4.5cm}@{}}
+\toprule
+Role & What it enables & Representative works \\
+\midrule
+Dynamics / system identification & Calibrates physics parameters (mass, friction, actuation, contact) so simulated rollouts reflect hardware behavior. & \cite{tan2018simtoreal, heiden2022inferring, lou2026drex} \\
+Perception / rendering transfer & Reduces visual domain gaps by reconstructing photorealistic scenes (or preserving semantic invariants) for training and validation. & \cite{qureshi2025splatsim, tang2025semantic} \\
+Demonstration synthesis / augmentation & Generates diverse trajectories and viewpoints from sparse real demonstrations by manipulating reconstructed scene components. & \cite{yang2025robosplat, yu2025real2render2real} \\
+Deployment-time synchronization & Uses a continuously synchronized simulator as a mediator: the policy acts on the twin while the robot tracks twin trajectories. & \cite{abou2024realissim} \\
+Evaluation / sim--real correspondence & Estimates whether simulator performance correlates with hardware outcomes, enabling safer iteration before deployment. & \cite{jain2025polaris, li2024simpler} \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsubsection{Constructing Digital Twins through System Identification and Physics}
+
+Contemporary digital twin research increasingly emphasizes coupling joint geometry reconstruction with accurate dynamics calibration. Differentiable optimization pipelines enable recovery of precise kinematic structure from visual observations. Complementary mass and payload estimators address systematic force prediction errors in both dexterous manipulation and humanoid locomotion tasks. Credibility and deployment reliability grow substantially through rigorous validation: parameter estimates that demonstrate linkage to downstream task behavior performance consistently outperform those evaluated solely through geometric reconstruction metrics.
+
+Key systems demonstrate these principles in practice. D-REX explicitly links low mass estimation error to substantially stronger transfer performance, establishing clear causation. Accurate mass parameters combined with explicit payload modeling enable stable policy transfer across diverse scenarios. Soft robot embodiments expose fundamental rigidity limits in pure physics simulation: soft foot and finger twins augmented with residual correction networks show practical utility limitations when calibration must cover variable contact regimes. Structured physics models augmented with flow-matched residual corrections improve predictions substantially under interaction uncertainty—a hybrid approach that balances physics priors with learned residual adaptation.
+
+\subsubsection{Policies, Training Regimes, and Multi-Embodiment Generalization}
+
+Transfer quality fundamentally depends on the quality of training infrastructure and whether learned representations encode embodiment-aware structure explicitly. Human demonstrations represent a persistent bottleneck in dexterous imitation scenarios. Workflow-standardized humanoid training procedures improve real-world deployment success consistently. Embodiment-aware knowledge distillation effectively reduces cross-morphology error accumulation.
+
+Specialist-generalist teacher-student distillation combined with morphology-aware model architectures enable robust cross-platform transfer explicitly. When zero-shot transfer fails—which occurs frequently under deployment domain shifts—layered progressive adaptation provides practical fallback capabilities. Successful recovery systems combine distribution alignment techniques, kinematic structure preservation constraints, and human-in-the-loop correction loops, all integrated strategically within robust recovery pipelines.
+
+\subsubsection{Demonstration Synthesis and Real to Sim to Real Pipelines}
+
+Digital twins enable substantial data efficiency improvements across manipulation learning pipelines. Sparse real demonstrations expand efficiently into geometry-consistent synthetic datasets without loss of kinematic validity. Active exploration sequences prioritize sampling coverage before expensive hardware scaling and validation. Performance gains prove strongest when geometry representation and embodiment morphology persist across sim-to-real transfer. RoboSplat demonstrates concrete quantified impact: achieving 87.8% task success compared to 57.2% baseline, while simultaneously enabling 29× faster demonstration generation. Simulation-based twin systems increasingly mediate transfer effectively. Hardware evidence demonstrates strongest results in continuously aligned systems where the digital twin remains synchronized with hardware state throughout operation. Policy decisions remain consistent with underlying assumptions only when maintained within validated operational envelopes.
+
+\subsubsection{Perception and Assembly}
+
+Perception frontends unify multiple tasks—reconstruction, pose estimation, and articulation discovery—into simulator assets directly usable for control. This integrated approach dramatically reduces manual annotation overhead while maintaining kinematic stability and control readiness with minimal post-processing repair. UniPR demonstrates concrete impact: simultaneous 100$\times$ speedup in scene processing and accuracy improvement. Two primary transfer strategies emerge repeatedly across successful systems: (1) photorealism-narrowing approaches that minimize pixel-space discrepancies, and (2) semantic-invariance strategies that preserve action consistency even when visual realism degrades. The latter proves more robust when simulator photorealism cannot match hardware appearance.
+
+\subsubsection{Vision Language Action Models}
+
+Language-conditioned policies achieve substantially increased reliability when force feedback, geometric reasoning, and proprioceptive state integrate directly into control—not appended as peripheral signals. This distinction becomes critical in contact-rich manipulation tasks where purely visual reasoning fails catastrophically under occlusion, substrate compliance variation, and tool-object coupling. ForceVLA2 demonstrates this principle empirically, reporting a 48 percentage point improvement over force-agnostic baselines in contact-sensitive manipulation. Strategic force integration into language-conditioned policies thus tangibly improves real-world deployment performance, establishing a design principle for multi-modal control.
+
+\subsubsection{Navigation and Embodied Environmental Self Models}
+
+For navigation and locomotion, transfer performance improves substantially when geometry-aware priors and scalable scene models couple with fallback proprioceptive policies that activate under perceptual degradation. Demonstrations on simulated quadrupeds and humanoids show that this hierarchical design reliably handles diverse terrain types and long-horizon traversal without manual replanning. VR-Robo demonstrates successful RGB-only transfer in complex, previously unseen environments. NavGSim shows that navigation policies trained in simulation transfer directly to real environments with promise. This evidence suggests that environmental self-models enable robust transfer when backed by multi-modal fallback mechanisms.
+
+\subsubsection{Whole Body Coordination and Safety}
+
+Whole body control demands simultaneous real-time reasoning across multiple competing constraints: collision avoidance, contact interaction management, stability maintenance, and task objective execution. Modern unified optimization frameworks successfully address this architectural complexity through principled hierarchical decomposition: the base-layer stability control layer absorbs disturbances locally and reactively, the mid-layer contact management explicitly handles force interactions with objects and environment, and the top-layer task execution layer operates only when all lower-layer constraints are demonstrably satisfied. This hierarchical structure matters fundamentally because contact-rich manipulators require tightly integrated force feedback control; visual information alone cannot suffice under occlusion and contact uncertainty. Similarly, humanoid locomotion demands explicit safe stoppable envelopes—formally defined state regions from which robots can achieve guaranteed halt without catastrophic balance failure. NeuroKin's sub-millisecond latency directly enables continuous closed-loop monitoring to maintain these safety envelopes operationally throughout execution.
+
+Whole body deployment couples base and arm dynamics tightly, treating locomotion and manipulation as integrated rather than separate modules. Safety-critical deployment benefits from explicit risk handling beyond kinematic tracking. Recent methods improve safety through formal probabilistic risk bounds, force-aware stabilization under interaction uncertainty, and contact-schedule-aware hybrid planning. SafeFlow \cite{cho2026safeflow} shows improved success rate and physical compliance on Unitree G1 hardware.
+
+\paragraph{Summary}
+
+Sim-to-real transfer progress emerges most strongly and reliably when digital twins are carefully calibrated against actual hardware, control policies are explicitly trained for robustness to distribution shift, and all claims are rigorously validated under real physical disturbances. Visual reconstruction fidelity alone proves fundamentally insufficient for predicting deployment success; instead, functional task outcomes achieved despite embodiment uncertainty and deviation from nominal conditions ultimately determine whether systems succeed or fail in real deployment scenarios.
+
+\subsection{Damage Detection and Recovery}
+
+Fast sub-millisecond inference directly enables genuine real-time damage detection through principled anomaly thresholding mechanisms that can identify degradation signatures within control loop cycle times. Practical effective damage recovery becomes operationally feasible only when fast self-model inference capability is integrated with complete tightness into the immediate recovery control loop architecture, permitting the control system to detect and respond to damage within the stringent timing constraints that distinguish viable real-time correction from degraded offline recovery.
+
+\subsubsection{Detection Methods and Early Intervention}
+
+Damage recovery scenarios expose the most rigorous practical test of self-model effectiveness claims: can the system maintain task function under actual physical damage, not merely under nominal undamaged conditions? Early fault detection methods prove genuinely valuable only when directly tied to practical intervention latency and downstream control task outcomes. VAE-based anomaly monitoring successfully detects anomalous force-torque trajectory patterns at sub-3-millisecond latencies in simulated manipulation tasks. Contrastive forward model prediction reduces tracking error to 61.5% improvement on simulated locomotion under damage. Low-latency detection remains critical because delayed intervention necessarily closes the available recovery window, making response speed a fundamental constraint.
+
+\subsubsection{Recovery Policy Generation and Adaptation}
+Recovery policy generation determines whether detection translates to useful action in simulation. Vision-language recovery can guide task-level correction on 7-DoF manipulators; however, unconstrained language reasoning often violates dynamics limits. Structured recovery stacks provide a pragmatic alternative. Dream2Fix \cite{li2025dream2fix} reports large-scale counterfactual failure synthesis (120,000+ cases) with 46% zero-shot recovery success. Embodiment-conditioned diffusion policies achieve higher constraint satisfaction (36.85% to 74.51%) under zero-shot generalization to unseen failure conditions.
+
+\subsubsection{Humanoid Recovery and Stability}
+
+Humanoid damage recovery introduces substantial additional complexity through stability and safety constraints not present in manipulator systems. Balance-informed critic networks grounded in capture point theory and centroidal dynamics computation achieve strong simulated stand-up recovery from falls. Preference-conditioned control policies expand operational robustness envelopes by dynamically switching between efficiency-optimized and robustness-maximized control modes. Fault-aware locomotion methods maintain stable tracking performance under joint faults within simulation. Humanoid parkour research demonstrates impressive agile obstacle vaulting and long-horizon terrain traversal capabilities in controlled environments.
+
+\subsubsection{Practical Deployment Lessons}
+
+Two practical lessons emerge consistently across successful deployment systems. \emph{First}, online discrepancy monitoring proves effective when adaptation remains rapid and theoretically bounded, preventing unbounded divergence. World model residual monitoring specifically enables rapid policy recovery following physical domain shifts like payload changes or link damage. \emph{Second}, residual adaptation channels remain most effective when carefully aligned with baseline policy safety constraints. This principle is demonstrated empirically: bounded residual control reduced Go1 quadruped recovery steps from 4,500 to 168 following a significant mass increase—a 96\% reduction in recovery time establishing the practical value of principled multi-level adaptation. A consistent deployment principle emerges: recovery systems should be evaluated by intervention speed, stability margin, and post-fault task continuity—not by reconstruction fidelity. Visual quality is not the determining factor.
+
+\begin{table*}[htbp]
+\centering
+\caption{Representative damage recovery and fault-tolerance systems.}
+\label{tab:damage_recovery_methods}
+\renewcommand{\arraystretch}{1.2}
+\small
+\begin{tabularx}{\textwidth}{@{}p{2.8cm}p{3.5cm}p{2.0cm}X@{}}
+\toprule
+Work & Platform / DoF & Validation & Reported outcome \\
+\midrule
+\cite{grambow2026anomaly} & Franka R3; 7 DoF & Real & Low-latency anomaly detection (below 3 ms) \\
+\cite{fu2025contrastive} & Hexapod / quadruped; 18 / 12 DoF & Real & Up to 61.5\% velocity-tracking error reduction \\
+\cite{chen2024vlm} & Kinova; 7 DoF & Real & 65.78\% target-reach coverage \\
+\cite{li2025dream2fix} & Franka R3; 7 DoF & Real & 46\% zero-shot closed-loop recovery \\
+\cite{briscoe2025deft} & Franka arm; 7 DoF & Sim + real & 74.51\% overall constraint satisfaction \\
+\cite{poddar2026embedding} & Unitree H1-2; 19+ DoF & Real & 100\% zero-shot stand-up recovery \\
+\cite{li2026pchc} & Unitree G1; 23+ DoF & Real & Dynamic preference switching along a Pareto frontier \\
+\cite{lee2026tolebi} & TOCABI humanoid; high DoF & Real & Maintained velocity tracking under joint faults \\
+\cite{wu2026parkour} & Unitree G1; 23+ DoF & Real & Agile obstacle vaulting and long-horizon traversal behaviors \\
+\cite{domberg2026selfadapting} & F1Tenth vehicle & Real & Rapid policy recovery after domain shift \\
+\cite{jayasinghe2026residual} & Go1 / Cassie / H1 / Scout; high DoF & Real & Recovery time reduced by 87\% / 48\% / 30\% / 20\% vs. frozen SAC \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\subsection{Continual Learning Under Embodiment Change}
+
+Continual self-model maintenance fundamentally confronts a stability-plasticity tradeoff: ongoing updates must rapidly absorb new damage conditions and embodiment changes while simultaneously preserving hard-won knowledge of healthy operational morphology. preserving knowledge of healthy morphology. Catastrophic forgetting is well documented; in robotic deployment it is critical because forgetting can generate unsafe actions and hardware destruction.
+
+\emph{Balancing plasticity and stability} is essential. Adaptation methods require evaluation on both data efficiency and safety. Meta-learning initialization like MAML can reduce post-damage sample requirements, and structure-constrained updates enable adaptation without full retraining. Rapid adaptation gains value only when it preserves knowledge of healthy embodiment simultaneously.
+
+\emph{Safety-constrained learning} maintains adaptation within verified regions through explicit constraints like barrier functions and system-level state partitioning that separates high-level reasoning from time-critical control loops. This reduces cascading failures.
+
+\emph{Resource-efficient adaptation} minimizes interference through parameter importance regularization and sparse subnetworks. Discrepancy monitoring triggers focused adaptation after physical shifts.
+
+\emph{Practical principle}: Continual learning for self-models operates as targeted repair work rather than open-ended retraining. Frozen backbones, localized adapters, and safety-gated updates preserve embodiment knowledge while constraining correction scope. Evidence favors bounded adaptation over unconstrained online updates. NeuroKin enables sub-second retraining cycles versus multi-minute cycles required by neural rendering pipelines, making continual learning a practical real-time strategy. Architectural efficiency directly enables damage recovery timescales necessary for field deployment.
+
+\subsection{Enabling Technologies and Tools}
+
+Practical self-modeling systems operationally depend on essential supporting techniques: systematic exploration strategies that expose failure boundaries, meta-learning approaches enabling rapid adaptation, and morphology-aware learning methods that capture embodiment-specific structure. These tools determine whether learned models remain useful after perturbations and damage. Exploration policies guide embodiment data collection, morphology-aware learning enables transfer across robots, and perception-control coupling ensures model robustness. These foundations matter.
+
+\subsubsection{Exploration and Curiosity-Driven Learning}
+
+Efficient self-model construction depends on exploration strategies that systematically expose failure modes. Uniform joint space sampling proves ineffective. Intrinsic curiosity methods prioritize states with high forward prediction errors and drive active exploration toward uncertain regions. A persistent challenge remains unresolved: curiosity-driven exploration tends to over-sample visually surprising but control-irrelevant configurations unless reward shaping carefully couples learning toward downstream planning benefits. Achieving this coupling remains difficult in practice.
+
+\subsubsection{Cross-Embodiment and Morphology-Aware Learning}
+
+Building robust world models that successfully transfer learning across distinctly different embodiments without collapsing to average-case dynamics remains critical for broad applicability. WestWorld \cite{wang2026westworld} addresses this challenge through system-aware mixture-of-experts routing mechanisms that incorporate explicit morphology embeddings as architectural structure. Dynamics-informed message-passing schemas grounded in explicit articulated body graph structures measurably improve sample efficiency and transfer robustness across diverse platforms including quadrupeds and humanoids. A consistent practical design principle emerges: morphology geometric and structural priors must be encoded at the architecture level itself, rather than relying on standards supervised learning to discover these patterns solely from data.
+
+\subsubsection{Meta-Learning and Rapid Adaptation}
+
+Meta-learning approaches contribute meaningful value when morphology characteristics shift frequently and the time window available for adaptation compresses severely. MAML-style learned initialization strategies demonstrably improve few-step adaptation efficiency by optimizing the structure of update operations. Within self-model maintenance contexts, this capability becomes particularly valuable following damage when extended retraining cycles become operationally infeasible or dangerous. However, safety during rapid online adaptation remains an open research challenge: achieving fast gradient-based updates requires sophisticated constraint-aware gating systems to rigorously enforce safety requirements throughout adaptation.
+
+\subsubsection{Whole Body Control and Loco Manipulation}
+
+Whole body deployment requires controllers that couple locomotion, manipulation, payload dynamics, and terrain constraints into a unified control loop. End-to-end policies demonstrate that highly articulated morphologies can successfully operate without handcrafted gait libraries in some scenarios. However, evidence is strongest when proprioceptive and exteroceptive cues fuse robustly under disturbances. Hierarchical planning and control architectures remain essential in heavy object manipulation scenarios requiring precision. Explicit structure improves reliability.
+
+\subsubsection{Humanoid Task Execution}
+
+Humanoid system competence improves demonstrably and measurably when multiple complementary techniques combine with complete tightness: demonstration transfer from human operators, policy distillation from teacher to student networks, and explicit geometric verification of end-effector validity. Sophisticated simulation-to-data retargeting pipelines, carefully combined with principled teacher-student policy distillation mechanisms, enable practical real-time whole-body teleoperation capability and support long-horizon complex locomotor-manipulation tasks that require simultaneous coordination of base locomotion and arm manipulation. Explicit structured predicate layers featuring precise type preconditions and explicitly encoded success termination conditions prove invaluable for detecting semantic execution failures—fundamental breakdowns of task logic—that purely end-to-end neural network controllers systematically miss or fail to detect until catastrophic failure occurs. This deliberate structured approach substantially improves reliability and safety in real deployment settings compared to architectures that rely entirely upon learned end-to-end mappings without explicit task structure.
+
+\subsubsection{Multi-Modal Manipulation and Tactile Integration}
+
+Dexterous manipulation fundamentally confronts partial observability during contact. Visual-tactile fusion becomes essential, not merely optional. Predicting tactile consequences from visual geometry extends self-model utility into pre-contact planning. Tactile integration should be rigorously evaluated through disturbance recovery and task completion robustness metrics rather than standalone perception metrics. Measurement must focus on outcomes that matter.
+
+\section{Conclusions: Research Questions Answered}
+
+This section closes the complete research loop, integrating theoretical insights from exhaustive literature synthesis with empirical validation through controlled experimentation and systematic deployment analysis, thereby showing concrete operational linkages between abstract survey-level concerns and practical implementation-level solutions. Specific findings map directly back to each of the four research questions posed systematically in Section 2, providing evidence-grounded answers rather than speculative framework.
+
+\subsection{RQ1} Optimal Latency Quality Trade Off
+
+\textbf{Question} Which self modeling architecture achieves best latency quality operating point under realistic compute constraints.
+
+\textbf{Evidence}: Experiments revealed a clear Pareto frontier. FFKSM (5.22 FPS, NeRF-based) anchors the low-speed extreme. Direct sensorimotor decoders occupy the practical regime. NeuroKin (7,400 FPS, 0.135 milliseconds, 21.88 dB PSNR) dominates on both speed and quality. ResNeuroKin-D (2,500 FPS, 21.23 dB PSNR) offers a mid-range option. Importantly, the survey confirms that neural rendering methods remain computationally constrained despite visual advantage.
+
+\textbf{Answer} Direct sensorimotor decoding offers a clearly deployable operating point. NeuroKin excels simultaneously on both speed and quality metrics. ResNeuroKin-D provides a mid-range alternative with structured latent representations that enable effective multi-task learning.
+
+\subsection{RQ2} Decision Relevant Metrics in Evaluation
+
+\textbf{Question} Which metrics predict control success, either visual reconstruction quality alone or functional task outcomes, or something else entirely with explicit priority ordering.
+
+\textbf{Evidence}: Reconstruction PSNR does not reliably predict control effectiveness. NeuroKin (21.88 dB at 7,400 FPS) outperforms K-3DGS (17.01 dB at 37 FPS) on both speed and functional task performance. ResNeuroKin-D shows that synthetic depth supervision improves learned representations without latency penalty. Survey literature on damage detection and control stability confirms that task success rate, recovery time, and false alarm rates are the meaningful decision drivers.
+
+\textbf{Answer} The decision-relevant metrics are task success rate, recovery time, and stability margins. PSNR and SSIM provide diagnostic value but do not determine deployment success. These visual metrics inform troubleshooting, not deployment decisions.
+
+\subsection{RQ3} Robustness Under Embodiment Drift and Damage
+
+\textbf{Question} How much robustness do current self models keep under embodiment drift and post damage adaptation pressures when morphology breaks.
+
+\textbf{Evidence}: The survey catalogs continual learning mechanisms for post-damage retraining, sim-to-real transfer, and fault tolerance. In this report, NeuroKin's fast inference establishes a computational foundation for closed-loop applications: proprioceptive drift correction via joint angle prediction and rapid post-damage detection via threshold-based anomaly detection. Milestones M1 and M2 (functional evaluation and multi-view validation) will rigorously test RQ3.
+
+\textbf{Answer} NeuroKin's fast inference enables closed-loop correction mechanisms. Proprioceptive drift detection works in principle. Full RQ3 validation requires rigorous hardware testing. Systematic evaluation of sensor noise robustness, occlusion handling, and morphology variations remains incomplete.
+
+\subsection{RQ4} Foundational Swarm Coordination Framework
+
+\textbf{Question} How might per robot self model confidence signals inform swarm level role assignment happening in principle.
+
+\textbf{Evidence}: The survey analyzes digital twins and multi-robot frameworks. In this report, sub-millisecond inference enables rapid confidence assessment. Each robot can measure self-model latency and quality as potential signals for role allocation. A theoretical framework exists; full swarm implementation remains future work.
+
+\textbf{Answer} Sub-millisecond latency enables per-robot confidence signal estimation, making role allocation feasible in principle. Full swarm implementation remains future work. Theoretical frameworks exist; experimental proof remains pending.
+
+\section{Open Challenges and Future Directions}
+
+Practical deployment introduces deeply multifaceted and interlocking challenges that must be simultaneously overcome: achieving sufficient real-time inference speed without sacrificing model expressiveness, generalizing learned representations reliably across diverse morphologies and embodiment variations, validating architectures rigorously on actual hardware despite simulation-to-reality transfer difficulties, supporting continual self-model updates and adaptation following damage or morphological changes, integrating information streams from multiple complementary sensor modalities coherently, and maintaining interpretability of learned representations for debugging and failure analysis. Each dimension reveals fundamental limitations that emerge inevitably and stubbornly when developmental focus remains exclusively on simulation environments without hardware grounding.
+
+\subsection{Real-Time Inference on Edge Hardware}
+
+Current state-of-practice FFKSM implementations achieve only 5 frames per second rendering throughput; even more aggressive K-3DGS approaches reach approximately 12 Hz at best. Both performance levels fall catastrophically short of the unforgiving 1 kHz (1,000 Hz) control loop requirement that contemporary robotic systems demand for stability and responsiveness. The temporal mismatch between mathematically achievable rendering frame rates and strictly required control frame rates constitutes a fundamental architectural bottleneck—not a temporary engineering limitation correctable through better optimization. This mismatch directly and irreversibly undermines deployment feasibility, rendering contemporary volumetric visual self-models essentially impractical for genuine real-time robotic applications despite their impressive geometric reconstruction fidelity and visual quality when evaluated offline through standard rendering metrics.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/survey/neural_rendering_pareto.pdf}
+\caption{Conceptual Pareto-style trade-off between reconstruction fidelity and real-time deployability for neural rendering families relevant to robot self-modeling: NeRF, Instant-NGP, 3DGS, and 3DGS-SLAM systems.}
+\label{fig:neural_rendering_pareto}
+\end{figure*}
+
+\subsection{Morphology Scaling and High-DoF Systems}
+
+Extending self-modeling architectures to high-complexity systems like thirty-joint humanoids requires substantial architectural rethinking. Data requirements scale exponentially with system complexity, creating a fundamental challenge. Hierarchical encoder designs and graph neural networks that leverage underlying kinematic structure offer partial mitigation. Attention mechanisms enable learned joint weighting that discovers task-critical dimensions. However, fundamental scaling laws governing self-modeling effectiveness remain poorly characterized—a critical gap limiting deployment to novel high-DoF platforms.
+
+\subsection{Hardware Validation and Operational Safety Assurance}
+
+Most published advances in robot self-modeling remain stubbornly confined to simulation environments lacking rigorous systematic evaluation benchmarks and quantified failure criteria, representing a fundamental credibility problem in the field. Practical hardware deployment demands rigorous definition of safe verified operational envelopes within which robots reliably maintain control and can achieve guaranteed stable halting despite perturbation or embodiment uncertainty. Achieving high simulation performance metrics does not automatically guarantee real-world success—a recurring painful lesson in robotics over many experimental cycles. Genuinely successful sim-to-real transfer requires coordinated simultaneous management of multiple challenging dimensions: physical replica fidelity (matching actual mass, inertia, friction, compliance), visual appearance matching (reducing perceptual domain gaps), and physics simulation accuracy (minimizing dynamics mismatches). Without thoughtful integration and validation across all three dimensions, simulators invariably succeed while deployed robots fail catastrophically in field deployment.
+
+\subsection{Continual Learning and Damage Adaptation}
+
+Embodiment damage fundamentally disrupts learned self-models by invalidating the parameter configurations learned under healthy conditions. Naively replacing healthy parameters with damage-responsive parameters generates catastrophic control failures because gradient relationships change discontinuously. Current mitigation strategies—including Elastic Weight Consolidation, lottery ticket pruning, and sparse evolutionary exploration—address this incompletely. Modular architectural components with mixture-of-expert routing and meta-learned initialization provide incremental improvements, yet a complete satisfactory solution remains elusive. This represents a significant open challenge limiting practical deployment under damage scenarios.
+
+\subsection{Multi-Modal Integration and Predictive Self-Models}
+
+Vision-only self-modeling proves insufficient for robust real-world control despite high reconstruction fidelity. Proprioceptive and tactile sensing, strategically combined with force feedback, enable substantially richer environmental comprehension. These diverse modalities jointly support critical downstream tasks: collision geometry checking, damage detection under complex occlusion, motion planning under compliance constraints, and tactile feedback control. Predictive models that systematically incorporate multiple sensor streams consistently outperform vision-only reconstruction approaches in operational contexts. Force-aware integration becomes essential for maintaining sim-to-real consistency during contact-rich tasks. Multi-modal fusion remains an active research frontier requiring substantial architectural innovation.
+
+\subsection{Explicit Geometric Digital Twin Construction}
+
+Explicit geometric representations outperform learned implicit models when platform morphology remains known and fixed. For standardized platforms like TIAGo with stable specifications, URDF-based baselines provide an interpretable kinematic reference. Optimization under known kinematic constraints yields tight virtual-real correspondence immediately, without requiring extensive post-deployment data collection. This approach eliminates inference hallucinations that plague learned geometric representations, prioritizing safety and control-readiness over the representational flexibility that learned methods offer. This tradeoff becomes worthwhile in safety-critical deployment scenarios where control reliability takes absolute priority.
+
+\paragraph{Summary}
+
+These challenges are not mere engineering obstacles to be overcome. They represent fundamental research frontiers. A central tension emerges persistently: representational richness directly conflicts with computational tractability. In practice, deployment speed and behavioral safety dominate every architectural decision.
+
+\subsection{Thesis Scope Expansion: Laying Groundwork for Swarm}
+
+The observed 1,418-fold speedup eliminates a primary computational bottleneck constraining deployment. NeuroKin's sub-millisecond latency enables practical per-robot confidence signal generation for multi-robot coordination purposes. Multi-robot role assignment based on self-model quality becomes theoretically feasible in simulation. RQ4 concepts demonstrate architectural viability. Actual swarm deployment and hardware validation remain future endeavors requiring substantial additional investigation.
+
+\section{Execution Plan}
+
+Meeting the April 16 submission deadline requires careful prioritization of research question validation efforts. The execution strategy prioritizes thorough development of RQ1\textendash RQ3 while deferring extensive RQ4 exploration to future work. Each milestone aligns explicitly with specific research objectives. Thorough technical development occurs consistently across all implementation phases.
+
+\subsection{Milestones Addressing Research Question Gaps}
+
+\textbf{M0} (by April 16, 2026): MT prep submission addressing overall rubric coverage
+\begin{itemize}
+  \item Deliverable: Integrated report PDF with explicit rubric sections and completed supervisor review form
+  \item Verification: All required sections (Statement of the Problem, Literature Review, Experimental Results, Conclusions, Execution Plan, List of References) are present and clearly labeled
+\end{itemize}
+
+\textbf{M1} (April 17–30, 2026): Single Core Task for Functional Validation (addresses RQ2 and RQ3)
+\begin{itemize}
+  \item Implement stereoscopic direct sensorimotor decoding with dual-view virtual cameras in PyBullet to extract 3D depth from NeuroKin's 2D silhouettes
+  \item Deploy one proof-of-concept task: damage detection OR proprioceptive drift correction (not both)
+  \item Measure latency and success/failure rate
+  \item Maintain tight scope to avoid scope creep
+\end{itemize}
+
+\textbf{M2} (May 1–10, 2026): Essential Robustness Validation (addresses RQ3)
+\begin{itemize}
+  \item Add two controlled noise conditions to M1 task: camera noise and mild calibration perturbation
+  \item Measure latency and quality degradation
+  \item Deliver robustness comparison showing performance under both noise levels
+  \item Maintain minimal scope for buffer against unexpected issues
+\end{itemize}
+
+\textbf{M3} (May 11–24, 2026): Minimal Swarm Feasibility Proof (addresses RQ4)
+\begin{itemize}
+  \item Two-robot scenario: one nominal, one with synthetic damage or slower latency
+  \item Log self-model confidence metrics (latency and quality) from each robot
+  \item Implement simple rule-based role assignment: lower-latency robot gets priority task
+  \item Deliver confidence traces and task completion logs
+  \item Mark explicitly as proof-of-concept framework, not full swarm coordination
+\end{itemize}
+
+\subsection{Timeline Overview}
+
+\begin{itemize}
+  \item April 13–16: Finalize integrated report and supervisor review
+  \item April 17–30: M1 stereoscopic validation with single task focus
+  \item May 1–10: M2 robustness testing (two noise conditions)
+  \item May 11–24: M3 minimal two-robot feasibility proof
+  \item May 25: Final thesis submission deadline
+  \item May 26–June 9: Defense preparation and content review
+  \item June 10: Defense presentation
+\end{itemize}
+
+\subsection{Critical Risks and Mitigation}
+
+\begin{itemize}
+  \item \textbf{Risk}: Scope creep on M1 could push development past April 30 catastrophically.  \textbf{Mitigation}: Freeze the task specification by April 20. Commit to single task with no second task under any circumstances.
+  \item \textbf{Risk}: Stereoscopic latency regressions destroy M1 gains.  \textbf{Mitigation}: Two instances under one millisecond total; revert to single if fails.
+  \item \textbf{Risk}: M3 swarm logic explodes beyond control.  \textbf{Mitigation}: Two robots maximum, three lines role logic maximum, hard constraint.
+  \item \textbf{Risk}: Insufficient polish before May 25 final submission.  \textbf{Mitigation}: M3 done May 24 end-of-day. May 25 submission lock-in. No changes after.
+\end{itemize}
+
+\section{List of References (Unified Bibliography)}
+
+\begin{thebibliography}{999}
+
+% === Foundational Self-Modeling ===
+
+\bibitem{bongard2006resilient}
+J. Bongard, V. Zykov, and H. Lipson, ``Resilient machines through continuous self-modeling,'' \textit{Science}, vol. 314, no. 5802, pp. 1118--1121, 2006.
+
+\bibitem{cully2015robots}
+A. Cully, J. Clune, D. Tarapore, and J.-B. Mouret, ``Robots that can adapt like animals,'' \textit{Nature}, vol. 521, no. 7553, pp. 503--507, 2015.
+
+\bibitem{carrozza2006cyberhand}
+M. C. Carrozza, G. Cappiello, S. Micera, B. B. Edin, L. Beccai, and C. Cipriani, ``Design of a cybernetic hand for perception and action,'' \textit{Biological Cybernetics}, vol. 95, no. 9, pp. 629--644, 2006.
+
+\bibitem{koos2013fast}
+S. Koos, A. Cully, and J.-B. Mouret, ``Fast damage recovery in robotics with the T-Resilience algorithm,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2013.
+
+\bibitem{mouret2015illuminating}
+J.-B. Mouret and J. Clune, ``Illuminating search spaces by mapping elites,'' in \textit{Proc. Genet. Evol. Comput. Conf. (GECCO)}, 2015.
+
+\bibitem{kwiatkowski2019task}
+R. Kwiatkowski and H. Lipson, ``Task-agnostic self-modeling machines,'' \textit{Science Robotics}, vol. 4, no. 26, p. eaau9354, 2019.
+
+\bibitem{kwiatkowski2019zeroshot}
+R. Kwiatkowski and H. Lipson, ``Zero-shot learning on simulated robots,'' in \textit{Proc. Int. Conf. Mach. Learn. (ICML)}, pp. 1--7, 2019.
+
+\bibitem{hu2024reconfigurable}
+Y. Hu, Y. Wang, R. Liu, Z. Shen, and H. Lipson, ``Reconfigurable robot identification from motion data,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2024.
+
+\bibitem{dogra2022unified}
+A. Dogra, S. Mahan, S. S. Padhee, and E. Singla, ``Unified modeling of unconventional modular and reconfigurable manipulation system,'' \textit{Robotics and Computer-Integrated Manufacturing}, vol. 77, p. 102385, 2022.
+
+\bibitem{farghdani2025robust}
+S. Farghdani, M. Patel, and R. Chhabra, ``Robust embodied self-identification of morphology in damaged multi-legged robots,'' \textit{IEEE Robot. Autom. Lett.}, vol. 10, pp. 1--8, 2025.
+
+\bibitem{yu2026kinematicself}
+C. Yu and S. Kriegman, ``Robots that redesign themselves through kinematic self-destruction,'' arXiv preprint arXiv:2603.12505, 2026.
+
+% === Visual Self-Modeling ===
+
+\bibitem{chen2022full}
+B. Chen, R. Kwiatkowski, C. Vondrick, and H. Lipson, ``Full-body visual self-modeling of robot morphologies,'' \textit{Science Robotics}, vol. 7, no. 68, p. eabn1944, 2022.
+
+\bibitem{hu2024teaching}
+Y. Hu, J. Lin, and H. Lipson, ``Teaching robots to build simulations of themselves,'' \textit{Nature Machine Intelligence}, vol. 6, pp. 123--130, 2024.
+
+\bibitem{schulze2024high}
+L. Schulze and H. Lipson, ``High-degrees-of-freedom dynamic neural fields for robot self-modeling and motion planning,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2024.
+
+\bibitem{hu2024egocentric}
+Y. Hu, B. Chen, and H. Lipson, ``Egocentric visual self-modeling for autonomous robot dynamics prediction and adaptation,'' arXiv preprint arXiv:2207.03386, 2022.
+
+\bibitem{liu2024differentiable}
+M. Liu \textit{et al.}, ``Differentiable robot rendering: Bridging pixels and control through differentiable rendering,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2024.
+
+\bibitem{rezvani2024robust}
+S. Rezvani, A. J. Mahmood, and R. Chhabra, ``Robust visual embodiment: How robots discover their bodies in real environments,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2024.
+
+\bibitem{hu2025learning}
+K. Hu, P. Yu, and N. Tan, ``Learning high-fidelity robot self-model with articulated {3D} Gaussian splatting,'' \textit{Int. J. Robotics Research}, 2025.
+
+\bibitem{yu2024shape}
+P. Yu, X. Wang, and N. Tan, ``Shape-interpretable visual self-modeling enables geometry-aware continuum robot control,'' arXiv preprint arXiv:2603.01751, 2026.
+
+\bibitem{lee2026tactiverse}
+J. Lee, H. Kim, J. Choi, and S. Nam, ``{TactiVerse}: Generalizing multi-point tactile sensing in soft robotics using single-point data,'' arXiv preprint arXiv:2602.19850, 2026.
+
+\bibitem{li2024flowtouch}
+M. Li, S. Maeng, M. Murphy, Y. Chen, and O. Kroemer, ``{FlowTouch}: View-invariant visuo-tactile prediction,'' arXiv preprint arXiv:2603.08255, 2026.
+
+\bibitem{barron2021mip}
+J. T. Barron, B. Mildenhall, M. Tancik, P. Hedman, R. Martin-Brualla, and P. P. Srinivasan, ``{Mip-NeRF}: A multiscale representation for anti-aliasing neural radiance fields,'' in \textit{Proc. IEEE/CVF Int. Conf. Comput. Vis. (ICCV)}, 2021, pp. 5855--5864.
+
+\bibitem{li2021nerf}
+Y. Li, S. Li, V. Sitzmann, P. Agrawal, and A. Torralba, ``{3D} neural scene representations for visuomotor control,'' in \textit{Proc. Conf. Robot. Learn. (CoRL)}, 2021.
+
+\bibitem{mildenhall2020nerf}
+B. Mildenhall, P. P. Srinivasan, M. Tancik, J. T. Barron, R. Ramamoorthi, and A. Y. Ng, ``NeRF: Representing scenes as neural radiance fields for view synthesis,'' in \textit{Proc. Eur. Conf. Comput. Vis. (ECCV)}, 2020.
+
+\bibitem{pumarola2021d}
+A. Pumarola, E. Corona, G. Pons-Moll, and A. Sanfeliu, ``D-NeRF: Neural radiance fields for dynamic scenes,'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2021.
+
+\bibitem{muller2022instant}
+T. M\"uller, A. Evans, C. Schied, and A. Keller, ``Instant neural graphics primitives with a multiresolution hash encoding,'' \textit{ACM Trans. Graph.}, vol. 41, no. 4, pp. 102:1--102:15, 2022.
+
+\bibitem{barron2023zipnerf}
+J. T. Barron, B. Mildenhall, D. Verbin, P. P. Srinivasan, and P. Hedman, ``Zip-NeRF: Anti-aliased grid-based neural radiance fields,'' in \textit{Proc. IEEE/CVF Int. Conf. Comput. Vis. (ICCV)}, 2023.
+
+% === 3D Gaussian Splatting ===
+
+\bibitem{kerbl20233d}
+B. Kerbl, G. Kopanas, T. Leimk\"{u}hler, and G. Drettakis, ``{3D} Gaussian splatting for real-time radiance field rendering,'' \textit{ACM Trans. Graph.}, vol. 42, no. 4, pp. 139:1--139:14, 2023.
+
+\bibitem{matsuki2024gaussian}
+H. Matsuki, R. Murai, P. H. J. Kelly, and A. J. Davison, ``Gaussian splatting {SLAM},'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2024, pp. 18039--18048.
+
+\bibitem{keetha2024splattam}
+N. Keetha \textit{et al.}, ``{SplaTAM}: Splat, track and map {3D} Gaussians for dense {RGB-D SLAM},'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2024, pp. 18410--18420.
+
+\bibitem{lassanske2024gaurast}
+S. Li, B. Keller, Y. Lin, and B. Khailany, ``{GauRast}: Enhancing {GPU} triangle rasterizers to accelerate {3D} Gaussian splatting,'' in \textit{Proc. Int. Symp. Comput. Archit. (ISCA)}, 2025.
+
+\bibitem{guedon2024sugar}
+A. Guedon and V. Lepetit, ``{SuGaR}: Surface-aligned {Gaussian} splatting for efficient {3D} mesh reconstruction and high-quality mesh rendering,'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2024.
+
+% === 3DGS in Robotics ===
+
+\bibitem{kim2024garfield}
+K. Kim, K. Wu, D. Kerr, K. Goldberg, M. Tancik, and A. Kanazawa, ``GARField: Group Anything with Radiance Fields,'' in \textit{Proc. IEEE/CVF Int. Conf. Comput. Vis. (ICCV)}, 2024.
+
+\bibitem{weng2024neural}
+Y. Weng \textit{et al.}, ``Neural implicit representation for building digital twins of unknown articulated objects,'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2024.
+
+\bibitem{li2025art}
+Z. Li \textit{et al.}, ``{ART}: Articulated reconstruction transformer,'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2025.
+
+\bibitem{wu2024aomgen}
+Y. Wu \textit{et al.}, ``{AOMGen}: Photoreal, physics-consistent demonstration generation for articulated object manipulation,'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2026.
+
+\bibitem{wu2025urdfanything}
+Z. Wu \textit{et al.}, ``{URDF-Anything+}: Autoregressive articulated {3D} models generation for physical simulation,'' arXiv preprint arXiv:2502.09850, 2025.
+
+\bibitem{xu2025motionanymesh}
+W. Xu, L. Liu, L. Zhang, D. Guo, and R. Liu, ``{MotionAnymesh}: Physics-grounded articulation for simulation-ready digital twins,'' arXiv preprint arXiv:2603.12936, 2026.
+
+\bibitem{wang2025kinematify}
+J. Wang, D. Wang, J. Hu, Q. Zhang, J. Yu, and L. Xu, ``Kinematify: Open-vocabulary synthesis of high-{DoF} articulated objects,'' arXiv preprint arXiv:2511.01294, 2025.
+
+\bibitem{zhang2025simart}
+C. Zhang, M. Qin, Y. Wang, B. Xie, H. Li, and Z. Wang, ``{SIMART}: Decomposing monolithic meshes into sim-ready articulated assets via {MLLM},'' arXiv preprint arXiv:2603.23386, 2026.
+
+\bibitem{wang2025artllm}
+P. Wang, G. Ke, M. Rong, X. Guo, K. Ming, and S. Liu, ``ArtLLM: Generating articulated assets via {3D} LLM,'' arXiv preprint arXiv:2603.01142, 2026.
+
+\bibitem{wang2026fast}
+Z. Wang \textit{et al.}, ``General humanoid whole-body control via pretraining and fast adaptation,'' arXiv preprint arXiv:2602.11929, 2026.
+
+\bibitem{guo2025articulatedgs}
+J. Guo, Y. Xin, G. Liu, K. Xu, L. Liu, and R. Hu, ``{ArticulatedGS}: Self-supervised digital twin modeling of articulated objects using {3D} Gaussian splatting,'' arXiv preprint arXiv:2503.08135, 2025.
+
+\bibitem{guo2026moeact}
+K. Guo, H. Liu, Y. Sun, R. Zhao, J. Zhou, and J. Ma, ``MoE-ACT: Scaling multi-task bimanual manipulation with sparse language-conditioned mixture-of-experts transformers,'' arXiv preprint arXiv:2603.15265, 2026.
+
+\bibitem{yu2025artgs}
+Q. Yu, Z. Xia, C. Li, D. Pan, X. Wang, and J. Liu, ``{ArtGS}: {3D} Gaussian splatting for interactive visual-physical modeling and manipulation of articulated objects,'' arXiv preprint arXiv:2507.02600, 2025.
+
+\bibitem{wu2025reartgs}
+D. Wu, Z. Wang, Y. Luo, H. Zhang, T. Chen, and K. Guo, ``{REArtGS++}: Generalizable articulation reconstruction with temporal geometry constraint via planar Gaussian splatting,'' arXiv preprint arXiv:2511.17059, 2025.
+
+\bibitem{dai2025freeartgs}
+H. Dai, H. Fan, H. Zhang, D. Wu, J. Zhang, and H. Dong, ``{FreeArtGS}: Articulated Gaussian splatting under free-moving scenario,'' arXiv preprint arXiv:2603.22102, 2026.
+
+\bibitem{chen2025freegaussian}
+Q. Chen \textit{et al.}, ``{FreeGaussian}: Annotation-free control of articulated objects via {3D} Gaussian splats with flow derivatives,'' in \textit{Proc. AAAI Conf. Artif. Intell. (AAAI)}, 2026.
+
+\bibitem{chen2026adacleargrasp}
+Z. Chen \textit{et al.}, ``{AdaClearGrasp}: Learning adaptive clearing for zero-shot robust dexterous grasping in densely cluttered environments,'' arXiv preprint arXiv:2603.10616, 2026.
+
+\bibitem{li2026forcevla2}
+Y. Li \textit{et al.}, ``{ForceVLA}2: Unleashing hybrid force--position control with force awareness for contact-rich manipulation,'' arXiv preprint arXiv:2603.15169, 2026.
+
+\bibitem{miyamichi2025flexible}
+A. Miyamichi, M. Zhao, K. Sugihara, J. Sugihara, M. Konishi, K. Kojima, K. Okada, and M. Inaba, ``Flexible morphing aerial robot with inflatable structure for perching-based human--robot interaction,'' arXiv preprint arXiv:2509.07496, 2025.
+
+\bibitem{tan2018simtoreal}
+J. Tan \textit{et al.}, ``{Sim-to-Real}: Learning agile locomotion for quadruped robots,'' in \textit{Proc. Robot.: Sci. Syst. (RSS)}, 2018.
+
+\bibitem{tan2026characterization}
+X. Tan, W. Xie, and N. Correll, ``Characterization, analytical planning, and hybrid force control for the Inspire {RH}56{DFX} hand,'' arXiv preprint arXiv:2603.08988, 2026.
+
+\bibitem{thomas2026embodied}
+R. K. Thomas, ``Embodied cognition-inspired robot navigation using neural field dynamics and perceptual binding,'' \textit{Int. J. Adv. Signal Image Sci.}, vol. 12, no. 1, pp. 973--984, 2026.
+
+\bibitem{lou2024robogs}
+H. Lou \textit{et al.}, ``{Robo-GS}: A physics consistent spatial-temporal model for robotic arm with hybrid representation,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2025.
+
+\bibitem{lou2026drex}
+H. Lou \textit{et al.}, ``D-REX: Differentiable real-to-sim-to-real engine for learning dexterous grasping,'' in \textit{Proc. Int. Conf. Learn. Represent. (ICLR)}, 2026.
+
+\bibitem{sun2026digitaltwin}
+Z. Sun, L. Bao, T. Peng, J. Sun, and C. Zhou, ``A high-fidelity digital twin for robotic manipulation based on {3D} Gaussian splatting,'' arXiv preprint arXiv:2601.03200, 2026.
+
+\bibitem{li2024explicit}
+X. Li, G. Chen, and J. Alonso-Mora, ``Building explicit world model for zero-shot open-world object manipulation,'' arXiv preprint arXiv:2603.13825, 2026.
+
+\bibitem{sun2026prism}
+Y. Sun, Y. Pan, S. Li, C. Ding, T. Cui, L. Wang, and C. Liu, ``Learning safe-stoppability monitors for humanoid robots,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2026.
+
+\bibitem{lu2024manigaussian}
+G. Lu, S. Zhang, Z. Wang, C. Liu, J. Lu, and Y. Tang, ``{ManiGaussian}: Dynamic Gaussian splatting for multi-task robotic manipulation,'' in \textit{Proc. Eur. Conf. Comput. Vis. (ECCV)}, 2024, pp. 349--366.
+
+\bibitem{pan2025selfcorrecting}
+S. Pan, Y. Xu, R. Xu, Z. Zhou, S. Wu, and Z. Yu, ``Self-correcting robot manipulation via Gaussian-splatted foresight,'' in \textit{Proc. AAAI Conf. Artif. Intell. (AAAI)}, 2025.
+
+\bibitem{yang2025robosplat}
+S. Yang, K. Zhan, Y. Zhang, L. Lin, X. Huang, and M. Li, ``Novel demonstration generation with Gaussian splatting enables robust one-shot manipulation,'' arXiv preprint arXiv:2504.13175, 2025.
+
+\bibitem{tao2025robopearls}
+T. Tang, L. Zhang, Y. Wen, K. Zhang, J.-W. Bian, X. Zhou, T. Yan, K. Zhan, P. Jia, H. Wu, L. Lin, and X. Liang, ``{RoboPearls}: Editable video simulation for robot manipulation,'' arXiv preprint arXiv:2506.22756, 2025.
+
+\bibitem{wu2025dexgrasp}
+Y. Wu, S. Bae, Y. Chen, L. Lyu, S. Li, Z. Huang, and X. Yang, ``{DexGrasp-Zero}: A morphology-aligned policy for zero-shot cross-embodiment dexterous grasping,'' arXiv preprint arXiv:2603.16806, 2025.
+
+\bibitem{patel2024getzero}
+A. Patel and S. Song, ``{GET-Zero}: Graph embodiment transformer for zero-shot embodiment generalization,'' in \textit{Proc. Robot.: Sci. Syst. (RSS)}, 2024.
+
+\bibitem{patrizi2026rlagmpc}
+A. Patrizi, C. Rizzardo, A. Laurenzi, F. Ruscelli, L. Rossini, and N. G. Tsagarakis, ``RL-augmented MPC for non-gaited legged and hybrid locomotion,'' arXiv preprint arXiv:2603.10878, 2026.
+
+\bibitem{lin2025pogs}
+L. Lin \textit{et al.}, ``Persistent object Gaussian splat ({POGS}) for tracking and robot manipulation of irregularly shaped objects,'' arXiv preprint arXiv:2501.14523, 2025.
+
+\bibitem{wen2024foundationpose}
+B. Wen, W. Yang, J. Kautz, and S. Birchfield, ``FoundationPose: Unified 6D pose estimation and tracking of novel objects,'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2024.
+
+\bibitem{xie2025robmrag}
+Z. Xie, J. Gong, X. Tan, Z. Zhang, and Y. Xie, ``Zero-shot robotic manipulation via {3D} Gaussian splatting-enhanced multimodal retrieval-augmented generation,'' arXiv preprint arXiv:2603.00500, 2026.
+
+\bibitem{liang2025wholebody}
+Q. Liang \textit{et al.}, ``Whole-body coordination for dynamic object grasping with legged manipulators,'' arXiv preprint arXiv:2508.08328, 2025.
+
+\bibitem{levy2024simdist}
+J. Levy \textit{et al.}, ``Simulation distillation: Pretraining world models in simulation for rapid real-world adaptation,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2024.
+
+\bibitem{lu2025gsmem}
+Y. Lu \textit{et al.}, ``{GSMem}: {3D} Gaussian splatting as persistent spatial memory for zero-shot embodied exploration and reasoning,'' arXiv preprint arXiv:2603.19137, 2025.
+
+\bibitem{zhang2025actron3d}
+A. Zhang, Y. Tang, T. Li, B. Zhang, Z. Chen, and J. Sun, ``{Actron3D}: Learning actionable neural functions from videos for transferable robotic manipulation,'' arXiv preprint arXiv:2510.12971, 2025.
+
+\bibitem{wang2026exogs}
+Y. Wang \textit{et al.}, ``{ExoGS}: A {4D} real-to-sim-to-real framework for scalable manipulation data collection,'' arXiv preprint arXiv:2601.18629, 2026.
+
+\bibitem{gao2024mirage2matter}
+Z. Gao \textit{et al.}, ``Mirage2Matter: A physically grounded Gaussian world model from video,'' in \textit{Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)}, 2024.
+
+\bibitem{jiang2024phystwin}
+H. Jiang \textit{et al.}, ``PhysTwin: Physics-informed reconstruction and simulation of deformable objects from videos,'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2025.
+
+\bibitem{jiang2025gsworld}
+G. Jiang \textit{et al.}, ``{GSWorld}: Closed-loop photo-realistic simulation suite for robotic manipulation,'' arXiv preprint arXiv:2510.20813, 2025.
+
+\bibitem{escontrela2025gaussgym}
+A. Escontrela \textit{et al.}, ``{GaussGym}: An open-source real-to-sim framework for learning locomotion from pixels,'' arXiv preprint arXiv:2510.15352, 2025.
+
+\bibitem{jin2026grounding}
+R. Jin \textit{et al.}, ``Grounding sim-to-real generalization in dexterous manipulation: An empirical study with vision-language-action models,'' arXiv preprint arXiv:2603.22876, 2026.
+
+% === Sim-to-Real ===
+
+\bibitem{aljalbout2026realitygap}
+E. Aljalbout, A. Frick, X. Chen, T. Westenbroek, and D. Fridovich-Keil, ``The reality gap in robotics: Challenges, solutions, and best practices,'' \textit{Annu. Rev. Control Robot. Auton. Syst.}, vol. 9, 2026.
+
+\bibitem{zhao2026agile}
+H. Zhao \textit{et al.}, ``{AGILE}: A comprehensive workflow for humanoid loco-manipulation learning,'' in \textit{Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2026.
+
+\bibitem{he2024h2o}
+T. He, Z. Luo, W. Xiao, C. Zhang, K. Kitani, C. Liu, and G. Shi, ``Learning human-to-humanoid real-time whole-body teleoperation,'' arXiv preprint arXiv:2403.04436, 2024.
+
+\bibitem{he2024viral}
+T. He, D. Seita, A. Kanazawa, and P. Abbeel, ``{VIRAL}: Visual sim-to-real at scale for humanoid loco-manipulation,'' arXiv preprint arXiv:2511.15200, 2025.
+
+\bibitem{torne2024rialto}
+M. Torne, A. Simeonov, Z. Li, A. Chan, T. Chen, A. Gupta, and P. Agrawal, ``Reconciling reality through simulation: A real-to-sim-to-real approach for robust manipulation,'' in \textit{Proc. Robot.: Sci. Syst. (RSS)}, 2024.
+
+\bibitem{hadi2021webots}
+Y. W. Hadi, L. Hof, B. Jayawardhana, and B. Haghighat, ``Developing simulation models for soft robotic grippers in Webots,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2021.
+
+\bibitem{hathaway2024cutting}
+J. Hathaway, A. Rastegarpanah, and R. Stolkin, ``Imitation learning for sim-to-real adaptation of robotic cutting policies based on residual Gaussian process disturbance force model,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2024.
+
+\bibitem{hathaway2026neuralstyle}
+J. Hathaway, A. Rastegarpanah, and R. Stolkin, ``End-to-end example-based sim-to-real {RL} policy transfer based on neural stylisation with application to robotic cutting,'' arXiv preprint arXiv:2601.20846, 2026.
+
+\bibitem{huang2024enerverse}
+S. Huang, L. Chen, P. Zhou, S. Chen, Y. Liao, Z. Jiang, Y. Hu, P. Gao, H. Li, M. Yao, and G. Ren, ``{ENERVERSE}: Envisioning embodied future space for robotics manipulation,'' in \textit{Proc. Adv. Neural Inf. Process. Syst. (NeurIPS)}, 2025.
+
+\bibitem{heiden2022inferring}
+E. Heiden, Z. Liu, V. Vineet, E. Coumans, and G. S. Sukhatme, ``Inferring articulated rigid body dynamics from RGBD video,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2023.
+
+\bibitem{abou2024realissim}
+J. Abou-Chakra, Y. Zhu, L. Zhang, D. Fridovich-Keil, and P. Agrawal, ``Real-is-sim: Bridging the sim-to-real gap with a dynamic digital twin,'' arXiv preprint arXiv:2504.03597, 2025.
+
+\bibitem{jiang2024digitaltwin}
+Z. Jiang, H. Takemura, and M. Kita, ``Digital twin system for home service robot based on motion simulation,'' \textit{J. Robot. Mechatron.}, vol. 36, no. 2, pp. 420--432, 2024.
+
+\bibitem{zhang2025unipr}
+C. Zhang, Y. Zou, Z. Wu, Y. Ling, Y. Yang, and Z. Wang, ``{UniPR}: Unified object-level real-to-sim perception and reconstruction from a single stereo pair,'' arXiv preprint arXiv:2603.19616, 2026.
+
+\bibitem{cai2025gausstwin}
+Y. Cai, P. Jansonnie, C. de Farias, O. Arenz, and J. Peters, ``{GaussTwin}: Unified simulation and correction with Gaussian splatting for robotic digital twins,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2025.
+
+\bibitem{crotti2024softfoot}
+M. Crotti, L. Rossini, B. K. Hodossy, A. Pace, G. Grioli, A. Bicchi, and M. G. Catalano, ``Soft adaptive feet for legged robots: An open-source model for locomotion simulation,'' \textit{IEEE Robot. Autom. Lett.}, vol. 10, 2024.
+
+\bibitem{collins2023ca2t}
+J. Collins, A. Liang, J. Malik, H. Zhang, and F. Devernay, ``{CA}$^2${T}-Net: Category-agnostic 3D articulation transfer from single image,'' in \textit{Proc. Int. Conf. 3D Vis. (3DV)}, 2023.
+
+\bibitem{park2021nerfies}
+K. Park, U. Sinha, J. T. Barron, S. Bouaziz, D. B. Goldman, S. M. Seitz, and R. Martin-Brualla, ``Nerfies: Deformable neural radiance fields,'' in \textit{Proc. IEEE/CVF Int. Conf. Comput. Vis. (ICCV)}, 2021.
+
+\bibitem{cho2025rafl}
+D. H. Cho and B. Chen, ``{RAFL}: Generalizable sim-to-real of soft robots with residual acceleration field learning,'' arXiv preprint arXiv:2603.22039, 2026.
+
+\bibitem{kotecha2026stride}
+P. Kotecha, G. Nair, and S. Kolathaya, ``{STRIDE}: Structured Lagrangian and stochastic residual dynamics via flow matching,'' arXiv preprint arXiv:2603.08478, 2026.
+
+\bibitem{wang2025odyssey}
+K. Wang, L. Lu, M. Liu, J. Jiang, Z. Li, B. Zhang, W. Zheng, X. Yu, H. Chen, and C. Shen, ``{ODYSSEY}: Open-world quadrupeds exploration and manipulation for long-horizon tasks,'' arXiv preprint arXiv:2508.08240, 2025.
+
+\bibitem{wang2026westworld}
+Y. Wang \textit{et al.}, ``{WESTWORLD}: A knowledge-encoded scalable trajectory world model for diverse robotic systems,'' arXiv preprint arXiv:2603.14392, 2026.
+
+\bibitem{wu2026parkour}
+Z. Wu \textit{et al.}, ``Perceptive humanoid parkour: Chaining dynamic human skills via motion matching,'' arXiv preprint arXiv:2602.15827, 2026.
+
+\bibitem{pan2025learningfly}
+J. Pan, J. Xing, R. Reiter, Y. Zhai, E. Aljalbout, and D. Scaramuzza, ``Learning on the fly: Rapid policy adaptation via differentiable simulation,'' \textit{IEEE Robot. Autom. Lett.}, vol. 10, 2025.
+
+\bibitem{qureshi2025splatsim}
+M. N. Qureshi, Y. Tang, Z. Zhang, X. Li, Y. Wang, and A. Gupta, ``{SplatSim}: Zero-shot sim2real transfer of {RGB} manipulation policies using Gaussian splatting,'' arXiv preprint arXiv:2404.13099, 2025.
+
+\bibitem{tang2025semantic}
+J. Tang, Z. He, K. Zhang, Y. Liu, M. Chen, and W. Xu, ``Bridging simulation and reality: Cross-domain transfer with semantic 2D Gaussian splatting,'' arXiv preprint arXiv:2512.04731, 2025.
+
+\bibitem{zhao2026tabletop}
+G. Zhao \textit{et al.}, ``System design for maintaining internal state consistency in long-horizon robotic tabletop games,'' arXiv preprint arXiv:2603.25405, 2026.
+
+\bibitem{zhao2026robosimgs}
+H. Zhao \textit{et al.}, ``High-fidelity simulated data generation for real-world zero-shot robotic manipulation learning with Gaussian splatting,'' arXiv preprint arXiv:2510.10637, 2026.
+
+\bibitem{jiang2026omnidirectional}
+Y. Jiang, Y. Liang, J. Li, H. Ding, and L. Zhu, ``Omnidirectional humanoid locomotion on stairs via unsafe stepping penalty and sparse LiDAR elevation mapping,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2026.
+
+\bibitem{li2026haic}
+D. Li \textit{et al.}, ``{HAIC}: Humanoid agile object interaction control via dynamics-aware world model,'' arXiv preprint arXiv:2602.11758, 2026.
+
+\bibitem{zhang2025latent}
+Z. Zhang \textit{et al.}, ``Learning athletic humanoid tennis skills from imperfect human motion data,'' arXiv preprint arXiv:2603.12686, 2026.
+
+\bibitem{yu2025real2render2real}
+J. Yu, H. Su, D. Fridovich-Keil, and A. Gupta, ``{Real2Render2Real}: Scaling robot data without dynamics simulation or robot hardware,'' arXiv preprint arXiv:2505.09601, 2025.
+
+\bibitem{xu2025expertgen}
+Z. Xu \textit{et al.}, ``{ExpertGen}: Scalable sim-to-real expert policy learning from imperfect behavior priors,'' arXiv preprint arXiv:2603.15956, 2026.
+
+\bibitem{xu2025twinrl}
+Q. Xu, Y. Liang, M. Chen, Z. Zhang, K. Xu, H. Wang, and J. Wang, ``{TwinRL-VLA}: Digital twin-driven reinforcement learning for real-world robotic manipulation,'' arXiv preprint arXiv:2602.09023, 2025.
+
+\bibitem{zhang2026vlambpo}
+Z. Zhang \textit{et al.}, ``Towards practical world model-based reinforcement learning for vision-language-action models,'' arXiv preprint arXiv:2603.20607, 2026.
+
+\bibitem{deshpande2025molmobot}
+A. Deshpande, B. Chen, Z. Li, R. Shen, Z. Xu, and L. Fei-Fei, ``{MolmoB0T}: Large-scale simulation enables zero-shot manipulation,'' arXiv preprint arXiv:2603.16861, 2026.
+
+\bibitem{tu2025sgvla}
+R. Tu, A. Shukla, S. Yoo, X. Li, J. Xie, H. Su, and Z. Tu, ``{SG-VLA}: Learning spatially-grounded vision-language-action models for mobile manipulation,'' arXiv preprint arXiv:2603.22760, 2026.
+
+\bibitem{he2025vdreamer}
+S. He \textit{et al.}, ``{V-Dreamer}: Automating robotic simulation and trajectory synthesis via video generation priors,'' arXiv preprint arXiv:2603.18811, 2026.
+
+\bibitem{mei2026mobrt}
+Y. Mei, P. Qiu, W. Zhang, W. Zhang, and W. Song, ``{MobRT}: A digital twin-based framework for scalable learning in mobile manipulation,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2026.
+
+\bibitem{zhu2025vrrobo}
+S. Zhu, L. Mou, D. Li, B. Ye, R. Huang, and H. Zhao, ``{VR-Robo}: A real-to-sim-to-real framework for visual robot navigation and locomotion,'' \textit{IEEE Robot. Autom. Lett.}, vol. 10, no. 5, 2025.
+
+\bibitem{liu2024cyclerl}
+G. Liu, T. Wang, Z. Wu, J. Wu, S. Li, and X. Zhu, ``{CycleRL}: Sim-to-real deep reinforcement learning for robust autonomous bicycle control,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2024.
+
+\bibitem{liu2025geoloco}
+Y. Liu \textit{et al.}, ``{GeoLoco}: Leveraging 3D geometric priors from visual foundation model for robust {RGB}-only humanoid locomotion,'' arXiv preprint arXiv:2603.07624, 2026.
+
+\bibitem{zhang2026rpl}
+Y. Zhang \textit{et al.}, ``{RPL}: Learning robust humanoid perceptive locomotion on challenging terrains,'' arXiv preprint arXiv:2602.03002, 2026.
+
+\bibitem{bao2026phygile}
+J. Bao \textit{et al.}, ``Physics-prefix guided motion generation for agile general humanoid motion tracking,'' arXiv preprint arXiv:2603.19305, 2026.
+
+\bibitem{cho2026safeflow}
+H. Cho, S.-H. Kim, J. Kang, and D. Koo, ``{SafeFlow}: Real-time text-driven humanoid whole-body control via physics-guided rectified flow and selective safety gating,'' arXiv preprint arXiv:2603.23983, 2026.
+
+\bibitem{choi2025scalingsim}
+A. Choi, X. Wang, Z. Su, and W. Xu, ``Scaling sim-to-real reinforcement learning for robot VLAs with generative 3D worlds,'' in \textit{Proc. Int. Conf. Mach. Learn. (ICML)}, 2025.
+
+\bibitem{liu2025navgsim}
+J. Liu \textit{et al.}, ``{NavGSim}: High-fidelity Gaussian splatting simulator for large-scale navigation,'' \textit{IEEE Robot. Autom. Lett.}, vol. 10, no. 5, 2025.
+
+\bibitem{mari2024digitaltwin}
+Z. Mari, M. M. Nawaf, and P. Drap, ``Digital twin-supervised reinforcement learning framework for autonomous underwater navigation,'' \textit{Sensors}, 2024.
+
+\bibitem{niu2026synchronizedonline}
+Z. Niu, X. Chen, J. Hu, Z. Liu, J. Tang, and X. Ju, ``Synchronized online friction estimation and adaptive grasp control for robust gentle grasp,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2026.
+
+\bibitem{murugesan2024digitaltwin}
+V. Murugesan, R. Mathiazhagan, S. Joshi, and A. Arab, ``Digital-twin evaluation for proactive human-robot collision avoidance via prediction-guided A-RRT*,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2024.
+
+\bibitem{miki2022anymal}
+T. Miki, J. Lee, J. Hwangbo, L. Wellhausen, V. Koltun, and M. Hutter, ``Learning robust perceptive locomotion for quadrupedal robots in the wild,'' \textit{Science Robotics}, vol. 7, no. 62, 2022.
+
+\bibitem{miki2024legged}
+F. Miki, C. Pasareanu, T. Yamamoto, and K. Yoshida, ``Learning proprioceptive compliance and contact state estimation for legged locomotion with sim-to-real transfer,'' in \textit{Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)}, 2024.
+
+\bibitem{peng2026eagle}
+Q. Peng, Y. Lin, Y. Xue, J. Pang, and W. Zhang, ``Embodiment-aware generalist-specialist distillation for unified humanoid whole-body control,'' arXiv preprint arXiv:2602.02960, 2026.
+
+\bibitem{xing2025agile}
+J. Xing, Z. Wang, Y. Liu, P. Kumar, K. Zhang, and D. Song, ``{AGILE}: Autonomous guided learning infrastructure for policy execution in humanoid robotics,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2025.
+
+\bibitem{yao2026generalized}
+Y. Yao, D. Howard, and P. Maiolino, ``Generalized task-driven design of soft robots via reduced-order FEM-based surrogate modeling,'' arXiv preprint arXiv:2603.19794, 2026.
+
+\bibitem{yin2024geniesim}
+C. Yin \textit{et al.}, ``{Genie Sim 3.0}: A high-fidelity comprehensive simulation platform for humanoid robot,'' arXiv preprint arXiv:2601.02078, 2026.
+
+\bibitem{yin2025womap}
+T. Yin \textit{et al.}, ``{WoMAP}: World models for embodied open-vocabulary object localization,'' in \textit{Proc. Conf. Robot. Learn. (CoRL)}, 2025.
+
+\bibitem{rajeswaran2025embodiedynamics}
+A. Rajeswaran, V. Kumar, A. Gupta, and A. Levine, ``Articulated-body dynamics network: Dynamics-grounded prior for robot learning,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2025.
+
+\bibitem{ren2026cybowaiter}
+J. Ren \textit{et al.}, ``Cybo-Waiter: A physical agentic framework for humanoid whole-body locomotion-manipulation,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2026.
+
+\bibitem{rigo2024hierarchical}
+A. Rigo, M. Hu, S. K. Gupta, and Q. Nguyen, ``Hierarchical optimization-based control for whole-body loco-manipulation of heavy objects,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2024.
+
+\bibitem{xu2026antenna}
+Z. J. Xu \textit{et al.}, ``A robust antenna provides tactile feedback in a multi-legged robot,'' arXiv preprint arXiv:2603.07795, 2026.
+
+\bibitem{xu2026dualhorizon}
+H. Xu \textit{et al.}, ``Dual-horizon hybrid internal model for low-gravity quadrupedal jumping with hardware-in-the-loop validation,'' arXiv preprint arXiv:2603.07999, 2026.
+
+\bibitem{jain2025polaris}
+A. Jain, R. Sharma, S. Kumar, S. Kolathaya, Z. Zhang, and D. Song, ``{PolaRiS}: Scalable real-to-sim evaluations for generalist robot policies,'' arXiv preprint arXiv:2512.16881, 2025.
+
+\bibitem{li2024simpler}
+X. Li \textit{et al.}, ``Evaluating real-world robot manipulation policies in simulation,'' in \textit{Proc. Conf. Robot. Learn. (CoRL)}, 2024.
+
+\bibitem{daneshmand2026slowrl}
+E. Daneshmand, S. Omar, G. Berseth, M. Khadiv, and H.-C. Lin, ``{SLowRL}: Safe low-rank adaptation reinforcement learning for locomotion,'' arXiv preprint arXiv:2603.17092, 2026.
+
+\bibitem{meng2026riskbounded}
+F. Meng, Z. Yang, X. Mao, H. Liang, and M. Q.-H. Meng, ``Provably safe trajectory generation for manipulators under motion and environmental uncertainties,'' arXiv preprint arXiv:2603.09083, 2026.
+
+\bibitem{ma2025softmap}
+Z. Ma, U. Yoo, J. Francis, W. Zhi, J. Ichnowski, and J. Oh, ``{SOFTMAP}: Sim2real soft robot forward modeling via topological mesh alignment and physics prior,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2025.
+
+\bibitem{brunke2021safe}
+L. Brunke \textit{et al.}, ``Safe learning in robotics: From learning-based control to safe reinforcement learning,'' \textit{Annu. Rev. Control Robot. Auton. Syst.}, vol. 5, pp. 1--43, 2022.
+
+\bibitem{domberg2026selfadapting}
+F. Domberg and G. Schildbach, ``Self-adapting robotic agents through online continual reinforcement learning with world model feedback,'' arXiv preprint arXiv:2603.04029, 2026.
+
+\bibitem{lim2025splat2real}
+H. Lim and J. B. Choi, ``Splat2Real: Novel-view scaling for physical {AI} with {3D} Gaussian splatting,'' arXiv preprint arXiv:2603.10638, 2026.
+
+\bibitem{jiang2024transic}
+Y. Jiang, C. Wang, R. Zhang, J. Wu, and L. Fei-Fei, ``{TRANSIC}: Sim-to-real policy transfer by learning from online correction,'' in \textit{Proc. Conf. Robot. Learn. (CoRL)}, 2024.
+
+\bibitem{qiu2024swim2real}
+K. Qiu, K. Walker, M. Y. Michelis, M. Cygan, and J. Hughes, ``Swim2Real: VLM-guided system identification for sim-to-real transfer,'' arXiv preprint arXiv:2603.20827, 2026.
+
+\bibitem{bytedance2025closing}
+ByteDance Seed, ``Closing the reality gap: Zero-shot sim-to-real deployment for dexterous force-based grasping and manipulation,'' arXiv preprint arXiv:2601.02778, 2026.
+
+% === Damage Recovery ===
+
+\bibitem{grambow2026anomaly}
+N. Grambow \textit{et al.}, ``Anomaly detection for generic failure monitoring in robotic assembly, screwing and manipulation,'' \textit{IEEE Robotics and Automation Letters}, vol. 11, no. 5, pp. 3664--3671, 2026.
+
+\bibitem{fu2025contrastive}
+Y. Fu, X. Chen, B. Zhang, M. Yang, and K. Zhang, ``Contrastive forward prediction reinforcement learning for adaptive fault-tolerant legged robots,'' in \textit{Proc. Conf. Robot. Learn. (CoRL)}, 2025.
+
+\bibitem{chen2024vlm}
+H. Chen, Y. Yao, R. Liu, C. Liu, and J. Ichnowski, ``Automating robot failure recovery using vision-language models with optimized prompts,'' arXiv preprint arXiv:2409.03966, 2024.
+
+\bibitem{jayasinghe2026residual}
+N. Jayasinghe \textit{et al.}, ``Residual control for fast recovery from dynamics shifts,'' arXiv preprint arXiv:2603.07775, 2026.
+
+\bibitem{briscoe2025deft}
+G. G. Briscoe-Martinez, Y. Gautam, R. Shetty, A. Pasricha, M. M. Nicotra, and A. Roncone, ``Moving on, even when you're broken: Fail-active trajectory generation via diffusion policies conditioned on embodiment and task,'' arXiv preprint arXiv:2602.02895, 2026.
+
+\bibitem{poddar2026embedding}
+N. Poddar, S. McCrory, L. Penco, G. Clark, H. E. Sevil, and R. Griffin, ``Embedding classical balance control principles in reinforcement learning for humanoid recovery,'' arXiv preprint arXiv:2603.08619, 2026.
+
+\bibitem{li2026pchc}
+H. Li \textit{et al.}, ``{PCHC}: Enabling preference-conditioned humanoid control via multi-objective reinforcement learning,'' arXiv preprint arXiv:2603.24047, 2026.
+
+\bibitem{li2025dream2fix}
+D. Li \textit{et al.}, ``Learning actionable manipulation recovery via counterfactual failure synthesis,'' arXiv preprint arXiv:2603.13528, 2026.
+
+\bibitem{lee2026tolebi}
+H. Lee, W.-J. Baek, J. Cha, and J. Park, ``{TOLEBI}: Learning fault-tolerant bipedal locomotion via online status estimation and fallibility rewards,'' arXiv preprint arXiv:2602.05596, 2026.
+
+\bibitem{mccloskey1989catastrophic}
+M. McCloskey and N. J. Cohen, ``Catastrophic interference in connectionist networks: The sequential learning problem,'' \textit{Psychol. Learn. Motiv.}, vol. 24, pp. 109--165, 1989.
+
+\bibitem{french1999catastrophic}
+R. M. French, ``Catastrophic forgetting in connectionist networks,'' \textit{Trends Cogn. Sci.}, vol. 3, no. 4, pp. 128--135, 1999.
+
+\bibitem{grossberg1987competitive}
+S. Grossberg, ``Competitive learning: From interactive activation to adaptive resonance,'' \textit{Cognitive Science}, vol. 11, no. 1, pp. 23--63, 1987.
+
+\bibitem{mermillod2013stability}
+M. Mermillod, A. Bugaiska, and P. Bonin, ``The stability-plasticity dilemma: Investigating the continuum from catastrophic forgetting to age-limited learning effects,'' \textit{Front. Psychol.}, vol. 4, p. 504, 2013.
+
+\bibitem{kirkpatrick2017overcoming}
+J. Kirkpatrick \textit{et al.}, ``Overcoming catastrophic forgetting in neural networks,'' \textit{Proc. Natl. Acad. Sci.}, vol. 114, no. 13, pp. 3521--3526, 2017.
+
+\bibitem{frankle2018lottery}
+J. Frankle and M. Carbin, ``The lottery ticket hypothesis: Finding sparse, trainable neural networks,'' in \textit{Proc. Int. Conf. Learn. Represent. (ICLR)}, 2019.
+
+\bibitem{mocanu2018scalable}
+D. C. Mocanu, E. Mocanu, P. Stone, P. H. Nguyen, M. Gibescu, and A. Liotta, ``Scalable training of artificial neural networks with adaptive sparse connectivity inspired by network science,'' \textit{Nat. Commun.}, vol. 9, p. 2383, 2018.
+
+\bibitem{han2015deep}
+S. Han, H. Mao, and W. J. Dally, ``Deep compression: Compressing deep neural networks with pruning, trained quantization and huffman coding,'' in \textit{Proc. Int. Conf. Learn. Represent. (ICLR)}, 2016.
+
+\bibitem{finn2017maml}
+C. Finn, P. Abbeel, and S. Levine, ``Model-agnostic meta-learning for fast adaptation of deep networks,'' in \textit{Proc. Int. Conf. Mach. Learn. (ICML)}, 2017.
+
+\bibitem{pathak2017curiosity}
+D. Pathak, P. Krahenbuhl, J. Donahue, T. Darrell, and A. A. Efros, ``Curiosity-driven exploration by self-supervised prediction,'' in \textit{Proc. Int. Conf. Mach. Learn. (ICML)}, 2017.
+
+\bibitem{an2025dexterous}
+L. An, L. Lin, and Y. Xu, ``Survey on dexterous manipulation: Recent progress and future challenges,'' arXiv preprint arXiv:2603.06765, 2026.
+
+\bibitem{zhao2025vitactracing}
+Y. Zhao, W. Zhou, X. Li, and H. Li, ``Tracing tactile dynamics for vision and touch based shape prediction,'' in \textit{Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS)}, 2025, pp. 1--8.
+
+\bibitem{cui2025pilot}
+X. Cui \textit{et al.}, ``{PILOT}: Enabling whole-body perceptive loco-manipulation in mobile quadruped robots,'' arXiv preprint arXiv:2512.00843, 2025.
+
+\bibitem{huang2026steadytray}
+S. Huang \textit{et al.}, ``{SteadyTray}: Learning stabilization of unsecured payloads on bipedal humanoid movement,'' arXiv preprint arXiv:2603.22397, 2026.
+
+\bibitem{pudasaini2026fame}
+B. Pudasaini, K. Sreenath, and Y. Nakamura, ``{FAME}: Force-adaptive manipulation via learned embodied experience on humanoid robots,'' arXiv preprint arXiv:2603.06887, 2026.
+
+\bibitem{li2025m2resipolicy}
+X. Li \textit{et al.}, ``Master-micro residual correction with adaptive tactile fusion and force-mixed control for contact-rich manipulation,'' arXiv preprint arXiv:2603.15152, 2026.
+
+\bibitem{micklem2026aquatic}
+L. Micklem, H. Dong, F. Giorgio-Serchi, Y. Yang, B. Thornton, and G. D. Weymouth, ``Harnessing proprioception in aquatic soft wings enables hybrid passive-active disturbance rejection,'' \textit{npj Robotics}, vol. 4, no. 16, 2026.
+
+\bibitem{thirgood2025featureslam}
+C. Thirgood, O. Mendez, E. C. Ling, J. Storey, and S. Hadfield, ``{FeatureSLAM}: Feature-enriched {3D} Gaussian splatting {SLAM} in real time,'' arXiv preprint arXiv:2503.14256, 2025.
+
+\bibitem{tian2026sensoropt}
+Y. Tian \textit{et al.}, ``Model-free co-optimization of manufacturable sensor layouts and deformation proprioception,'' arXiv preprint arXiv:2603.10059, 2026.
+
+\bibitem{tian2024salamander}
+M. Tian, Q. Fu, C. Ning, J. J. J. Pey, and A. J. Ijspeert, ``Learning whole-body control for a salamander robot,'' in \textit{Proc. IEEE Int. Conf. Robot. Autom. (ICRA)}, 2024.
+
+\bibitem{tran2025varsplat}
+A. T. Tran and J. Kosecka, ``{VarSplat}: Uncertainty-aware {3D} Gaussian splatting for robust {RGB-D} {SLAM},'' arXiv preprint arXiv:2507.08762, 2025.
+
+\bibitem{zheng2025dapl}
+Y. Zheng \textit{et al.}, ``Emerging extrinsic dexterity in cluttered scenes via dynamics-aware policy learning,'' arXiv preprint arXiv:2603.09882, 2026.
+
+\end{thebibliography}
+
+\end{document}

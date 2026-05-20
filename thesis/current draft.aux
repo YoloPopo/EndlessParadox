@@ -1,0 +1,583 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{bongard2006resilient}
+\citation{cully2015robots}
+\citation{kwiatkowski2019task}
+\citation{chen2022full}
+\citation{hu2024teaching}
+\citation{hu2025learning}
+\citation{hu2024teaching}
+\@writefile{toc}{\contentsline {chapter}{Abstract}{}{chapter*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{List of Figures}{}{chapter*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{List of Tables}{}{chapter*.4}\protected@file@percent }
+\citation{bongard2006resilient}
+\citation{cully2015robots}
+\citation{bongard2006resilient}
+\citation{kwiatkowski2019task}
+\@writefile{toc}{\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {1.1}The Challenge of Embodiment Drift}{1}{section.1.1}\protected@file@percent }
+\citation{kwiatkowski2019task}
+\citation{chen2022full}
+\citation{kwiatkowski2019task}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1.1}Manifestations of Embodiment Drift}{2}{subsection.1.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1.2}Consequences for Control}{2}{subsection.1.1.2}\protected@file@percent }
+\citation{bongard2006resilient}
+\citation{kwiatkowski2019task}
+\citation{kwiatkowski2019task}
+\@writefile{lof}{\contentsline {figure}{\numberline {1.1}{\ignorespaces Three eras of robot self-modeling: symbolic morphology inference via active exploration (Bongard et al., 2006), behavioral adaptation through repertoire search (Cully et al., 2015), and contemporary visual self-modeling driven by neural rendering (NeRF and 3D Gaussian Splatting).}}{3}{figure.caption.5}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:timeline_intro}{{1.1}{3}{Three eras of robot self-modeling: symbolic morphology inference via active exploration (Bongard et al., 2006), behavioral adaptation through repertoire search (Cully et al., 2015), and contemporary visual self-modeling driven by neural rendering (NeRF and 3D Gaussian Splatting)}{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {1.2}The Evolution of Self-Modeling Paradigms}{3}{section.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.1}The Symbolic Era: Estimation-Exploration}{3}{subsection.1.2.1}\protected@file@percent }
+\citation{cully2015robots}
+\citation{cully2015robots}
+\citation{kwiatkowski2019task}
+\citation{kwiatkowski2019task}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.2}The Behavioral Era: Avoidance Over Adaptation}{4}{subsection.1.2.2}\protected@file@percent }
+\citation{kwiatkowski2019task}
+\citation{chen2022full}
+\citation{chen2022full}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.3}Task-Agnostic Learned Dynamics Models}{5}{subsection.1.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.4}Proprioceptive Morphology Identification}{5}{subsection.1.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2.5}The Visual Era: Deep Self-Models and Neural Rendering}{5}{subsection.1.2.5}\protected@file@percent }
+\citation{hu2024teaching}
+\citation{hu2025learning}
+\citation{hu2024teaching}
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {section}{\numberline {1.3}The Latency Paradox in Neural Rendering}{6}{section.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.1}Temporal Constraints of Robotic Control}{6}{subsection.1.3.1}\protected@file@percent }
+\citation{hu2024teaching}
+\citation{hu2025learning}
+\citation{hu2025learning}
+\@writefile{lot}{\contentsline {table}{\numberline {1.1}{\ignorespaces Latency requirements for robotic control loops at different frequencies.}}{7}{table.caption.6}\protected@file@percent }
+\newlabel{tab:control_loop_latency}{{1.1}{7}{Latency requirements for robotic control loops at different frequencies}{table.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.2}The Computational Bottleneck}{7}{subsection.1.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3.3}The Plasticity-Stability Dilemma in Self-Modeling}{8}{subsection.1.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.4}Digital Twins and the Simulation-to-Reality Gap}{8}{section.1.4}\protected@file@percent }
+\citation{tan2018simtoreal}
+\citation{tan2018simtoreal}
+\@writefile{toc}{\contentsline {section}{\numberline {1.5}Problem Statement and Core Hypothesis}{10}{section.1.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5.1}The Central Hypothesis}{10}{subsection.1.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5.2}Empirical Scope and Deliberate Constraints}{10}{subsection.1.5.2}\protected@file@percent }
+\citation{bongard2006resilient}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5.3}The Temporal Stigmergy Framework for Swarm Coordination}{11}{subsection.1.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.6}Research Questions}{11}{section.1.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.6.1}RQ1: Architectural Efficiency}{11}{subsection.1.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.6.2}RQ2: Control Integration}{12}{subsection.1.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.6.3}RQ3: Fault Tolerance}{12}{subsection.1.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.6.4}RQ4: Collective Adaptation}{12}{subsection.1.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.7}Methodological Contributions}{12}{section.1.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.7.1}Contribution 1: Formal Benchmarking of the Latency Paradox}{12}{subsection.1.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.7.2}Contribution 2: The NeuroKin Direct Sensorimotor Decoder}{13}{subsection.1.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.7.3}Contribution 3: Visual Closed-Loop Damage Adaptation}{13}{subsection.1.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.7.4}Contribution 4: Temporal Stigmergy for Sequential Swarm Coordination}{13}{subsection.1.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.8}Thesis Organization}{14}{section.1.8}\protected@file@percent }
+\citation{bongard2006resilient}
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}Literature Synthesis}{15}{chapter.2}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Evolution of Self-Modeling}{15}{section.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces Survey taxonomy and evaluation priorities for deployable robot self-modeling. The progression from symbolic inference to learned, visual, and deployable neural self-models frames the literature reviewed in this chapter.}}{15}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:survey_taxonomy}{{2.1}{15}{Survey taxonomy and evaluation priorities for deployable robot self-modeling. The progression from symbolic inference to learned, visual, and deployable neural self-models frames the literature reviewed in this chapter}{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}The Symbolic Era: Estimation-Exploration}{15}{subsection.2.1.1}\protected@file@percent }
+\citation{kwiatkowski2019task}
+\citation{kwiatkowski2019task}
+\citation{cully2015robots}
+\citation{cully2015robots}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.2}The Behavioral Era: Avoidance Over Adaptation}{16}{subsection.2.1.2}\protected@file@percent }
+\citation{kwiatkowski2019task}
+\citation{kwiatkowski2019task}
+\citation{kwiatkowski2019task}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.3}Task-Agnostic Learned Dynamics Models}{17}{subsection.2.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.4}Proprioceptive Morphology Identification}{17}{subsection.2.1.4}\protected@file@percent }
+\citation{chen2022full}
+\citation{chen2022full}
+\citation{hu2024teaching}
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1.5}The Visual Era: Deep Self-Models and Neural Rendering}{18}{subsection.2.1.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces Closed-loop robot self-modeling pipeline. Sensor evidence is encoded into a usable morphology, kinematics, and dynamics model that supports planning, control, recovery, and continued adaptation.}}{19}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:self_modeling_pipeline}{{2.2}{19}{Closed-loop robot self-modeling pipeline. Sensor evidence is encoded into a usable morphology, kinematics, and dynamics model that supports planning, control, recovery, and continued adaptation}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}Neural Rendering Foundations: The Speed-Quality Tradeoff}{19}{section.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces Conceptual neural-rendering trade-off between geometric fidelity and real-time deployability. The trend illustrates why high-fidelity volumetric methods can remain unsuitable for embedded control despite strong visual quality.}}{19}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:neural_rendering_pareto}{{2.3}{19}{Conceptual neural-rendering trade-off between geometric fidelity and real-time deployability. The trend illustrates why high-fidelity volumetric methods can remain unsuitable for embedded control despite strong visual quality}{figure.caption.9}{}}
+\citation{hu2024teaching}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}Neural Radiance Fields: Implicit Scene Representation}{20}{subsection.2.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.2}3D Gaussian Splatting: Explicit Geometric Primitives}{21}{subsection.2.2.2}\protected@file@percent }
+\citation{hu2025learning}
+\citation{hu2025learning}
+\citation{hu2025learning}
+\citation{heiden2022inferring}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.3}The Failure of Anisotropy on Robotic Morphologies}{22}{subsection.2.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.4}Articulated Object Reconstruction for Digital Twin Generation}{22}{subsection.2.2.4}\protected@file@percent }
+\citation{tan2018simtoreal}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.5}Physics-Consistent Robot Models and Manipulation Planning}{23}{subsection.2.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.6}Cross-Embodiment Transfer and Morphological Understanding}{23}{subsection.2.2.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.7}Sim-to-Real Transfer via Digital Twins}{23}{subsection.2.2.7}\protected@file@percent }
+\citation{tan2018simtoreal}
+\citation{tan2018simtoreal}
+\citation{tan2018simtoreal}
+\citation{heiden2022inferring}
+\citation{lou2026drex}
+\citation{qureshi2025splatsim}
+\citation{tang2025semantic}
+\citation{yang2025robosplat}
+\citation{yu2025real2render2real}
+\citation{abou2024realissim}
+\citation{jain2025polaris}
+\citation{li2024simpler}
+\citation{yang2025robosplat}
+\citation{qureshi2025splatsim}
+\citation{yu2025real2render2real}
+\citation{lou2026drex}
+\citation{tan2018simtoreal}
+\citation{heiden2022inferring}
+\citation{lou2026drex}
+\citation{qureshi2025splatsim}
+\citation{tang2025semantic}
+\citation{yang2025robosplat}
+\citation{yu2025real2render2real}
+\citation{abou2024realissim}
+\citation{jain2025polaris}
+\citation{li2024simpler}
+\citation{grambow2026anomaly}
+\citation{fu2025contrastive}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces Digital twin loop for sim-to-real transfer. The loop emphasizes measurement, model update, deployment, and residual correction when hardware exposes mismatch.}}{25}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:sim2real_digital_twin}{{2.4}{25}{Digital twin loop for sim-to-real transfer. The loop emphasizes measurement, model update, deployment, and residual correction when hardware exposes mismatch}{figure.caption.10}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2.1}{\ignorespaces Roles of digital twins in sim-to-real pipelines.}}{25}{table.caption.11}\protected@file@percent }
+\newlabel{tab:digital_twin_roles}{{2.1}{25}{Roles of digital twins in sim-to-real pipelines}{table.caption.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Damage Recovery and Fault Tolerance}{25}{section.2.3}\protected@file@percent }
+\citation{chen2024vlm}
+\citation{li2025dream2fix}
+\citation{briscoe2025deft}
+\citation{poddar2026embedding}
+\citation{li2026pchc}
+\citation{lee2026tolebi}
+\citation{wu2026parkour}
+\citation{domberg2026selfadapting}
+\citation{jayasinghe2026residual}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.1}Detection Methods and Early Intervention}{26}{subsection.2.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.2}Recovery Policy Generation and Adaptation}{26}{subsection.2.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.3}Humanoid Recovery and Stability}{26}{subsection.2.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3.4}Practical Deployment Lessons}{26}{subsection.2.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}Continual Learning for Self-Model Maintenance}{27}{section.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.1}Balancing Plasticity and Stability}{27}{subsection.2.4.1}\protected@file@percent }
+\citation{jayasinghe2026residual}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.2}Resource-Efficient Adaptation via Sparsity}{28}{subsection.2.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4.3}Safety-Constrained and Bounded Adaptation}{28}{subsection.2.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.5}Theoretical Foundations of Swarm Coordination and Temporal Stigmergy}{28}{section.2.5}\protected@file@percent }
+\citation{bongard2006resilient}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.1}Stigmergy: Biological and Algorithmic Foundations}{29}{subsection.2.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.2}Temporal Stigmergy in Sequential Pipelines}{29}{subsection.2.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5.3}Sub-Millisecond Inference as a Swarm Prerequisite}{30}{subsection.2.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.6}Summary of Literature Findings}{30}{section.2.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.7}Research Questions Grounded in Literature}{31}{section.2.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.1}RQ1: Architectural Efficiency}{32}{subsection.2.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.2}RQ2: Control Integration}{32}{subsection.2.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.3}RQ3: Fault Tolerance}{32}{subsection.2.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.4}RQ4: Collective Adaptation}{32}{subsection.2.7.4}\protected@file@percent }
+\citation{hu2024teaching}
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Baseline Implementations and the Latency Bottleneck}{34}{chapter.3}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Synthetic Data Generation via Lorenz Attractors}{34}{section.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Simulation Environment Configuration}{34}{subsection.3.1.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces PyBullet simulation setup for the 4-DOF manipulator, including the robot model, target marker, and virtual camera frusta used for synthetic data generation.}}{35}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:pybullet_setup}{{3.1}{35}{PyBullet simulation setup for the 4-DOF manipulator, including the robot model, target marker, and virtual camera frusta used for synthetic data generation}{figure.caption.12}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.1}{\ignorespaces Denavit-Hartenberg parameters for the 4-DOF manipulator.}}{35}{table.caption.13}\protected@file@percent }
+\newlabel{tab:dh_parameters}{{3.1}{35}{Denavit-Hartenberg parameters for the 4-DOF manipulator}{table.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}Lorenz Attractor Trajectory Generation}{36}{subsection.3.1.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Lorenz System Trajectory generating smooth, chaotic workspace exploration. The attractor produces deterministic non-repeating paths that densely cover the robot's configuration space.}}{38}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:lorenz_trajectories}{{3.2}{38}{Lorenz System Trajectory generating smooth, chaotic workspace exploration. The attractor produces deterministic non-repeating paths that densely cover the robot's configuration space}{figure.caption.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.3}Data Collection and Preprocessing}{38}{subsection.3.1.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces End-to-end data generation and preprocessing pipeline. RGB images from PyBullet are converted to grayscale and thresholded to produce binary silhouettes for training.}}{39}{figure.caption.15}\protected@file@percent }
+\newlabel{fig:data_pipeline}{{3.3}{39}{End-to-end data generation and preprocessing pipeline. RGB images from PyBullet are converted to grayscale and thresholded to produce binary silhouettes for training}{figure.caption.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.4}Dataset Statistics and Quality Analysis}{39}{subsection.3.1.4}\protected@file@percent }
+\citation{hu2024teaching}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Representative robot configurations from the dataset, demonstrating diverse poses including vertical extension, diagonal reach, and angled configurations.}}{40}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:sample_poses}{{3.4}{40}{Representative robot configurations from the dataset, demonstrating diverse poses including vertical extension, diagonal reach, and angled configurations}{figure.caption.16}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Free-Form Kinematic Self-Model (FFKSM): Implicit Neural Rendering}{40}{section.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Core Mathematical Framework}{40}{subsection.3.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Neural Radiance Fields for Static Scenes}{40}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Positional Encoding}{41}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{FFKSM Adaptation for Articulated Robots}{41}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Implementation Details and Reproduction Challenges}{42}{subsection.3.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Challenge 1: Black-Screen Convergence}{42}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Challenge 2: Kinematic Blindness}{44}{section*.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Challenge 3: Weighted Loss Tuning}{45}{section*.22}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.2}{\ignorespaces Effect of robot pixel weight on FFKSM performance.}}{46}{table.caption.23}\protected@file@percent }
+\newlabel{tab:weight_tuning}{{3.2}{46}{Effect of robot pixel weight on FFKSM performance}{table.caption.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.3}FFKSM Training Protocol}{47}{subsection.3.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Hyperparameters}{47}{section*.24}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.3}{\ignorespaces FFKSM training hyperparameters.}}{47}{table.caption.25}\protected@file@percent }
+\newlabel{tab:ffksm_hyperparams}{{3.3}{47}{FFKSM training hyperparameters}{table.caption.25}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Training Loop}{47}{section*.26}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.4}FFKSM Performance Metrics}{48}{subsection.3.2.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.4}{\ignorespaces FFKSM quantitative performance metrics.}}{48}{table.caption.27}\protected@file@percent }
+\newlabel{tab:ffksm_performance}{{3.4}{48}{FFKSM quantitative performance metrics}{table.caption.27}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces FFKSM target versus render showing visual discrepancies. Volumetric rendering produces blurry depth predictions; errors concentrate at joint boundaries and link extremities where sampling density is insufficient.}}{48}{figure.caption.28}\protected@file@percent }
+\newlabel{fig:ffksm_results}{{3.5}{48}{FFKSM target versus render showing visual discrepancies. Volumetric rendering produces blurry depth predictions; errors concentrate at joint boundaries and link extremities where sampling density is insufficient}{figure.caption.28}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Kinematic 3D Gaussian Splatting (K-3DGS): Explicit Geometric Primitives}{49}{section.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Mathematical Foundations of 3D Gaussian Splatting}{49}{subsection.3.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.2}Rendering with 3D Gaussian Splatting}{49}{subsection.3.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.3}K-3DGS Architecture}{50}{subsection.3.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Component 1: Differentiable Forward Kinematics}{50}{section*.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Component 2: Gaussian Initialization via Skeleton Placement}{50}{section*.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Component 3: World Transformation}{51}{section*.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Component 4: Isotropic Rasterization}{51}{section*.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.4}The Anisotropic Failure: A Critical Architectural Lesson}{51}{subsection.3.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Symptom}{52}{section*.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Quantitative Analysis of the Failure}{52}{section*.34}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.5}{\ignorespaces Condition number evolution during anisotropic training.}}{52}{table.caption.35}\protected@file@percent }
+\newlabel{tab:condition_number}{{3.5}{52}{Condition number evolution during anisotropic training}{table.caption.35}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Root Cause Analysis}{52}{section*.36}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Attempted Remediations}{53}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Forced Retreat to Isotropic Representations}{53}{section*.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.5}K-3DGS Performance Metrics}{53}{subsection.3.3.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.6}{\ignorespaces K-3DGS quantitative performance metrics.}}{54}{table.caption.39}\protected@file@percent }
+\newlabel{tab:k3dgs_performance}{{3.6}{54}{K-3DGS quantitative performance metrics}{table.caption.39}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces K-3DGS render artifacts and spatial difference map. Isotropic spherical Gaussians create overlapping "blobby" artifacts that blur link boundaries.}}{54}{figure.caption.40}\protected@file@percent }
+\newlabel{fig:k3dgs_results}{{3.6}{54}{K-3DGS render artifacts and spatial difference map. Isotropic spherical Gaussians create overlapping "blobby" artifacts that blur link boundaries}{figure.caption.40}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces K-3DGS training metrics showing loss convergence (top), FPS (middle), and step time (bottom). Inference speed stabilizes at 37 FPS after initial optimization.}}{55}{figure.caption.41}\protected@file@percent }
+\newlabel{fig:k3dgs_metrics}{{3.7}{55}{K-3DGS training metrics showing loss convergence (top), FPS (middle), and step time (bottom). Inference speed stabilizes at 37 FPS after initial optimization}{figure.caption.41}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Comparative Analysis of Baseline Limitations}{55}{section.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}The Latency-Quality Tradeoff}{55}{subsection.3.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.7}{\ignorespaces Baseline self-modeling architecture performance comparison.}}{55}{table.caption.42}\protected@file@percent }
+\newlabel{tab:baseline_comparison}{{3.7}{55}{Baseline self-modeling architecture performance comparison}{table.caption.42}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.2}Supervision Efficiency Analysis}{55}{subsection.3.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.8}{\ignorespaces Supervision efficiency comparison across baseline architectures.}}{55}{table.caption.43}\protected@file@percent }
+\newlabel{tab:supervision_efficiency_baseline}{{3.8}{55}{Supervision efficiency comparison across baseline architectures}{table.caption.43}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.3}Architectural Bottlenecks Summary}{56}{subsection.3.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}The NeuroKin Direct Sensorimotor Decoder}{57}{chapter.4}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Core Hypothesis: Bypassing 3D Reconstruction}{57}{section.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}The Task-Relevant Information Hierarchy}{57}{subsection.4.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}The Supervision Efficiency Argument}{58}{subsection.4.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}When is 3D Reconstruction Necessary?}{59}{subsection.4.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Architecture Design}{59}{section.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces NeuroKin convolutional decoder architecture. Joint-angle inputs are encoded into a latent representation, spatially expanded, and decoded through transposed convolution layers into a predicted visual self-model.}}{60}{figure.caption.44}\protected@file@percent }
+\newlabel{fig:neurokin_architecture}{{4.1}{60}{NeuroKin convolutional decoder architecture. Joint-angle inputs are encoded into a latent representation, spatially expanded, and decoded through transposed convolution layers into a predicted visual self-model}{figure.caption.44}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Stage 1: Joint Encoder}{61}{subsection.4.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Architecture Details}{61}{section*.45}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Design Rationale}{61}{section*.46}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Stage 2: Spatial Expansion}{61}{subsection.4.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Transformation}{61}{section*.47}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Design Rationale}{62}{section*.48}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Stage 3: Transposed Convolutional Decoder}{62}{subsection.4.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Layer Definitions}{62}{section*.49}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Transposed Convolution Mathematics}{62}{section*.50}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Batch Normalization}{63}{section*.51}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Design Rationale for Four Layers}{63}{section*.52}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.4}Stage 4: Output Head and Spatial Upsampling}{63}{subsection.4.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Architecture}{63}{section*.53}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Bilinear Upsampling}{64}{section*.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Alternative: Why Not Transpose to $100 \times 100$ Directly?}{64}{section*.55}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.5}Total Parameter Count}{64}{subsection.4.2.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces NeuroKin parameter distribution by component.}}{64}{table.caption.56}\protected@file@percent }
+\newlabel{tab:neurokin_params}{{4.1}{64}{NeuroKin parameter distribution by component}{table.caption.56}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Stereoscopic 3D Recovery: NeuroKin-3D}{65}{section.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Dual-Camera Data Generation}{65}{subsection.4.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Dual-view data generation sample. Synchronized front and side camera silhouettes are concatenated to provide the stereoscopic evidence used by NeuroKin-3D.}}{66}{figure.caption.57}\protected@file@percent }
+\newlabel{fig:dual_view_data_sample}{{4.2}{66}{Dual-view data generation sample. Synchronized front and side camera silhouettes are concatenated to provide the stereoscopic evidence used by NeuroKin-3D}{figure.caption.57}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}The Geometry of Stereoscopic Silhouette Triangulation}{66}{subsection.4.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}NeuroKin-3D Architecture}{67}{subsection.4.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Positional Encoding 2D}{67}{section*.58}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{SpatialConvStream Encoder}{67}{section*.59}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Feature Fusion and MLP Head}{67}{section*.60}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.4}Multi-Task Training Loss}{68}{subsection.4.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Spatial Loss}{68}{section*.61}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Weighted Joint Loss}{68}{section*.62}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Hyperparameter Selection}{69}{section*.63}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.5}Local Overfit Test}{69}{subsection.4.3.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.2}{\ignorespaces Local overfit test results for NeuroKin-3D.}}{69}{table.caption.64}\protected@file@percent }
+\newlabel{tab:overfit_test}{{4.2}{69}{Local overfit test results for NeuroKin-3D}{table.caption.64}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Training Strategy and Regularization}{69}{section.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Base NeuroKin Training}{69}{subsection.4.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Loss Function}{69}{section*.65}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Optimization Hyperparameters}{70}{section*.66}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.3}{\ignorespaces Base NeuroKin training hyperparameters.}}{70}{table.caption.67}\protected@file@percent }
+\newlabel{tab:neurokin_hyperparams}{{4.3}{70}{Base NeuroKin training hyperparameters}{table.caption.67}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Base NeuroKin training and validation loss over 100 epochs. Both curves converge rapidly and remain closely coupled, indicating stable optimization without the curriculum required by FFKSM.}}{70}{figure.caption.68}\protected@file@percent }
+\newlabel{fig:neurokin_2d_loss}{{4.3}{70}{Base NeuroKin training and validation loss over 100 epochs. Both curves converge rapidly and remain closely coupled, indicating stable optimization without the curriculum required by FFKSM}{figure.caption.68}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Why No Curriculum Learning or Weighted Loss?}{70}{section*.69}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}NeuroKin-3D Training}{71}{subsection.4.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.4}{\ignorespaces NeuroKin-3D training hyperparameters.}}{71}{table.caption.70}\protected@file@percent }
+\newlabel{tab:neurokin3d_hyperparams}{{4.4}{71}{NeuroKin-3D training hyperparameters}{table.caption.70}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Performance Evaluation}{71}{section.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Base NeuroKin: 2D Silhouette Prediction}{71}{subsection.4.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.5}{\ignorespaces Base NeuroKin quantitative performance metrics.}}{71}{table.caption.71}\protected@file@percent }
+\newlabel{tab:neurokin_performance}{{4.5}{71}{Base NeuroKin quantitative performance metrics}{table.caption.71}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.2}NeuroKin-3D: Stereoscopic 3D Recovery}{72}{subsection.4.5.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.6}{\ignorespaces NeuroKin-3D quantitative performance metrics.}}{72}{table.caption.72}\protected@file@percent }
+\newlabel{tab:neurokin3d_performance}{{4.6}{72}{NeuroKin-3D quantitative performance metrics}{table.caption.72}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.3}ResNeuroKin-D: Multi-Task Depth Prediction}{72}{subsection.4.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.7}{\ignorespaces ResNeuroKin-D quantitative performance metrics.}}{72}{table.caption.73}\protected@file@percent }
+\newlabel{tab:resneurokin_performance}{{4.7}{72}{ResNeuroKin-D quantitative performance metrics}{table.caption.73}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.6}Ablation Studies}{73}{section.4.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Noise Augmentation Ablation}{73}{subsection.4.6.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.8}{\ignorespaces Effect of noise augmentation on NeuroKin performance.}}{73}{table.caption.74}\protected@file@percent }
+\newlabel{tab:noise_ablation}{{4.8}{73}{Effect of noise augmentation on NeuroKin performance}{table.caption.74}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.2}Network Depth Ablation}{73}{subsection.4.6.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.9}{\ignorespaces Effect of decoder depth on NeuroKin performance.}}{73}{table.caption.75}\protected@file@percent }
+\newlabel{tab:depth_ablation}{{4.9}{73}{Effect of decoder depth on NeuroKin performance}{table.caption.75}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.3}Latent Dimensionality Ablation}{74}{subsection.4.6.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.10}{\ignorespaces Effect of latent dimension on NeuroKin performance.}}{74}{table.caption.76}\protected@file@percent }
+\newlabel{tab:latent_ablation}{{4.10}{74}{Effect of latent dimension on NeuroKin performance}{table.caption.76}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.7}Supervision Efficiency Analysis Revisited}{74}{section.4.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4.11}{\ignorespaces Supervision efficiency comparison across architectures.}}{74}{table.caption.77}\protected@file@percent }
+\newlabel{tab:supervision_efficiency}{{4.11}{74}{Supervision efficiency comparison across architectures}{table.caption.77}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.8}Qualitative Results}{75}{section.4.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8.1}Base NeuroKin Silhouette Prediction}{75}{subsection.4.8.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Base NeuroKin qualitative validation results. Target silhouettes, NeuroKin renders, and difference maps show that direct decoding recovers link geometry with localized errors near joint boundaries and the end-effector.}}{75}{figure.caption.78}\protected@file@percent }
+\newlabel{fig:neurokin_results}{{4.4}{75}{Base NeuroKin qualitative validation results. Target silhouettes, NeuroKin renders, and difference maps show that direct decoding recovers link geometry with localized errors near joint boundaries and the end-effector}{figure.caption.78}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8.2}NeuroKin-3D End-Effector Prediction}{75}{subsection.4.8.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces NeuroKin-3D validation coordinates. Predicted $x$, $y$, and $z$ traces closely follow the ground-truth end-effector positions across the validation sequence.}}{76}{figure.caption.79}\protected@file@percent }
+\newlabel{fig:end_effector_correlation}{{4.5}{76}{NeuroKin-3D validation coordinates. Predicted $x$, $y$, and $z$ traces closely follow the ground-truth end-effector positions across the validation sequence}{figure.caption.79}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces NeuroKin-3D validation diagnostics: Euclidean end-effector error, predicted versus target 3D trajectory, and train-validation loss. The three panels show both spatial accuracy and stable optimization.}}{77}{figure.caption.80}\protected@file@percent }
+\newlabel{fig:neurokin3d_diagnostics}{{4.6}{77}{NeuroKin-3D validation diagnostics: Euclidean end-effector error, predicted versus target 3D trajectory, and train-validation loss. The three panels show both spatial accuracy and stable optimization}{figure.caption.80}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8.3}ResNeuroKin-D Depth Prediction}{77}{subsection.4.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.9}Discussion: The 3D Reconstruction Bottleneck}{77}{section.4.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.9.1}When Explicit 3D is Necessary}{77}{subsection.4.9.1}\protected@file@percent }
+\citation{hu2024egocentric}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.9.2}When Silhouette-Only Suffices}{78}{subsection.4.9.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.9.3}The Minimal Representation Principle}{78}{subsection.4.9.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.10}Limitations of Direct Decoding}{78}{section.4.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.10.1}Single-Viewpoint Constraint}{78}{subsection.4.10.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.10.2}Binary Silhouette Only}{79}{subsection.4.10.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.10.3}Sim-to-Real Gap}{79}{subsection.4.10.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.10.4}Catastrophic Forgetting Under Damage}{79}{subsection.4.10.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.11}Summary}{80}{section.4.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Visual Closed-Loop Control and Damage Adaptation}{81}{chapter.5}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Controller Integration: Resolved-Rate Inverse Kinematics with Visual Feedback}{81}{section.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Task-Space Control Formulation}{82}{subsection.5.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Damped Least-Squares Inverse Kinematics}{82}{subsection.5.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.3}Visual Feedback Loop with NeuroKin-3D}{83}{subsection.5.1.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Standard closed-loop control flow integrating the self-model. The visual estimate overrides corrupted proprioceptive data when embodiment drift occurs.}}{84}{figure.caption.81}\protected@file@percent }
+\newlabel{fig:control_loop}{{5.1}{84}{Standard closed-loop control flow integrating the self-model. The visual estimate overrides corrupted proprioceptive data when embodiment drift occurs}{figure.caption.81}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.4}Exponential Smoothing for Noise Reduction}{84}{subsection.5.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.5}Baseline: Pure Proprioceptive Control}{84}{subsection.5.1.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Experimental Protocol}{85}{section.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}Task Definition: Point-to-Point Reaching}{85}{subsection.5.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Representative target-current end-effector error in 3D Cartesian space. The dashed segment visualizes the Euclidean distance minimized by the closed-loop reaching controller.}}{86}{figure.caption.82}\protected@file@percent }
+\newlabel{fig:target_current_ee_position}{{5.2}{86}{Representative target-current end-effector error in 3D Cartesian space. The dashed segment visualizes the Euclidean distance minimized by the closed-loop reaching controller}{figure.caption.82}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Nominal Performance Evaluation}{86}{subsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.3}Fault Injection: Proprioceptive Encoder Slip}{87}{subsection.5.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.4}Fault Magnitude Sweep}{87}{subsection.5.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Stability Analysis of the Visual Servo Controller}{87}{section.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Lyapunov Stability for Proportional Control}{88}{subsection.5.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Effect of the Integral Term}{88}{subsection.5.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.3}Effect of Visual Estimation Error}{88}{subsection.5.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}Results: Nominal Performance}{89}{section.5.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Nominal performance comparison (no faults, mean $\pm $ std over 100 trials).}}{89}{table.caption.83}\protected@file@percent }
+\newlabel{tab:nominal_performance}{{5.1}{89}{Nominal performance comparison (no faults, mean $\pm $ std over 100 trials)}{table.caption.83}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces Baseline error convergence over time steps. Both NeuroKin and pure proprioceptive controllers converge smoothly to sub-centimeter error within 50 steps under nominal conditions. The shaded region indicates $\pm 1$ standard deviation across 100 trials.}}{90}{figure.caption.84}\protected@file@percent }
+\newlabel{fig:nominal_convergence}{{5.3}{90}{Baseline error convergence over time steps. Both NeuroKin and pure proprioceptive controllers converge smoothly to sub-centimeter error within 50 steps under nominal conditions. The shaded region indicates $\pm 1$ standard deviation across 100 trials}{figure.caption.84}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces Representative closed-loop end-effector trajectory from start position to target position. The smooth path confirms that the visual state estimate supports stable task-space motion.}}{91}{figure.caption.85}\protected@file@percent }
+\newlabel{fig:closedloop_ee_trajectory}{{5.4}{91}{Representative closed-loop end-effector trajectory from start position to target position. The smooth path confirms that the visual state estimate supports stable task-space motion}{figure.caption.85}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.5}Results: Fault-Tolerant Performance}{91}{section.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.1}Encoder Slip at Step 50}{91}{subsection.5.5.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces Dynamic error recovery following encoder slip injected at Step 50. The baseline pure proprioceptive controller diverges catastrophically, while NeuroKin's visual estimates enable rapid re-convergence to the target.}}{92}{figure.caption.86}\protected@file@percent }
+\newlabel{fig:fault_convergence}{{5.5}{92}{Dynamic error recovery following encoder slip injected at Step 50. The baseline pure proprioceptive controller diverges catastrophically, while NeuroKin's visual estimates enable rapid re-convergence to the target}{figure.caption.86}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.2}Quantitative Results Across 100 Trials}{93}{subsection.5.5.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Fault-tolerant performance comparison (100 trials, random fault magnitude $\pm 5^\circ $ to $\pm 20^\circ $).}}{93}{table.caption.87}\protected@file@percent }
+\newlabel{tab:fault_performance}{{5.2}{93}{Fault-tolerant performance comparison (100 trials, random fault magnitude $\pm 5^\circ $ to $\pm 20^\circ $)}{table.caption.87}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.3}Fault Magnitude Sweep}{93}{subsection.5.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces Success rate by fault magnitude (50 trials per magnitude).}}{94}{table.caption.88}\protected@file@percent }
+\newlabel{tab:fault_sweep}{{5.3}{94}{Success rate by fault magnitude (50 trials per magnitude)}{table.caption.88}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.4}Joint Angle Tracking Under Fault}{94}{subsection.5.5.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces NeuroKin-3D joint angle estimation error under fault (mean $\pm $ std, degrees).}}{94}{table.caption.89}\protected@file@percent }
+\newlabel{tab:joint_tracking}{{5.4}{94}{NeuroKin-3D joint angle estimation error under fault (mean $\pm $ std, degrees)}{table.caption.89}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.6}{\ignorespaces Closed-loop joint-angle error over time. All four joint estimates converge toward zero, supporting the use of NeuroKin-3D joint outputs in the Jacobian feedback loop.}}{95}{figure.caption.90}\protected@file@percent }
+\newlabel{fig:closedloop_joint_error}{{5.6}{95}{Closed-loop joint-angle error over time. All four joint estimates converge toward zero, supporting the use of NeuroKin-3D joint outputs in the Jacobian feedback loop}{figure.caption.90}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.6}Analysis: Why Visual Estimates Enable Recovery}{95}{section.5.6}\protected@file@percent }
+\citation{grambow2026anomaly}
+\citation{fu2025contrastive}
+\citation{li2025dream2fix}
+\citation{jayasinghe2026residual}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.1}The Critical Role of Sub-Millisecond Latency}{96}{subsection.5.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.2}Comparison to Prior Work on Fault Tolerance}{96}{subsection.5.6.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Comparison to fault-tolerant control methods in the literature.}}{96}{table.caption.91}\protected@file@percent }
+\newlabel{tab:comparison_fault}{{5.5}{96}{Comparison to fault-tolerant control methods in the literature}{table.caption.91}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.7}Extension to Structural Damage}{97}{section.5.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.1}Damage Configuration}{97}{subsection.5.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.2}Visual Estimation Under Structural Damage}{97}{subsection.5.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.3}Fine-Tuning for Rapid Adaptation}{97}{subsection.5.7.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces NeuroKin-3D estimation error under structural damage before and after fine-tuning.}}{98}{table.caption.92}\protected@file@percent }
+\newlabel{tab:damage_recovery}{{5.6}{98}{NeuroKin-3D estimation error under structural damage before and after fine-tuning}{table.caption.92}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.4}Closed-Loop Performance Under Structural Damage}{98}{subsection.5.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.8}Failure Case Analysis}{98}{section.5.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8.1}Category 1: Extreme Fault Magnitude (38\% of failures)}{98}{subsection.5.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8.2}Category 2: Workspace Exit (41\% of failures)}{99}{subsection.5.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8.3}Category 3: Silhouette Degradation (21\% of failures)}{99}{subsection.5.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.9}Discussion: Implications for Real-World Deployment}{100}{section.5.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9.1}Sim-to-Real Considerations}{100}{subsection.5.9.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Lighting variation:}{100}{section*.93}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Background clutter:}{100}{section*.94}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Camera noise:}{100}{section*.95}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Calibration accuracy:}{100}{section*.96}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Computational hardware:}{100}{section*.97}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9.2}Comparison to Traditional Visual Servoing}{101}{subsection.5.9.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.10}Summary}{101}{section.5.10}\protected@file@percent }
+\citation{bongard2006resilient}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Sequential Swarm Coordination under Compounding Faults}{103}{chapter.6}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}The Sequential Swarm Pipeline: Temporal Stigmergy in Operation}{104}{section.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.1}Definition of Temporal Stigmergy}{104}{subsection.6.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.2}The 100-Stage Operational Chain}{105}{subsection.6.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.3}Progressive Fault Injection}{106}{subsection.6.1.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.1}{\ignorespaces Progressive fault injection parameters by stage tier.}}{107}{table.caption.98}\protected@file@percent }
+\newlabel{tab:fault_tiers}{{6.1}{107}{Progressive fault injection parameters by stage tier}{table.caption.98}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6.1}{\ignorespaces Decentralized control loop enabling temporal coordination across sequential agents. Each agent reads the shared failure ledger, adapts its behavior accordingly, and writes its outcome back to the ledger for subsequent agents.}}{108}{figure.caption.99}\protected@file@percent }
+\newlabel{fig:swarm_control_loop}{{6.1}{108}{Decentralized control loop enabling temporal coordination across sequential agents. Each agent reads the shared failure ledger, adapts its behavior accordingly, and writes its outcome back to the ledger for subsequent agents}{figure.caption.99}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}The Inter-Agent Communication Ledger as Stigmergic Channel}{109}{section.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.1}The Factory State Dictionary}{109}{subsection.6.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Simplicity:}{109}{section*.100}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Persistence:}{109}{section*.101}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Locality:}{109}{section*.102}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.2}The Recovery Threshold Mechanism}{110}{subsection.6.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.3}Comparison to Biological Stigmergy}{110}{subsection.6.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}State-Dependent Collective Adaptation: Experimental Results}{111}{section.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.1}Baseline: Standard IK Controller (No Stigmergy)}{111}{subsection.6.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.2}{\ignorespaces Algorithm efficiency in the nominal sequential setting. NeuroKin reaches targets in fewer steps than the IK baseline even before compounding faults dominate the experiment.}}{112}{figure.caption.103}\protected@file@percent }
+\newlabel{fig:swarm_efficiency_nominal}{{6.2}{112}{Algorithm efficiency in the nominal sequential setting. NeuroKin reaches targets in fewer steps than the IK baseline even before compounding faults dominate the experiment}{figure.caption.103}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.2}NeuroKin with Temporal Stigmergy}{112}{subsection.6.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.3}Quantitative Comparison: 100-Stage Results}{113}{subsection.6.3.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.2}{\ignorespaces Sequential swarm performance comparison (100 stages, progressive fault injection, from Notebook B).}}{113}{table.caption.104}\protected@file@percent }
+\newlabel{tab:swarm_results}{{6.2}{113}{Sequential swarm performance comparison (100 stages, progressive fault injection, from Notebook B)}{table.caption.104}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.4}Analysis of Baseline Catastrophic Failure}{113}{subsection.6.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.5}Analysis of NeuroKin Stigmergic Adaptation}{113}{subsection.6.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.6}Step Efficiency Analysis}{114}{subsection.6.3.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.3}{\ignorespaces Algorithm Efficiency in Steps under injected faults. The IK baseline fails structurally (capped at 201 steps), while the NeuroKin swarm reads shared states and adapts behavior, maintaining efficiency between 20-40 steps.}}{114}{figure.caption.105}\protected@file@percent }
+\newlabel{fig:swarm_comparison}{{6.3}{114}{Algorithm Efficiency in Steps under injected faults. The IK baseline fails structurally (capped at 201 steps), while the NeuroKin swarm reads shared states and adapts behavior, maintaining efficiency between 20-40 steps}{figure.caption.105}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.4}Statistical Analysis and Failure Mode Characterization}{115}{section.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4.1}Survival Analysis}{115}{subsection.6.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4.2}Failure Mode Categorization}{115}{subsection.6.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.3}{\ignorespaces Failure mode distribution for NeuroKin sequential swarm (derived from Chapter 5 analysis).}}{115}{table.caption.106}\protected@file@percent }
+\newlabel{tab:failure_modes_swarm}{{6.3}{115}{Failure mode distribution for NeuroKin sequential swarm (derived from Chapter 5 analysis)}{table.caption.106}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4.3}Stigmergic Efficiency: Information-Theoretic Analysis}{115}{subsection.6.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.5}Comparison to Prior Work on Swarm Coordination}{116}{section.6.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5.1}Explicit Communication vs. Stigmergy}{116}{subsection.6.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.4}{\ignorespaces Comparison of swarm coordination mechanisms.}}{116}{table.caption.107}\protected@file@percent }
+\newlabel{tab:swarm_comparison_lit}{{6.4}{116}{Comparison of swarm coordination mechanisms}{table.caption.107}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5.2}Comparison to Multi-Agent Reinforcement Learning}{116}{subsection.6.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.6}Limitations and Failure Case Analysis}{117}{section.6.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.6.1}Sequential, Not Concurrent}{117}{subsection.6.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.6.2}Information Bottleneck}{117}{subsection.6.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.6.3}Fault Model Limitations}{118}{subsection.6.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.6.4}Recovery Mode Conservatism}{118}{subsection.6.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.7}Discussion: Validating the "Toward Swarm Coordination" Hypothesis}{118}{section.6.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.7.1}Why Temporal Stigmergy Proves the Prerequisite}{118}{subsection.6.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.7.2}The Role of Sub-Millisecond Inference in Swarm Coordination}{119}{subsection.6.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.7.3}Generalization to Physical Swarms}{120}{subsection.6.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.8}Summary}{120}{section.6.8}\protected@file@percent }
+\citation{hu2024teaching}
+\citation{chen2022full}
+\@writefile{toc}{\contentsline {chapter}{\numberline {7}Discussion}{122}{chapter.7}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {7.1}Trade-offs of Direct Decoding: Sacrificing Novel-View Synthesis for Extreme Inference Speed}{122}{section.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.1}The Single-Viewpoint Constraint}{122}{subsection.7.1.1}\protected@file@percent }
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.2}Binary Silhouettes vs. RGB Prediction}{123}{subsection.7.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.3}The Pareto Frontier: Novel-View Synthesis vs. Control-Loop Latency}{123}{subsection.7.1.3}\protected@file@percent }
+\citation{hu2024teaching}
+\@writefile{lof}{\contentsline {figure}{\numberline {7.1}{\ignorespaces Pareto frontier illustrating the optimal trade-off between model accuracy (PSNR) and computational speed (FPS). NeuroKin occupies the upper-right region, achieving both superior quality and sub-millisecond latency. The red dashed line indicates the 1,000 FPS threshold for 1 kHz control loops.}}{124}{figure.caption.108}\protected@file@percent }
+\newlabel{fig:pareto_frontier}{{7.1}{124}{Pareto frontier illustrating the optimal trade-off between model accuracy (PSNR) and computational speed (FPS). NeuroKin occupies the upper-right region, achieving both superior quality and sub-millisecond latency. The red dashed line indicates the 1,000 FPS threshold for 1 kHz control loops}{figure.caption.108}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.4}Supervision Efficiency as the Key Explanatory Variable}{124}{subsection.7.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.2}Validating the "Toward Swarm Coordination" Hypothesis: Temporal Stigmergy as a Prerequisite}{125}{section.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2.1}Why Temporal Stigmergy Proves the Prerequisite}{125}{subsection.7.2.1}\protected@file@percent }
+\citation{bongard2006resilient}
+\citation{cully2015robots}
+\citation{domberg2026selfadapting}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2.2}The Role of Sub-Millisecond Inference in Stigmergic Coordination}{126}{subsection.7.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2.3}Comparison to Alternative Coordination Mechanisms}{126}{subsection.7.2.3}\protected@file@percent }
+\citation{bongard2006resilient}
+\@writefile{lot}{\contentsline {table}{\numberline {7.1}{\ignorespaces Comparison of swarm coordination mechanisms along key scalability and communication axes.}}{127}{table.caption.109}\protected@file@percent }
+\newlabel{tab:coordination_comparison}{{7.1}{127}{Comparison of swarm coordination mechanisms along key scalability and communication axes}{table.caption.109}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2.4}Limitations of the Sequential Paradigm}{127}{subsection.7.2.4}\protected@file@percent }
+\citation{tan2018simtoreal}
+\citation{qureshi2025splatsim}
+\citation{tang2025semantic}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2.5}Information Bottleneck and Recovery Mode Design}{128}{subsection.7.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.3}Threats to Validity and Directions for Mitigation}{128}{section.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3.1}Simulation-to-Reality Gap}{128}{subsection.7.3.1}\protected@file@percent }
+\citation{schulze2024high}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3.2}Abstraction of Mechanical Degradation and Rigid-Body Assumptions}{129}{subsection.7.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3.3}Generalization to Higher Degrees of Freedom}{130}{subsection.7.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3.4}Catastrophic Forgetting Under Structural Damage}{130}{subsection.7.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3.5}Data Efficiency and Limited Training Samples}{130}{subsection.7.3.5}\protected@file@percent }
+\citation{qureshi2025splatsim}
+\citation{tang2025semantic}
+\citation{schulze2024high}
+\@writefile{toc}{\contentsline {section}{\numberline {7.4}Summary of Discussion}{131}{section.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {8}Conclusion and Future Work}{133}{chapter.8}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {8.1}Summary of Contributions and Research Findings}{133}{section.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1.1}RQ1: Architectural Efficiency --- Direct Decoding Defeats the Latency Paradox}{133}{subsection.8.1.1}\protected@file@percent }
+\citation{hu2024teaching}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1.2}RQ2: Control Integration --- Sub-Millisecond Visual Servoing Enables Dynamic Stabilization}{134}{subsection.8.1.2}\protected@file@percent }
+\citation{li2025dream2fix}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1.3}RQ3: Fault Tolerance --- Rapid Fine-Tuning Enables Adaptation to Structural Damage}{135}{subsection.8.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1.4}RQ4: Collective Adaptation --- Temporal Stigmergy Validates the Prerequisite for Swarm Coordination}{135}{subsection.8.1.4}\protected@file@percent }
+\citation{hu2024teaching}
+\@writefile{toc}{\contentsline {section}{\numberline {8.2}Technical Contributions Summary}{136}{section.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2.1}Contribution 1: Formal Benchmarking of the Latency Paradox}{136}{subsection.8.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2.2}Contribution 2: The NeuroKin Direct Sensorimotor Decoder}{137}{subsection.8.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2.3}Contribution 3: Visual Closed-Loop Damage Adaptation}{137}{subsection.8.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2.4}Contribution 4: Temporal Stigmergy for Sequential Swarm Coordination}{137}{subsection.8.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.3}Future Roadmap: From Sequential Validation to Spatial Swarms}{137}{section.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3.1}Immediate Next Steps (6--12 Months): Bridging the Sim-to-Real Gap}{138}{subsection.8.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Robust Silhouette Extraction}{138}{section*.110}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stereoscopic Calibration}{138}{section*.111}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Embedded Deployment}{138}{section*.112}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Continual Learning for Damage Adaptation}{138}{section*.113}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3.2}Medium-Term Extensions (1--2 Years): Concurrent Spatial Swarms}{139}{subsection.8.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Concurrency Control for the Shared Ledger}{139}{section*.114}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Decentralized SLAM and Spatial Coordination}{139}{section*.115}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Scalability Analysis}{139}{section*.116}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Fault Model Generalization}{139}{section*.117}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3.3}Long-Term Vision (2--5 Years): Adaptive Swarm Intelligence}{140}{subsection.8.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Hierarchical Stigmergy}{140}{section*.118}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Learned Recovery Policies}{140}{section*.119}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Cross-Embodiment Transfer}{140}{section*.120}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Human-Swarm Interaction}{140}{section*.121}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.4}Concluding Remarks}{141}{section.8.4}\protected@file@percent }
+\bibcite{bongard2006resilient}{1}
+\bibcite{cully2015robots}{2}
+\bibcite{kwiatkowski2019task}{3}
+\bibcite{chen2022full}{4}
+\bibcite{hu2024teaching}{5}
+\bibcite{hu2025learning}{6}
+\bibcite{tan2018simtoreal}{7}
+\bibcite{heiden2022inferring}{8}
+\bibcite{lou2026drex}{9}
+\bibcite{qureshi2025splatsim}{10}
+\bibcite{tang2025semantic}{11}
+\bibcite{yang2025robosplat}{12}
+\bibcite{yu2025real2render2real}{13}
+\bibcite{abou2024realissim}{14}
+\bibcite{jain2025polaris}{15}
+\bibcite{li2024simpler}{16}
+\bibcite{grambow2026anomaly}{17}
+\bibcite{fu2025contrastive}{18}
+\bibcite{chen2024vlm}{19}
+\bibcite{li2025dream2fix}{20}
+\bibcite{briscoe2025deft}{21}
+\bibcite{poddar2026embedding}{22}
+\bibcite{li2026pchc}{23}
+\bibcite{lee2026tolebi}{24}
+\bibcite{wu2026parkour}{25}
+\bibcite{domberg2026selfadapting}{26}
+\bibcite{jayasinghe2026residual}{27}
+\bibcite{hu2024egocentric}{28}
+\bibcite{schulze2024high}{29}
+\gdef \@abspage@last{160}

@@ -1,0 +1,243 @@
+\contentsline {chapter}{Abstract}{}{chapter*.1}%
+\contentsline {chapter}{List of Figures}{}{chapter*.3}%
+\contentsline {chapter}{List of Tables}{}{chapter*.4}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}The Challenge of Embodiment Drift}{1}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Manifestations of Embodiment Drift}{2}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Consequences for Control}{2}{subsection.1.1.2}%
+\contentsline {section}{\numberline {1.2}The Evolution of Self-Modeling Paradigms}{3}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}The Symbolic Era: Estimation-Exploration}{3}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}The Behavioral Era: Avoidance Over Adaptation}{4}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Task-Agnostic Learned Dynamics Models}{5}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Proprioceptive Morphology Identification}{5}{subsection.1.2.4}%
+\contentsline {subsection}{\numberline {1.2.5}The Visual Era: Deep Self-Models and Neural Rendering}{6}{subsection.1.2.5}%
+\contentsline {section}{\numberline {1.3}The Latency Paradox in Neural Rendering}{7}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Temporal Constraints of Robotic Control}{7}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}The Computational Bottleneck}{7}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {1.3.3}The Plasticity-Stability Dilemma in Self-Modeling}{8}{subsection.1.3.3}%
+\contentsline {section}{\numberline {1.4}Digital Twins and the Simulation-to-Reality Gap}{9}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Problem Statement and Core Hypothesis}{10}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}The Central Hypothesis}{11}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Empirical Scope and Deliberate Constraints}{11}{subsection.1.5.2}%
+\contentsline {subsection}{\numberline {1.5.3}The Temporal Stigmergy Framework for Swarm Coordination}{12}{subsection.1.5.3}%
+\contentsline {section}{\numberline {1.6}Research Questions}{12}{section.1.6}%
+\contentsline {subsection}{\numberline {1.6.1}RQ1: Architectural Efficiency}{12}{subsection.1.6.1}%
+\contentsline {subsection}{\numberline {1.6.2}RQ2: Control Integration}{13}{subsection.1.6.2}%
+\contentsline {subsection}{\numberline {1.6.3}RQ3: Fault Tolerance}{13}{subsection.1.6.3}%
+\contentsline {subsection}{\numberline {1.6.4}RQ4: Collective Adaptation}{13}{subsection.1.6.4}%
+\contentsline {section}{\numberline {1.7}Methodological Contributions}{13}{section.1.7}%
+\contentsline {subsection}{\numberline {1.7.1}Contribution 1: Formal Benchmarking of the Latency Paradox}{13}{subsection.1.7.1}%
+\contentsline {subsection}{\numberline {1.7.2}Contribution 2: The NeuroKin Direct Sensorimotor Decoder}{14}{subsection.1.7.2}%
+\contentsline {subsection}{\numberline {1.7.3}Contribution 3: Visual Closed-Loop Fault Adaptation}{14}{subsection.1.7.3}%
+\contentsline {subsection}{\numberline {1.7.4}Contribution 4: Temporal Stigmergy for Sequential Swarm Coordination}{14}{subsection.1.7.4}%
+\contentsline {section}{\numberline {1.8}Thesis Organization}{15}{section.1.8}%
+\contentsline {chapter}{\numberline {2}Literature Synthesis}{16}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Evolution of Self-Modeling}{16}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}The Symbolic Era: Estimation-Exploration}{16}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}The Behavioral Era: Avoidance Over Adaptation}{17}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Task-Agnostic Learned Dynamics Models}{18}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}Proprioceptive Morphology Identification}{18}{subsection.2.1.4}%
+\contentsline {subsection}{\numberline {2.1.5}The Visual Era: Deep Self-Models and Neural Rendering}{19}{subsection.2.1.5}%
+\contentsline {section}{\numberline {2.2}Neural Rendering Foundations: The Speed-Quality Tradeoff}{20}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Neural Radiance Fields: Implicit Scene Representation}{20}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}3D Gaussian Splatting: Explicit Geometric Primitives}{21}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}The Failure of Anisotropy on Robotic Morphologies}{23}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Articulated Object Reconstruction for Digital Twin Generation}{23}{subsection.2.2.4}%
+\contentsline {subsection}{\numberline {2.2.5}Physics-Consistent Robot Models and Manipulation Planning}{25}{subsection.2.2.5}%
+\contentsline {subsection}{\numberline {2.2.6}Cross-Embodiment Transfer and Morphological Understanding}{26}{subsection.2.2.6}%
+\contentsline {subsection}{\numberline {2.2.7}Sim-to-Real Transfer via Digital Twins}{26}{subsection.2.2.7}%
+\contentsline {section}{\numberline {2.3}Damage Recovery and Fault Tolerance}{28}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Detection Methods and Early Intervention}{28}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Recovery Policy Generation and Adaptation}{28}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Humanoid Recovery and Stability}{28}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Practical Deployment Lessons}{29}{subsection.2.3.4}%
+\contentsline {section}{\numberline {2.4}Continual Learning for Self-Model Maintenance}{29}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Balancing Plasticity and Stability}{29}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Resource-Efficient Adaptation via Sparsity}{30}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Safety-Constrained and Bounded Adaptation}{30}{subsection.2.4.3}%
+\contentsline {section}{\numberline {2.5}Theoretical Foundations of Swarm Coordination and Temporal Stigmergy}{31}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Stigmergy: Biological and Algorithmic Foundations}{31}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Temporal Stigmergy in Sequential Pipelines}{31}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Fast Inference as a Swarm Prerequisite}{32}{subsection.2.5.3}%
+\contentsline {section}{\numberline {2.6}Summary of Literature Findings}{33}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Research Questions Grounded in Literature}{34}{section.2.7}%
+\contentsline {subsection}{\numberline {2.7.1}RQ1: Architectural Efficiency}{34}{subsection.2.7.1}%
+\contentsline {subsection}{\numberline {2.7.2}RQ2: Control Integration}{34}{subsection.2.7.2}%
+\contentsline {subsection}{\numberline {2.7.3}RQ3: Fault Tolerance}{34}{subsection.2.7.3}%
+\contentsline {subsection}{\numberline {2.7.4}RQ4: Collective Adaptation}{35}{subsection.2.7.4}%
+\contentsline {chapter}{\numberline {3}Baseline Implementations and the Latency Bottleneck}{36}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Synthetic Data Generation via Lorenz Attractors}{36}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Simulation Environment Configuration}{36}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Lorenz Attractor Trajectory Generation}{38}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Data Collection and Preprocessing}{40}{subsection.3.1.3}%
+\contentsline {subsection}{\numberline {3.1.4}Dataset Statistics and Quality Analysis}{41}{subsection.3.1.4}%
+\contentsline {section}{\numberline {3.2}Free-Form Kinematic Self-Model (FFKSM): Implicit Neural Rendering}{42}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Core Mathematical Framework}{42}{subsection.3.2.1}%
+\contentsline {subsubsection}{Neural Radiance Fields for Static Scenes}{42}{section*.17}%
+\contentsline {subsubsection}{Positional Encoding}{43}{section*.18}%
+\contentsline {subsubsection}{FFKSM Adaptation for Articulated Robots}{43}{section*.19}%
+\contentsline {subsection}{\numberline {3.2.2}Implementation Details and Reproduction Challenges}{44}{subsection.3.2.2}%
+\contentsline {subsubsection}{Challenge 1: Black-Screen Convergence}{44}{section*.20}%
+\contentsline {subsubsection}{Challenge 2: Kinematic Blindness}{46}{section*.21}%
+\contentsline {subsubsection}{Challenge 3: Weighted Loss Tuning}{47}{section*.22}%
+\contentsline {subsection}{\numberline {3.2.3}FFKSM Training Protocol}{49}{subsection.3.2.3}%
+\contentsline {subsubsection}{Hyperparameters}{49}{section*.24}%
+\contentsline {subsubsection}{Training Loop}{49}{section*.26}%
+\contentsline {subsection}{\numberline {3.2.4}FFKSM Performance Metrics}{50}{subsection.3.2.4}%
+\contentsline {section}{\numberline {3.3}Kinematic 3D Gaussian Splatting (K-3DGS): Explicit Geometric Primitives}{51}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Mathematical Foundations of 3D Gaussian Splatting}{51}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Rendering with 3D Gaussian Splatting}{51}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}K-3DGS Architecture}{52}{subsection.3.3.3}%
+\contentsline {subsubsection}{Component 1: Differentiable Forward Kinematics}{52}{section*.29}%
+\contentsline {subsubsection}{Component 2: Gaussian Initialization via Skeleton Placement}{52}{section*.30}%
+\contentsline {subsubsection}{Component 3: World Transformation}{53}{section*.31}%
+\contentsline {subsubsection}{Component 4: Isotropic Rasterization}{53}{section*.32}%
+\contentsline {subsection}{\numberline {3.3.4}The Anisotropic Failure: A Critical Architectural Lesson}{53}{subsection.3.3.4}%
+\contentsline {subsubsection}{Symptom}{54}{section*.33}%
+\contentsline {subsubsection}{Quantitative Analysis of the Failure}{54}{section*.34}%
+\contentsline {subsubsection}{Root Cause Analysis}{54}{section*.36}%
+\contentsline {subsubsection}{Attempted Remediations}{55}{section*.37}%
+\contentsline {subsubsection}{Forced Retreat to Isotropic Representations}{55}{section*.38}%
+\contentsline {subsection}{\numberline {3.3.5}K-3DGS Performance Metrics}{55}{subsection.3.3.5}%
+\contentsline {section}{\numberline {3.4}Comparative Analysis of Baseline Limitations}{57}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}The Latency-Quality Tradeoff}{57}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Supervision Efficiency Analysis}{57}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Architectural Bottlenecks Summary}{58}{subsection.3.4.3}%
+\contentsline {chapter}{\numberline {4}The NeuroKin Direct Sensorimotor Decoder}{59}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Core Hypothesis: Bypassing 3D Reconstruction}{59}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}The Task-Relevant Information Hierarchy}{59}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}The Supervision Efficiency Argument}{60}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}When is 3D Reconstruction Necessary?}{61}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}Architecture Design}{61}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Stage 1: Joint Encoder}{62}{subsection.4.2.1}%
+\contentsline {subsubsection}{Architecture Details}{62}{section*.45}%
+\contentsline {subsubsection}{Design Rationale}{62}{section*.46}%
+\contentsline {subsection}{\numberline {4.2.2}Stage 2: Spatial Expansion}{63}{subsection.4.2.2}%
+\contentsline {subsubsection}{Transformation}{63}{section*.47}%
+\contentsline {subsubsection}{Design Rationale}{63}{section*.48}%
+\contentsline {subsection}{\numberline {4.2.3}Stage 3: Transposed Convolutional Decoder}{63}{subsection.4.2.3}%
+\contentsline {subsubsection}{Layer Definitions}{63}{section*.49}%
+\contentsline {subsubsection}{Transposed Convolution Mathematics}{64}{section*.50}%
+\contentsline {subsubsection}{Batch Normalization}{64}{section*.51}%
+\contentsline {subsubsection}{Design Rationale for Four Layers}{64}{section*.52}%
+\contentsline {subsection}{\numberline {4.2.4}Stage 4: Output Head and Spatial Upsampling}{65}{subsection.4.2.4}%
+\contentsline {subsubsection}{Architecture}{65}{section*.53}%
+\contentsline {subsubsection}{Bilinear Upsampling}{65}{section*.54}%
+\contentsline {subsubsection}{Alternative: Why Not Transpose to $100 \times 100$ Directly?}{65}{section*.55}%
+\contentsline {subsection}{\numberline {4.2.5}Total Parameter Count}{65}{subsection.4.2.5}%
+\contentsline {section}{\numberline {4.3}Stereoscopic 3D Recovery: NeuroKin-3D}{66}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Dual-Camera Data Generation}{66}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}The Geometry of Stereoscopic Silhouette Triangulation}{67}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}NeuroKin-3D Architecture}{68}{subsection.4.3.3}%
+\contentsline {subsubsection}{Positional Encoding 2D}{68}{section*.57}%
+\contentsline {subsubsection}{SpatialConvStream Encoder}{68}{section*.58}%
+\contentsline {subsubsection}{Feature Fusion and MLP Head}{69}{section*.59}%
+\contentsline {subsection}{\numberline {4.3.4}Multi-Task Training Loss}{69}{subsection.4.3.4}%
+\contentsline {subsubsection}{Spatial Loss}{69}{section*.60}%
+\contentsline {subsubsection}{Weighted Joint Loss}{69}{section*.61}%
+\contentsline {subsubsection}{Hyperparameter Selection}{70}{section*.62}%
+\contentsline {subsection}{\numberline {4.3.5}Local Overfit Test}{70}{subsection.4.3.5}%
+\contentsline {section}{\numberline {4.4}Training Strategy and Regularization}{70}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Base NeuroKin Training}{70}{subsection.4.4.1}%
+\contentsline {subsubsection}{Loss Function}{70}{section*.64}%
+\contentsline {subsubsection}{Optimization Hyperparameters}{71}{section*.65}%
+\contentsline {subsubsection}{Why No Curriculum Learning or Weighted Loss?}{71}{section*.68}%
+\contentsline {subsection}{\numberline {4.4.2}NeuroKin-3D Training}{72}{subsection.4.4.2}%
+\contentsline {section}{\numberline {4.5}Performance Evaluation}{72}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Base NeuroKin: 2D Silhouette Prediction}{72}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}NeuroKin-3D: Stereoscopic 3D Recovery}{73}{subsection.4.5.2}%
+\contentsline {section}{\numberline {4.6}Qualitative Results}{73}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Base NeuroKin Silhouette Prediction}{73}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}NeuroKin-3D End-Effector Prediction}{74}{subsection.4.6.2}%
+\contentsline {section}{\numberline {4.7}Discussion: The 3D Reconstruction Bottleneck}{75}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}When Explicit 3D is Necessary}{75}{subsection.4.7.1}%
+\contentsline {subsection}{\numberline {4.7.2}When Silhouette-Only Suffices}{76}{subsection.4.7.2}%
+\contentsline {subsection}{\numberline {4.7.3}The Minimal Representation Principle}{76}{subsection.4.7.3}%
+\contentsline {section}{\numberline {4.8}Limitations of Direct Decoding}{76}{section.4.8}%
+\contentsline {subsection}{\numberline {4.8.1}Single-Viewpoint Constraint}{76}{subsection.4.8.1}%
+\contentsline {subsection}{\numberline {4.8.2}Binary Silhouette Only}{77}{subsection.4.8.2}%
+\contentsline {subsection}{\numberline {4.8.3}Sim-to-Real Gap}{77}{subsection.4.8.3}%
+\contentsline {subsection}{\numberline {4.8.4}Catastrophic Forgetting Under Damage}{77}{subsection.4.8.4}%
+\contentsline {section}{\numberline {4.9}Summary}{78}{section.4.9}%
+\contentsline {chapter}{\numberline {5}Visual Closed-Loop Control and Fault Adaptation}{79}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Controller Integration: Resolved-Rate Inverse Kinematics with Visual Feedback}{79}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Task-Space Control Formulation}{80}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Damped Least-Squares Inverse Kinematics}{80}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Visual Feedback Loop with NeuroKin-3D}{81}{subsection.5.1.3}%
+\contentsline {subsection}{\numberline {5.1.4}Exponential Smoothing for Noise Reduction}{82}{subsection.5.1.4}%
+\contentsline {subsection}{\numberline {5.1.5}Baseline: Pure Proprioceptive Control}{82}{subsection.5.1.5}%
+\contentsline {section}{\numberline {5.2}Experimental Protocol}{83}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Task Definition: Point-to-Point Reaching}{83}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Nominal Performance Evaluation}{83}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Fault Injection: Unmodeled Actuator Disturbance}{84}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Closed-Loop Behavior Under Visual Feedback}{84}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Nominal Performance}{84}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Fault-Tolerant Performance}{85}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Analysis: Why Visual Estimates Enable Recovery}{86}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Extension to Structural Damage}{86}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Discussion: Implications for Real-World Deployment}{86}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Summary}{87}{section.5.7}%
+\contentsline {chapter}{\numberline {6}Sequential Swarm Coordination under Compounding Faults}{88}{chapter.6}%
+\contentsline {section}{\numberline {6.1}The Sequential Swarm Pipeline: Temporal Stigmergy in Operation}{89}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Definition of Temporal Stigmergy}{89}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}The 100-Stage Operational Chain}{90}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}Progressive Fault Injection}{91}{subsection.6.1.3}%
+\contentsline {section}{\numberline {6.2}The Inter-Agent Communication Ledger as Stigmergic Channel}{94}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}The Factory State Dictionary}{94}{subsection.6.2.1}%
+\contentsline {paragraph}{Simplicity:}{94}{section*.79}%
+\contentsline {paragraph}{Persistence:}{94}{section*.80}%
+\contentsline {paragraph}{Locality:}{94}{section*.81}%
+\contentsline {subsection}{\numberline {6.2.2}The Recovery Threshold Mechanism}{95}{subsection.6.2.2}%
+\contentsline {subsection}{\numberline {6.2.3}Comparison to Biological Stigmergy}{95}{subsection.6.2.3}%
+\contentsline {section}{\numberline {6.3}State-Dependent Collective Adaptation: Experimental Results}{96}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Baseline: Standard IK Controller (No Stigmergy)}{96}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}NeuroKin with Temporal Stigmergy}{96}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}Quantitative Comparison: 100-Stage Results}{97}{subsection.6.3.3}%
+\contentsline {subsection}{\numberline {6.3.4}Analysis of Baseline Catastrophic Failure}{98}{subsection.6.3.4}%
+\contentsline {subsection}{\numberline {6.3.5}Analysis of NeuroKin Stigmergic Adaptation}{98}{subsection.6.3.5}%
+\contentsline {subsection}{\numberline {6.3.6}Step Efficiency Analysis}{98}{subsection.6.3.6}%
+\contentsline {section}{\numberline {6.4}Statistical Analysis and Failure Mode Characterization}{99}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Survival Analysis}{99}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Failure Mode Categorization}{99}{subsection.6.4.2}%
+\contentsline {subsection}{\numberline {6.4.3}Stigmergic Efficiency: Information-Theoretic Analysis}{100}{subsection.6.4.3}%
+\contentsline {section}{\numberline {6.5}Comparison to Prior Work on Swarm Coordination}{100}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}Explicit Communication vs. Stigmergy}{100}{subsection.6.5.1}%
+\contentsline {subsection}{\numberline {6.5.2}Comparison to Multi-Agent Reinforcement Learning}{101}{subsection.6.5.2}%
+\contentsline {section}{\numberline {6.6}Limitations and Failure Case Analysis}{101}{section.6.6}%
+\contentsline {subsection}{\numberline {6.6.1}Sequential, Not Concurrent}{101}{subsection.6.6.1}%
+\contentsline {subsection}{\numberline {6.6.2}Information Bottleneck}{102}{subsection.6.6.2}%
+\contentsline {subsection}{\numberline {6.6.3}Fault Model Limitations}{102}{subsection.6.6.3}%
+\contentsline {subsection}{\numberline {6.6.4}Recovery Mode Conservatism}{102}{subsection.6.6.4}%
+\contentsline {section}{\numberline {6.7}Discussion: Validating the "Toward Swarm Coordination" Hypothesis}{102}{section.6.7}%
+\contentsline {subsection}{\numberline {6.7.1}Why Temporal Stigmergy Proves the Prerequisite}{102}{subsection.6.7.1}%
+\contentsline {subsection}{\numberline {6.7.2}The Role of Fast Inference in Swarm Coordination}{103}{subsection.6.7.2}%
+\contentsline {subsection}{\numberline {6.7.3}Generalization to Physical Swarms}{104}{subsection.6.7.3}%
+\contentsline {section}{\numberline {6.8}Summary}{104}{section.6.8}%
+\contentsline {chapter}{\numberline {7}Discussion}{105}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Trade-offs of Direct Decoding: Sacrificing Novel-View Synthesis for Extreme Inference Speed}{105}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}The Single-Viewpoint Constraint}{105}{subsection.7.1.1}%
+\contentsline {subsection}{\numberline {7.1.2}Binary Silhouettes vs. RGB Prediction}{106}{subsection.7.1.2}%
+\contentsline {subsection}{\numberline {7.1.3}The Pareto Frontier: Novel-View Synthesis vs. Control-Loop Latency}{106}{subsection.7.1.3}%
+\contentsline {subsection}{\numberline {7.1.4}Supervision Efficiency as the Key Explanatory Variable}{108}{subsection.7.1.4}%
+\contentsline {section}{\numberline {7.2}Validating the "Toward Swarm Coordination" Hypothesis: Temporal Stigmergy as a Prerequisite}{108}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}Why Temporal Stigmergy Proves the Prerequisite}{108}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}The Role of Fast Inference in Stigmergic Coordination}{109}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}Comparison to Alternative Coordination Mechanisms}{109}{subsection.7.2.3}%
+\contentsline {subsection}{\numberline {7.2.4}Limitations of the Sequential Paradigm}{110}{subsection.7.2.4}%
+\contentsline {subsection}{\numberline {7.2.5}Information Bottleneck and Recovery Mode Design}{111}{subsection.7.2.5}%
+\contentsline {section}{\numberline {7.3}Threats to Validity and Directions for Mitigation}{111}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Simulation-to-Reality Gap}{111}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Abstraction of Mechanical Degradation and Rigid-Body Assumptions}{113}{subsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.3.3}Generalization to Higher Degrees of Freedom}{113}{subsection.7.3.3}%
+\contentsline {subsection}{\numberline {7.3.4}Catastrophic Forgetting Under Structural Damage}{114}{subsection.7.3.4}%
+\contentsline {subsection}{\numberline {7.3.5}Data Efficiency and Limited Training Samples}{114}{subsection.7.3.5}%
+\contentsline {section}{\numberline {7.4}Summary of Discussion}{114}{section.7.4}%
+\contentsline {chapter}{\numberline {8}Conclusion and Future Work}{116}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Summary of Contributions and Research Findings}{116}{section.8.1}%
+\contentsline {subsection}{\numberline {8.1.1}RQ1: Architectural Efficiency}{116}{subsection.8.1.1}%
+\contentsline {subsection}{\numberline {8.1.2}RQ2: Control Integration}{116}{subsection.8.1.2}%
+\contentsline {subsection}{\numberline {8.1.3}RQ3: Fault Tolerance}{117}{subsection.8.1.3}%
+\contentsline {subsection}{\numberline {8.1.4}RQ4: Collective Adaptation}{117}{subsection.8.1.4}%
+\contentsline {section}{\numberline {8.2}Technical Contributions Summary}{117}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Future Roadmap: From Sequential Validation to Spatial Swarms}{117}{section.8.3}%
+\contentsline {section}{\numberline {8.4}Concluding Remarks}{117}{section.8.4}%

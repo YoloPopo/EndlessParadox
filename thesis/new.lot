@@ -1,0 +1,25 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Effect of robot pixel weight on FFKSM performance.}}{34}{table.caption.20}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces FFKSM training hyperparameters.}}{35}{table.caption.22}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces FFKSM quantitative performance metrics.}}{36}{table.caption.24}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Condition number evolution during anisotropic training.}}{40}{table.caption.33}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces K-3DGS quantitative performance metrics.}}{41}{table.caption.37}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces Baseline self-modeling architecture performance comparison.}}{42}{table.caption.40}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Supervision efficiency comparison across baseline architectures.}}{43}{table.caption.41}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces NeuroKin parameter distribution by component.}}{50}{table.caption.43}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Base NeuroKin training hyperparameters.}}{54}{table.caption.46}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Base NeuroKin quantitative performance metrics.}}{55}{table.caption.48}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces NeuroKin-3D quantitative performance metrics.}}{56}{table.caption.49}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces Ablation of joint noise augmentation scale ($\sigma $) on validation PSNR.}}{56}{table.caption.50}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces Ablation of transposed convolutional layer depth in Stage 3.}}{57}{table.caption.51}%
+\contentsline {table}{\numberline {4.7}{\ignorespaces Ablation of joint encoder latent space dimensionality ($z$).}}{57}{table.caption.52}%
+\contentsline {table}{\numberline {4.8}{\ignorespaces Comprehensive supervision density and data efficiency mapping.}}{57}{table.caption.53}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Nominal performance comparison (no faults, 100 trials).}}{64}{table.caption.58}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Sequential swarm performance comparison (100 stages, progressive fault injection).}}{72}{table.caption.64}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }

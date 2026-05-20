@@ -1,0 +1,16 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Denavit-Hartenberg parameters for the 4-DOF manipulator.}}{25}{table.caption.7}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Effect of robot pixel weight on FFKSM performance.}}{33}{table.caption.17}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces FFKSM quantitative performance metrics.}}{35}{table.caption.20}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Baseline self-modeling architecture performance comparison.}}{40}{table.caption.33}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces NeuroKin parameter distribution by component.}}{49}{table.caption.46}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Nominal performance comparison (no faults, mean $\pm $ std over 100 trials).}}{63}{table.caption.59}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Fault-tolerant performance comparison (100 trials, random fault magnitude $\pm 5^\circ $ to $\pm 20^\circ $).}}{67}{table.caption.63}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Sequential swarm performance comparison (100 stages, progressive fault injection).}}{80}{table.caption.74}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }

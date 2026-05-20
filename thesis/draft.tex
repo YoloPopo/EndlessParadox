@@ -1,0 +1,1080 @@
+\documentclass[12pt,a4paper,oneside]{report}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+
+% --- Page Setup ---
+\geometry{margin=1in}
+\onehalfspacing
+\setlength{\parindent}{1.25em}
+\setlength{\parskip}{0.3em}
+\graphicspath{{figures/}}
+\sloppy
+
+% --- Title Page Information ---
+\title{
+    \vspace{2cm}
+    \textbf{\Large Adaptive Design of Embodied Robotic Systems for Real-Time Self-Modeling Toward Swarm Coordination}
+    \vspace{1cm}
+}
+\author{
+    \textbf{Master's Thesis} \\
+    Master's Program in Data Science \\
+    HSE University 
+}
+\date{\vspace{1cm} 2026}
+
+\begin{document}
+
+% --- Front Matter ---
+\pagenumbering{gobble}
+\maketitle
+\clearpage
+\pagenumbering{roman}
+
+% --- Abstract ---
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Embodied robotic systems rely on internal self-models to map motor commands and morphology into actionable predictions. During continuous deployment, these models inevitably degrade. Hardware wear, dynamic impacts, calibration slip, and structural deformation induce \textit{embodiment drift}---a critical divergence between the robot assumed by the controller and the physical system in reality. Recent visual self-modeling architectures leveraging Neural Radiance Fields (NeRF) and 3D Gaussian Splatting (3DGS) offer high-fidelity morphological expressiveness to counter this drift. However, their volumetric rendering pipelines impose a severe latency bottleneck. A robotic system operating in a $1\,\mathrm{kHz}$ closed-loop regime possesses a maximum inference budget of one millisecond; current explicit and implicit reconstruction baselines remain orders of magnitude outside this limit.
+
+This thesis investigates adaptive design for real-time robotic self-modeling by replacing explicit 3D volumetric reconstruction with direct sensorimotor decoding. Baseline evaluations quantify the existing latency paradox: the reproduced Free-Form Kinematic Self-Model (FFKSM) achieves $17.35\,\mathrm{dB}$ PSNR but operates at a prohibitive $5.22\,\mathrm{FPS}$. The Kinematic 3D Gaussian Splatting (K-3DGS) formulation accelerates rendering to $37\,\mathrm{FPS}$ at $17.01\,\mathrm{dB}$ PSNR but suffers from persistent isotropic artifacts on articulated structures. To resolve this, this research introduces NeuroKin, a lightweight, fully convolutional direct decoder that bypasses 3D scene reconstruction to map joint states directly to visual and spatial estimates. NeuroKin achieves $21.88\,\mathrm{dB}$ PSNR at an unprecedented $7{,}400\,\mathrm{FPS}$ ($0.135\,\mathrm{ms}$ latency), successfully crossing the sub-millisecond threshold required for high-frequency control.
+
+Furthermore, this thesis evaluates the collective implications of this individual latency breakthrough through the deployment of a 100-agent sequential swarm pipeline. Rather than claiming unverified concurrent spatial interaction, swarm coordination is strictly evaluated through the theoretical framework of \textit{Temporal Stigmergy}. Agents coordinate across time by reading and writing to a decentralized, history-aware ledger (\texttt{factory\_state}). By tracking \texttt{consecutive\_failures}, subsequent agents dynamically trigger localized recovery modes, shifting targets and expanding tolerances to save the overall sequence. Under progressive fault injection, the baseline inverse-kinematics chain suffers cascading structural failure, whereas the NeuroKin-enabled sequence preserves systemic operational efficiency. These results empirically validate that high-speed, decentralized self-diagnosis coupled with temporal state-sharing provides the foundational computational prerequisite for swarm coordination.
+
+\clearpage
+
+% --- Tables of Contents ---
+\tableofcontents
+\clearpage
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
+\clearpage
+\listoftables
+\addcontentsline{toc}{chapter}{List of Tables}
+\clearpage
+
+\pagenumbering{arabic}
+
+% ==========================================
+% CHAPTER 1: INTRODUCTION
+% ==========================================
+\chapter{Introduction}
+
+\section{The Paradigm of Embodied Autonomy and Morphological Degradation}
+
+The fundamental pursuit of embodied artificial intelligence hinges on the ability of robotic systems to operate autonomously, reliably, and safely within dynamic, unstructured, and often adversarial physical environments. At the absolute core of this autonomous capability is the requirement for precise state estimation and feedback control. Traditionally, robotic engineering has relied upon rigid, a priori internal models—exact mathematical formulations of a robot's own morphology, kinematic tree, mass distribution, and actuator dynamics. These nominal digital models allow classical control algorithms, such as Jacobian-based inverse kinematics and operational space control, to map intended high-level actions into the precise joint torques or positional trajectories required to achieve a desired end-effector state in Cartesian space. As long as the physical machine perfectly mirrors its mathematical blueprint, the robot can execute highly complex manipulation and locomotion tasks with millimeter precision.
+
+However, the assumption that a physical robot remains mathematically identical to its idealized digital counterpart is fundamentally flawed in the context of continuous, long-horizon operational deployment. Physical embodiment subjects a robot to the relentless and inescapable realities of thermodynamics, material fatigue, and mechanical friction. Over extended operational cycles, the strict mathematical guarantees of forward and inverse kinematics inevitably begin to decouple from the physical reality of the machine. This persistent, accumulating divergence between the internal computational representation of the robot and its actual, localized physical state is formally defined in this thesis as \textit{embodiment drift}. 
+
+Embodiment drift manifests through a broad and highly complex spectrum of mechanical and sensory degradations. At the micro-scale, geared transmissions exhibit unmodeled backlash, actuator drive belts lose optimal tension, and thermal expansion induced by sustained high-torque operations alters the effective physical length of metallic linkages. At the sensory layer, proprioceptive joint encoders may imperceptibly slip from their calibrated zero-points, and exteroceptive sensors, such as chassis-mounted RGB cameras or depth sensors, may experience subtle extrinsic calibration shifts due to ambient environmental vibrations. In more severe, sudden operational scenarios, robots may suffer macroscopic structural damage: an unexpected collision may plastically deform a physical link, an actuator may seize entirely due to electrical failure, or an asymmetrical payload shift may fundamentally alter the system's center of mass.
+
+When significant embodiment drift occurs, the consequences for closed-loop feedback control are catastrophic. A controller operating under the assumption of a nominal kinematic tree will compute pseudo-inverse Jacobian updates that are mathematically sound relative to the model, but physically erroneous relative to reality. The system will issue corrective motor commands that inadvertently drive the end-effector away from the target, induce highly unstable resonant oscillations, or, in contact-rich manipulation tasks, exert unsafe, unbounded forces upon the environment. To maintain true autonomy and operational safety in the presence of physical drift, a robotic system must possess the capacity for \textit{self-modeling}—the ability to autonomously infer, update, and deploy an internal representation of its own morphology derived strictly from its own sensorimotor experience, entirely bypassing the need for external, human-in-the-loop manual recalibration.
+
+\section{Historical Approaches to Robotic Self-Modeling}
+
+The formidable challenge of autonomous self-modeling has driven several distinct paradigms within the robotics literature over the past two decades, each characterized by its unique approach to morphological representation and its specific computational constraints. 
+
+The earliest formalized paradigm relied heavily on symbolic and kinematic inference. This approach viewed self-modeling as a continuous, explicitly programmed cycle of hypothesis generation and active physical exploration. Rather than possessing a single, static internal model, the robotic agent would generate a stochastic population of competing symbolic models representing various candidate topologies. To determine which model accurately reflected reality, the robot synthesized exploratory motor commands mathematically designed to maximize the sensory disagreement among the competing hypotheses. Upon executing these actions, the robot collected the resulting sensor data and systematically pruned the symbolic models that failed to predict the observed outcomes. While groundbreaking in its demonstration that a machine could autonomously infer a damaged topology—such as deducing the loss of a discrete robotic limb—symbolic inference faced a strict and insurmountable representational ceiling. It was strictly bounded by a pre-defined dictionary of morphological primitives. It could logically deduce that a link was missing, but it lacked the mathematical vocabulary to represent arbitrary, free-form anomalies, continuous structural bending, or complex visual surface degradation.
+
+To circumvent the immense computational intensity of explicit morphological reconstruction, a subsequent paradigm emerged focused entirely on behavioral adaptation. Utilizing evolutionary algorithms and Quality-Diversity search methods, researchers enabled robots to precompute vast repertoires of diverse behavioral policies in simulation. Upon sustaining damage in the real world, the robot would systematically test policies from this repertoire, rapidly searching for a compensatory behavior that maintained task performance despite the physical impairment. This approach prioritized pragmatic resilience—finding a behavior that works without explicitly diagnosing why the body failed. However, while highly effective for redundant, open-loop locomotion tasks, behavioral avoidance is fundamentally insufficient for precise spatial manipulation. A multi-degree-of-freedom robotic manipulator operating in a constrained, obstacle-dense workspace cannot rely on blind behavioral search; it strictly requires explicit geometric awareness of its entire kinematic chain to execute collision-free trajectory planning.
+
+Recognizing the fundamental limitations of symbolic models and purely behavioral searches, the current state-of-the-art has forcefully shifted toward visual and neural self-modeling. Leveraging deep learning, these architectures map high-dimensional motor states directly to expected visual observations. Visual self-models are inherently free-form; they do not rely on pre-programmed rigid engineering files. Instead, they learn the robot's appearance, occupancy, and physical boundaries directly from experiential data. The recent integration of neural rendering techniques into this domain has pushed morphological expressiveness to unprecedented heights, allowing robots to synthesize highly accurate, view-dependent three-dimensional representations of themselves from minimal camera inputs. Yet, as this research establishes, this immense representational power has introduced a severe computational bottleneck that completely obstructs physical deployment.
+
+\section{The Computational Bottleneck and the Latency Paradox}
+
+While visual self-modeling utilizing sophisticated neural rendering theoretically solves the problem of morphological expressiveness, its practical deployment in real-time autonomous robotics is critically obstructed by the \textit{latency paradox}. A diagnostic self-model is only operationally valuable if it can provide state estimations fast enough to influence the stabilizing behavior of the feedback controller. 
+
+Modern robotic control systems, particularly those governing compliant manipulation, impedance control, or dynamic balancing, operate at highly constrained frequencies, typically converging around $1\,\mathrm{kHz}$. This temporal requirement dictates a total permissible computational cycle time of exactly $1.0$ millisecond. Within this exceptionally brief $1.0\,\mathrm{ms}$ window, the entire software stack must read physical sensor buffers, execute state estimation, compute target Cartesian error vectors, resolve complex inverse kinematic equations, enforce physical joint limits to prevent self-collision, and issue the subsequent motor torque command to the hardware actuators. Consequently, any self-modeling diagnostic component integrated into this inner control loop possesses an absolute maximum inference budget of a fraction of a millisecond. If a self-model requires tens or hundreds of milliseconds to generate a morphological prediction, it is relegated to being a passive, offline diagnostic tool; it cannot actively participate in the real-time stabilization of a drifting or damaged robot.
+
+Current state-of-the-art neural rendering architectures fundamentally violate this latency budget due to the immense computational overhead inherently required by three-dimensional volumetric reconstruction. Implicit representations, such as Neural Radiance Fields (NeRF), mathematically model the robot and its immediate environment as a continuous function of spatial coordinates and viewing directions. To generate a diagnostic image of the robot's state, NeRF relies on volumetric ray-marching. For a highly compressed, low-resolution $100 \times 100$ pixel observation, and assuming a standard 64 stratified samples per ray, the architecture must perform a staggering $640,000$ distinct Multi-Layer Perceptron (MLP) evaluations for a single frame. As empirically validated in the baseline evaluations of this thesis, the reproduced Free-Form Kinematic Self-Model (FFKSM)—a leading NeRF-based robotic architecture—achieves a visual fidelity of $17.35\,\mathrm{dB}$ PSNR but operates at a prohibitive $5.22$ Frames Per Second (FPS). This equates to a staggering inference latency of $191.6\,\mathrm{ms}$, rendering the architecture nearly two hundred times too slow for integration into a standard $1\,\mathrm{kHz}$ control loop.
+
+Recent advancements in computer graphics introduced 3D Gaussian Splatting (3DGS) as a faster, explicit alternative to implicit NeRFs. By representing the scene as a massive collection of anisotropic, differentiable Gaussian primitives, 3DGS bypasses the need for continuous ray-marching, utilizing highly optimized tile-based rasterization instead. Within the specific context of robotic self-modeling, Kinematic 3DGS (K-3DGS) mathematically attaches these primitives to a differentiable kinematic chain. While this explicit formulation accelerates inference—achieving $37\,\mathrm{FPS}$ (equivalent to a $27.0\,\mathrm{ms}$ latency) in the rigorous benchmarks conducted for this thesis—it remains fundamentally mismatched with the sub-millisecond control requirement. 
+
+Furthermore, the geometric reality of physical robotic manipulators deeply complicates the mathematical optimization of 3DGS. Representing thin, elongated cylindrical links requires highly anisotropic Gaussians. In practice, optimizing highly anisotropic covariance matrices under sparse observational viewpoints frequently leads to mode collapse and severe numerical instability. Consequently, tractable robotic implementations are often forced to retreat to isotropic (spherical) Gaussians, which produce pervasive, structurally ambiguous ``blobby'' visual artifacts that fundamentally compromise the spatial precision required for collision avoidance. This crystallizes the latency paradox of modern robotic self-modeling: architectures that possess the representational capacity to accurately model arbitrary morphological damage are computationally too dense and sluggish to be utilized precisely when that damage destabilizes the robot in real-time.
+
+\section{Problem Statement and Empirical Scope}
+
+The core scientific problem addressed by this thesis is the resolution of the latency paradox in visual robotic self-modeling, and the subsequent leveraging of this high-speed diagnostic capability to establish the foundational computational mechanisms for multi-agent swarm coordination under compounding mechanical failures. Specifically, this research investigates the hypothesis that the latency bottleneck can be entirely overcome by abandoning the prevailing assumption that explicit 3D volumetric reconstruction is a strict prerequisite for control-oriented self-modeling. If the downstream robotic control task requires only localized spatial tracking, silhouette discrepancy detection, or end-effector coordinate estimation, maintaining a dense, queryable 3D scene representation is computationally wasteful. To resolve this, this thesis proposes a fundamental paradigm shift toward \textit{direct sensorimotor decoding}. 
+
+The empirical scope of this research is deliberately and rigorously bounded within a highly controlled simulation environment to isolate core architectural latency metrics from unmodeled photometric noise. All data generation pipelines, neural network training regimes, closed-loop controller validations, and multi-agent coordination frameworks are executed using a synthetic PyBullet simulation of a 4-Degree-of-Freedom (4-DOF) serial manipulator. The evaluation framework progresses from single-agent closed-loop reaching dynamics under severe hardware fault injection—such as simulated encoder slip and structural deformation—to a massive-scale 100-agent operational pipeline.
+
+Crucially, the objective outlined in the thesis title—``Toward Swarm Coordination''—is framed with strict scientific restraint. This thesis does not assert, simulate, or claim the concurrent spatial deployment of multiple interacting physical robots sharing a common physical workspace. Deploying a concurrent physical swarm introduces immense, separate complexities regarding radio-frequency bandwidth constraints, complex physical collision avoidance algorithms, and decentralized simultaneous localization and mapping, which fall strictly outside the scope of this architectural study.
+
+Instead, the complex multi-agent coordination problem is evaluated sequentially via the theoretical framework of \textit{Temporal Stigmergy}. Stigmergy is a biological mechanism of indirect coordination wherein individual agents leave environmental traces that stimulate subsequent adaptive actions by other agents. In this thesis, the shared environment is abstracted into a centralized digital inter-agent communication ledger, instantiated programmatically as the \texttt{factory\_state} pipeline variable. By validating that a continuous sequence of 100 robotic agents can collectively monitor their operational health by reading previous failure states, and dynamically alter their functional parameters by shifting into localized recovery modes and expanding error tolerances, this research successfully isolates the core logic of collective adaptation. It proves that decentralized, history-aware, state-dependent adaptation is computationally feasible, thereby mathematically validating the fundamental prerequisite for eventual physical swarm coordination.
+
+\section{Methodological Contributions}
+
+This thesis makes four primary technical and theoretical contributions to the intersecting fields of adaptive robotics, neural representation, and decentralized multi-agent systems. The first major contribution is the formal benchmarking of the latency paradox in neural rendering. By providing a rigorous, ground-up replication and quantitative evaluation of both implicit (FFKSM/NeRF) and explicit (K-3DGS) neural rendering self-models on a standardized dataset, this research formally exposes their control incompatibility. Extracting exact precision metrics of $191.6\,\mathrm{ms}$ latency for FFKSM and $27.0\,\mathrm{ms}$ latency for K-3DGS establishes the definitive mathematical limits that necessitate a paradigm shift in self-modeling architecture.
+
+The second, and most significant, technical contribution is the introduction and exhaustive mathematical evaluation of the NeuroKin architecture. NeuroKin is a lightweight, fully convolutional direct sensorimotor decoder that completely bypasses volumetric reconstruction, mapping joint angles directly to visual silhouettes and spatial coordinates. Through extensive empirical validation, NeuroKin achieves $21.88\,\mathrm{dB}$ PSNR at an unprecedented $7{,}400\,\mathrm{FPS}$, corresponding to a $0.135\,\mathrm{ms}$ latency. This architectural contribution effectively shatters the sub-millisecond inner-loop inference bottleneck, rendering high-fidelity visual self-modeling compatible with $1\,\mathrm{kHz}$ feedback control loops for the first time. Furthermore, an auxiliary multi-task variant, ResNeuroKin-D, is contributed to recover geometric depth while maintaining a highly performant $2{,}500\,\mathrm{FPS}$.
+
+The third contribution lies in visual closed-loop control and dynamic damage adaptation. This research successfully synthesizes NeuroKin's sub-millisecond spatial estimates—derived via a synchronized stereoscopic dual-camera decoding pipeline—with a Jacobian-based inverse-kinematics feedback loop. By providing empirical demonstrations of dynamic error recovery following simulated structural damage, the thesis proves that high-speed visual estimates can effectively override corrupted proprioceptive encoder data, allowing the controller to re-stabilize the end-effector trajectory post-fault without requiring external intervention.
+
+The fourth contribution is the validation of stigmergic swarm coordination under compounding mechanical faults. The thesis executes a 100-stage continuous sequential swarm simulation under escalating fault injection probabilities. The empirical results definitively demonstrate that a standard inverse-kinematic baseline pipeline suffers cascading, unrecoverable structural failure under these continuous conditions. Conversely, the NeuroKin-enabled sequence successfully executes state-dependent collective adaptation. By reading the shared stigmergic ledger and triggering decentralized recovery modes, the NeuroKin sequence maintains systemic operational endurance, mathematically proving the architectural prerequisites for decentralized multi-agent swarm deployment.
+
+\section{Research Questions}
+
+To rigorously structure the scientific inquiry and systematically validate the aforementioned technical contributions, this thesis is organized around four specific research questions. The first question addresses architectural efficiency, asking to what extent the computational latency of visual robot self-modeling can be reduced by replacing 3D implicit and explicit volumetric rendering paradigms with 2D direct sensorimotor decoding, and what the resulting impact is on morphological reconstruction fidelity. The second question addresses control integration, asking whether a visual self-model operating purely on direct convolutional decoding can provide spatial coordinate estimates with sufficient accuracy and sub-millisecond latency to actively stabilize a Jacobian-based inverse kinematics control loop. 
+
+The third research question investigates fault tolerance, asking how the integration of sub-millisecond visual self-estimates alters the end-effector trajectory and error convergence rate compared to a purely proprioceptive baseline under conditions of induced mechanical faults, such as severe encoder slip. Finally, the fourth research question explores collective adaptation, asking whether the individual computational efficiency of a sub-millisecond self-model can enable decentralized, state-dependent adaptation across a sequential pipeline of agents, thereby validating the temporal stigmergy mechanics required for future multi-agent swarm coordination.
+
+\section{Thesis Organization}
+
+The remainder of this thesis is structured to systematically address these research questions, transitioning seamlessly from deep theoretical foundations to architectural design, dynamic control integration, and finally, collective multi-agent evaluation. Chapter 2 provides an exhaustive, critical synthesis of the relevant academic literature, tracing the mathematical evolution of robot self-modeling, deeply analyzing the constraints of Neural Radiance Fields and 3D Gaussian Splatting, and establishing the theoretical framework of temporal stigmergy for swarm robotics. 
+
+Chapter 3 details the empirical simulation methodology and the latency bottleneck, outlining the PyBullet data generation pipeline, the application of Lorenz attractors for chaotic workspace exploration, and providing a rigorous quantitative breakdown of the FFKSM and K-3DGS baseline reproductions. Chapter 4 formally introduces the core technical innovation, the NeuroKin architecture, detailing its fully convolutional network topology, stereoscopic spatial recovery mechanisms, and the definitive performance evaluation proving the $7{,}400\,\mathrm{FPS}$ inference breakthrough. 
+
+Chapter 5 moves the evaluation from static rendering metrics to dynamic control, outlining the integration of NeuroKin into an inverse-kinematics loop and providing a step-by-step mathematical analysis of end-effector convergence under both nominal and fault-injected conditions. Chapter 6 scales the validation to the collective level, unpacking the 100-stage operational swarm chain, explaining the exact mechanics of the inter-agent communication ledger, and analyzing the statistical success rates of the temporal stigmergy pipeline against cascading baseline failures. Chapter 7 critically evaluates the overarching hypothesis, objectively analyzing the Pareto trade-offs of sacrificing novel-view synthesis for extreme inference speed, defending the stigmergic approach to swarm coordination, and discussing critical threats to validity. Finally, Chapter 8 synthesizes the research findings, directly answers the formal research questions, and maps a concrete technological roadmap for transitioning these validated sequential capabilities into physically embodied, spatially concurrent swarm deployments.
+
+\section{The Shift to Explicit Representations: 3D Gaussian Splatting}
+
+In an attempt to resolve the crippling inference latency of volumetric ray-marching, the computer graphics community engineered a fundamental shift from implicit, continuous fields back to explicit, discrete geometric primitives. This shift culminated in the development of 3D Gaussian Splatting (3DGS), introduced by Kerbl et al. \cite{kerbl20233d}. By abandoning the Multi-Layer Perceptron (MLP) entirely during inference and relying instead on highly optimized rasterization pipelines, 3DGS promised a pathway to real-time, high-fidelity scene representation. The rapid adoption of this paradigm within the robotics literature—specifically for articulated tracking, digital twin generation, and Simultaneous Localization and Mapping (SLAM)—necessitates a rigorous mathematical deconstruction of its mechanics, its theoretical advantages, and its ultimate failure to satisfy sub-millisecond control constraints.
+
+\subsection{Mathematical Formulation of 3D Gaussian Primitives}
+
+Unlike NeRF, which models a continuous block of empty space, 3DGS represents a scene as an unstructured point cloud of millions of discrete, 3D Gaussian primitives. Each individual Gaussian, indexed by $i$, is mathematically defined by a comprehensive set of learnable parameters: a 3D mean position $\mu_i \in \mathbb{R}^3$, an anisotropic covariance matrix $\Sigma_i \in \mathbb{R}^{3 \times 3}$, an opacity scalar $\alpha_i \in [0, 1]$, and a set of Spherical Harmonics (SH) coefficients representing view-dependent directional color.
+
+The influence of a single 3D Gaussian on any arbitrary point $\mathbf{x} \in \mathbb{R}^3$ in space is governed by the standard multivariate Gaussian probability density function (unnormalized):
+
+\begin{equation}
+G(\mathbf{x}) = \exp \left( -\frac{1}{2} (\mathbf{x} - \mu_i)^T \Sigma_i^{-1} (\mathbf{x} - \mu_i) \right)
+\end{equation}
+
+The core representational power of 3DGS lies in the anisotropy of the covariance matrix $\Sigma_i$. A purely isotropic (spherical) Gaussian is severely limited in its ability to model sharp edges or flat surfaces. By allowing the covariance matrix to stretch and compress unevenly along its principal axes, a single Gaussian can deform into an elongated ellipsoid or a flattened disk, enabling the precise modeling of complex, hard-surface geometry with vastly fewer primitives.
+
+However, optimizing a $3 \times 3$ covariance matrix directly using gradient descent is mathematically precarious, as the matrix must remain strictly positive semi-definite to represent a valid probability distribution. To enforce this mathematical constraint during optimization, Kerbl et al. factorized the covariance matrix into two distinct, learnable components: a scaling vector $\mathbf{s} \in \mathbb{R}^3$ and a rotation quaternion $\mathbf{q} \in \mathbb{R}^4$. 
+
+The scaling vector is converted into a diagonal scaling matrix $S$. The quaternion $\mathbf{q} = (q_r, q_i, q_j, q_k)$ is mathematically converted into a standard $3 \times 3$ rotation matrix $R$. The anisotropic covariance matrix is then reconstructed via the eigendecomposition:
+
+\begin{equation}
+\Sigma_i = R S S^T R^T
+\end{equation}
+
+By independently learning the scaling factors and rotation quaternions, the optimization landscape remains stable, and the positive semi-definiteness of the covariance matrix is mathematically guaranteed throughout the training process.
+
+\subsection{Tile-Based Rasterization Mechanics}
+
+The true speed advantage of 3DGS is derived not from its representation, but from its rendering pipeline. To synthesize an image, 3DGS completely abandons ray-marching. Instead, it utilizes a highly parallelized, tile-based rasterization architecture specifically optimized for modern GPU architectures.
+
+When a virtual camera views the scene, the 3D Gaussian primitives must be mathematically projected onto the 2D image plane. Given a viewing transformation matrix $W$ and the Jacobian of the affine approximation of the projective transformation $J$, the 2D covariance matrix $\Sigma'$ of a projected Gaussian is computed as:
+
+\begin{equation}
+\Sigma' = J W \Sigma W^T J^T
+\end{equation}
+
+Following projection, the rasterization pipeline divides the target image into a grid of distinct $16 \times 16$ pixel tiles. The algorithm performs a highly efficient culling process to discard any Gaussians that fall outside the camera's viewing frustum. The surviving Gaussians are then evaluated to determine which specific $16 \times 16$ tiles they intersect. 
+
+Because a single large Gaussian might intersect multiple adjacent tiles, the algorithm duplicates the primitive for each tile it touches, assigning each instance a unique 64-bit key composed of the tile ID and the primitive's depth (distance from the camera). These keys are then sorted incredibly rapidly using GPU-accelerated Radix Sort. This sorting guarantees that within every individual tile, the Gaussians are perfectly ordered from front to back relative to the camera position.
+
+Finally, for each pixel within a tile, the rasterizer computes the final color $C$ by alpha-compositing the ordered, overlapping Gaussians. For $N$ ordered Gaussians overlapping a specific pixel, the color is computed as:
+
+\begin{equation}
+C = \sum_{i=1}^{N} c_i \alpha'_i \prod_{j=1}^{i-1} (1 - \alpha'_j)
+\end{equation}
+
+Where $c_i$ is the view-dependent color evaluated from the Spherical Harmonics, and $\alpha'_i$ is the depth-weighted opacity of the projected 2D Gaussian. Because the primitives are pre-sorted and tiled, this alpha-blending process can be executed by thousands of independent GPU threads simultaneously, resulting in rendering speeds that drastically eclipse those of NeRF.
+
+\subsection{The Failure of Anisotropy on Robotic Morphologies}
+
+Given these profound computational advantages, the robotics literature rapidly attempted to adapt 3DGS for kinematic self-modeling. The resulting architecture, Kinematic 3DGS (K-3DGS) \cite{hu2025learning}, mathematically attaches the centers ($\mu_i$) of the Gaussian primitives to the distinct physical coordinate frames of a robot's Forward Kinematics (FK) tree. As the joint encoders update, the Gaussians physically move and rotate in rigid body transformations along with the robot's physical links, allowing the model to render the robot in any arbitrary pose. 
+
+In theory, the anisotropic nature of 3DGS makes it the ideal representation for robotic manipulators. The physical morphology of a serial manipulator is dominated by long, thin, rigid, cylindrical metallic links. An optimizer should naturally stretch the scaling vectors ($\mathbf{s}$) of the Gaussians along the central longitudinal axis of the robotic link, perfectly encasing the cylinder with a minimal number of highly elongated, pill-shaped primitives.
+
+In harsh empirical practice, however, this highly anticipated anisotropic optimization frequently fails catastrophically when applied to sparse, single-camera robotic datasets. As documented in the literature and rigorously confirmed during the baseline reproduction phase of this thesis, optimizing highly anisotropic rotational quaternions on featureless robotic links (e.g., solid white, untextured cylinders against a blue background) introduces a severely non-convex, ill-posed optimization landscape.
+
+Because the robotic link is visually uniform, the gradient descent algorithm receives contradictory loss signals regarding the optimal rotation of the elongated Gaussian. If the primitive is stretched too thin, minor errors in rotational alignment cause the Gaussian to visually "poke through" the silhouette of the robot, generating a massive photometric loss penalty. To minimize this immediate loss, the optimizer aggressively penalizes extreme scaling vectors, halting the elongation process prematurely. This phenomenon is known as \textit{anisotropic mode collapse}.
+
+To maintain numerical stability and ensure reliable convergence, practical K-3DGS implementations are frequently forced to retreat to purely isotropic representations. The scaling vector is constrained such that $s_x = s_y = s_z$, forcing every Gaussian primitive to remain a perfect sphere. While this restriction mathematically stabilizes the training process, it fundamentally compromises the structural precision of the representation. 
+
+Attempting to model a long, sharp-edged robotic cylinder using only perfect spheres results in severe geometric aliasing. The model is forced to chain dozens of overlapping spheres together to approximate the link. When rasterized, this isotropic chaining yields the pervasive, structurally ambiguous "blobby" visual artifacts explicitly documented in the K-3DGS difference maps within Chapter 3. These blobby artifacts blur the true spatial boundaries of the robot, rendering the self-model dangerously imprecise for collision-aware motion planning in highly constrained environments.
+
+\subsection{The Persistence of the Latency Paradox}
+
+Beyond the geometric compromises forced by isotropic mode collapse, K-3DGS ultimately fails the primary objective of this thesis: sub-millisecond control integration. 
+
+While the explicit rasterization of 3DGS provides a substantial and undeniable $7.1\times$ inference speedup over the implicit ray-marching of FFKSM, achieving $37\,\mathrm{FPS}$ ($27.0\,\mathrm{ms}$ latency) during the baseline benchmarks, this metric remains fundamentally mismatched with the absolute mathematical requirements of a $1\,\mathrm{kHz}$ robotic control loop.
+
+The latency paradox persists because K-3DGS, despite abandoning the MLP, still stubbornly attempts to maintain and manipulate a complete, explicit 3D volumetric scene representation. To generate a single diagnostic silhouette of the robot, the K-3DGS architecture must ingest the current joint state, compute the complex Forward Kinematics matrix for the entire manipulator, apply the resulting rigid body transformation matrices (Rotation and Translation) to the centers ($\mu$) of thousands of individual Gaussian primitives, execute the massive Jacobian projection into 2D space, perform the culling and tile-based sorting algorithm, and finally execute the alpha-compositing rasterization. 
+
+This multi-stage computational pipeline is inherently heavy. While $27.0\,\mathrm{ms}$ is exceptionally fast for computer graphics rendering, it remains nearly thirty times too slow for the $1.0\,\mathrm{ms}$ maximum inference budget of a real-time robotic feedback controller. If an unmodeled physical payload shift severely destabilizes the manipulator, the $1\,\mathrm{kHz}$ closed-loop controller requires immediate geometric diagnosis to apply the correct counter-torque. It cannot wait $27$ computational cycles for K-3DGS to finish sorting and rasterizing its Gaussian point cloud.
+
+The conclusion drawn from this exhaustive mathematical analysis of 3DGS is definitive: the latency bottleneck in robotic self-modeling is not merely a byproduct of implicit rendering, but is an unavoidable consequence of attempting to maintain a dense 3D intermediate representation during the inference phase. To achieve true sub-millisecond control integration, the intermediate 3D representation—whether continuous fields or explicit splats—must be structurally bypassed entirely.
+
+\section{Digital Twins and the Simulation-to-Reality Gap}
+
+The endeavor to maintain an accurate, real-time internal self-model is conceptually identical to the broader industrial engineering goal of generating and sustaining a robotic \textit{Digital Twin}. In contemporary academic literature, a digital twin is defined not merely as a static 3D visual replica or a passive CAD model, but as a bi-directional, dynamically synchronized computational surrogate of a physical asset \cite{jiang2024digitaltwin, mari2024digitaltwin}. 
+
+The idealized robotic digital twin operates in continuous tandem with the physical hardware. It receives high-frequency sensor telemetry (joint angles, motor torques, camera feeds) from the physical robot in the field. Crucially, it dynamically updates its internal state matrices—its collision geometry, its mass distribution, and its friction coefficients—to perfectly mirror the physical degradation and embodiment drift experienced by the hardware. This dynamic synchronization allows the twin to serve as a perfectly safe, highly accelerated sandbox for forward-simulating potential control policies before executing them in physical reality \cite{sun2026digitaltwin, murugesan2024digitaltwin}.
+
+However, constructing visual digital twins specifically intended for autonomous, closed-loop robotic control introduces stringent latency constraints that differ significantly from those found in static industrial monitoring (e.g., monitoring the thermal degradation of a stationary factory turbine). An active robotic digital twin must be instantaneously queryable. If a physical manipulator operating in a highly cluttered environment sustains an unexpected impact, the digital twin must update its geometric occupancy map immediately. This allows the physical robot's motion planner to query the twin and compute a collision-free escape trajectory. If the twin's internal update latency exceeds the temporal dynamics of the physical interaction, the robot will execute evasive commands based on stale, pre-impact geometry, precipitating further catastrophic collisions.
+
+Furthermore, the practical deployment of neural self-models and dynamic digital twins is universally haunted by the \textit{Simulation-to-Reality (Sim-to-Real) gap} \cite{tan2018simtoreal}. The majority of reinforcement learning control policies and high-capacity neural representations are trained within pristine simulation environments, such as MuJoCo, Isaac Gym, or, as utilized in this thesis, PyBullet. While computationally efficient, these physics simulators rely on idealized mathematical approximations. They frequently fail to accurately capture complex Coulomb friction models, non-linear actuator stiction, subtle link compliance under heavy payloads, and the incredibly complex photometric realities of physical environments, including ambient lighting fluctuations, harsh specular reflections on metallic links, and pervasive sensor noise \cite{aljalbout2026realitygap}.
+
+When a neural self-model trained exclusively in simulation is deployed onto physical hardware, it frequently collapses. The minor photometric discrepancies between the simulated training data and the physical camera feed severely corrupt the network's latent space, resulting in completely erroneous morphological predictions. 
+
+Recent literature attempts to bridge this critical Sim-to-Real gap through massive \textit{Domain Randomization}. During the simulation training phase, researchers randomly perturb the lighting vectors, background textures, camera positions, and physical mass properties of the simulated robot. By exposing the neural network to a vast distribution of simulated environments, the architecture theoretically learns to ignore superficial photometric noise and extract the robust, invariant geometric features of the morphology. Advanced methodologies also explore real-time \textit{Residual Dynamics Learning}, wherein the neural network is trained to predict only the small, non-linear residual discrepancy between the idealized physics simulator and the actual physical observation \cite{qiu2024swim2real, lim2025splat2real}. 
+
+Within the rigorous scope of this thesis, all experiments are deliberately and explicitly bounded within the synthetic PyBullet simulation environment. This is not an academic oversight, but a highly controlled, necessary methodological choice designed specifically to isolate architectural latency. The Sim-to-Real gap adds layers of complex photometric noise that inherently confound the objective measurement of pure, structural network inference speed. 
+
+By operating within the controlled vacuum of a simulator, this thesis effectively isolates the theoretical mathematical efficiency of the proposed NeuroKin architecture. It definitively proves that the sub-millisecond mathematical bound for visual self-modeling can be breached. Establishing this raw computational feasibility in an idealized setting is the strict, necessary scientific prerequisite before introducing the immense complexities of physical noise, domain randomization, and real-world Sim-to-Real transfer in subsequent deployments.
+
+\section{Continual Learning and Environmental Interaction}
+
+When an embodied agent leverages an internal self-model to adapt to structural damage, it invariably encounters the stability-plasticity dilemma, a foundational and notoriously persistent challenge within the broader field of continual neural learning. An autonomous robotic agent must be sufficiently plastic to update its neural weights to represent newly acquired geometric damage—such as a plastically deformed end-effector or a permanently shifted payload—yet it must simultaneously remain sufficiently stable so as not to aggressively overwrite or forget the functional representations of its healthy, undamaged components.
+
+\subsection{The Threat of Catastrophic Forgetting}
+
+In standard, monolithic deep neural networks, sequentially learning new spatial geometries leads inevitably to \textit{catastrophic forgetting} \cite{mccloskey1989catastrophic}. If an implicit NeRF, an explicit 3DGS point cloud, or a direct convolutional decoder is naively fine-tuned exclusively on a stream of recent visual observations depicting a damaged joint, the globally shared gradient updates will rapidly destroy the network's ability to accurately render the undamaged base of the robot. The network overfits to the new, damaged data distribution at the catastrophic expense of prior structural knowledge.
+
+To combat this sequential learning degradation in autonomous settings, the literature has developed extensive mitigation frameworks. Regularization-based methodologies, such as Elastic Weight Consolidation (EWC) \cite{kirkpatrick2017overcoming}, calculate the Fisher information matrix to identify and mathematically protect the specific neural weights that are most crucial for maintaining prior geometric knowledge. Architectural isolation methods rely on dynamic routing protocols, mixture-of-experts ensembles \cite{mocanu2018scalable}, or isolating continuous learning within highly sparse, trainable subnetworks identified via the Lottery Ticket Hypothesis \cite{frankle2018lottery}.
+
+\subsection{Safety-Gated Adaptation via High-Speed Inference}
+
+While the NeuroKin direct decoding architecture proposed in this thesis does not explicitly embed a dedicated mathematical algorithm for continual learning mitigation (such as EWC), its extreme computational efficiency fundamentally transforms the operational plausibility of online adaptation. 
+
+Because the NeuroKin architecture executes a full inference pass in $0.135\,\mathrm{ms}$ and completes a comprehensive training cycle over a $2,000$-sample dataset in a mere $33.5$ seconds, it inherently enables a protocol of \textit{safety-gated adaptation}. The robot can utilize the high-speed forward pass as a continuous, real-time discrepancy detector operating quietly in the background of the control loop. When a predefined threshold of visual or spatial error is breached—indicating the sudden onset of embodiment drift—the robot does not blindly update its weights. Instead, it can safely halt physical motion, transition to a highly conservative impedance control state, collect a localized, highly specific batch of new stereoscopic observations, and execute a rapid, bounded fine-tuning protocol. Crucially, because the training cycle is measured in seconds rather than hours (as is typical for NeRFs), this adaptation can occur before prolonged, unmodeled environmental interaction forces an unrecoverable physical failure.
+
+\subsection{Morphological Interaction in Unstructured Environments}
+
+Furthermore, true robotic embodiment requires acknowledging that machines do not operate in a geometric vacuum; their varying morphologies actively and continuously interact with the physical environment. Modern whole-body control frameworks increasingly rely on hybrid sensory fusion architectures, merging proprioceptive joint states with exteroceptive tactile feedback to enable contact-rich manipulation \cite{li2025m2resipolicy, lee2026tactiverse}. In highly unstructured domains, such as aquatic or compliant robotics, researchers leverage the intrinsic morphological compliance of the body itself to naturally reject fluid disturbances \cite{micklem2026aquatic, crotti2024softfoot}.
+
+A real-time, highly accurate visual self-model serves as the absolute foundational geometric anchor for all of these advanced environmental interaction tasks. Without a sub-millisecond awareness of where its own rigid body boundaries lie in Cartesian space, an agent cannot safely execute complex force-application interactions. If the internal model lags behind the physical reality, the robot will apply excessive, unmodeled forces, leading to structural self-destruction or environmental damage.
+
+\section{Theoretical Foundations of Swarm Coordination and Temporal Stigmergy}
+
+The final, unifying theoretical pillar supporting the architectural arguments of this thesis involves the transition from individual diagnostic resilience to collective multi-agent coordination. In traditional robotics literature, the phrase "swarm coordination" generally evokes the simultaneous, concurrent deployment of dozens or hundreds of autonomous agents within a shared physical, spatial environment. These concurrent spatial swarms necessitate extraordinarily complex, decentralized algorithms for inter-robot collision avoidance, dynamic task allocation via radio-frequency bidding, and collaborative Simultaneous Localization and Mapping (SLAM) \cite{matsuki2024gaussian, keetha2024splattam, thirgood2025featureslam}.
+
+However, casually claiming concurrent spatial deployment without explicitly modeling simulated collision dynamics, bandwidth interference, or physical peer-to-peer radio communication constitutes a severe breach of scientific rigor. Therefore, to logically and mathematically validate the collective adaptation claims inherent in the thesis title "Toward Swarm Coordination," this research explicitly bounds the multi-agent problem within the rigorous theoretical framework of \textit{Temporal Stigmergy}.
+
+\subsection{The Biological and Algorithmic Basis of Stigmergy}
+
+Stigmergy is a biological mechanism of indirect coordination, originally observed and formalized by entomologists studying the nest-building behaviors of social insects, such as termites and ants. In a stigmergic system, individual agents do not communicate directly with one another via explicit signaling. Instead, they subtly alter the physical environment (e.g., depositing a pheromone trail or placing a pellet of mud). These specific environmental modifications then serve as localized stimuli, triggering specific behavioral responses from subsequent agents that encounter them. 
+
+Translated into algorithmic robotic systems, stigmergy elegantly eliminates the need for massive, continuous peer-to-peer communication bandwidth. Agents are entirely relieved of the computational burden of negotiating global motion plans or maintaining perfect consensus. They simply react independently and locally to the diagnostic traces left in the environment by their peers.
+
+\subsection{Sequential Swarms and the Communication Ledger}
+
+In the context of the massive 100-stage sequential pipeline evaluated in Chapter 6 of this thesis, stigmergic coordination is achieved entirely across the dimension of time, rather than physical space. The shared "environment" is algorithmically abstracted into a persistent, centralized digital memory ledger, instantiated programmatically as the \texttt{factory\_state} variable. 
+
+When an individual robotic agent executing a spatial reaching task experiences repeated mechanical failures due to compounding hardware faults (e.g., escalating encoder slip), it does not broadcast a high-bandwidth distress signal or attempt to halt the entire swarm. Instead, it quietly updates the \texttt{consecutive\_failures} integer within the shared digital ledger. Subsequent independent agents, upon initiation of their own discrete task cycles, read this environmental trace. 
+
+If the trace indicates a severely degraded operational history (e.g., \texttt{consecutive\_failures} $\geq 2$), the new agent autonomously executes a localized, state-dependent behavioral adaptation. It preemptively shifts its inverse kinematics targeting objective to a safer, centralized Cartesian coordinate, and significantly expands its geometric error tolerance. This sequential, state-dependent cascade validates the absolute computational core of decentralized swarm intelligence: local actions driven by shared, indirect environmental history.
+
+\subsection{Sub-Millisecond Inference as a Swarm Prerequisite}
+
+Crucially, the broader multi-agent literature clearly demonstrates that the overall systemic resilience of a swarm is inherently limited by the diagnostic capability of its weakest individual members. A swarm can only successfully coordinate around diagnostic states—such as failure warnings or safety triggers—if the individual agents possess the capability to produce that diagnostic state in a reliable and timely manner. 
+
+If an agent's internal geometric self-model requires $200\,\mathrm{ms}$ (as seen in FFKSM) to execute a single inference pass, the agent fundamentally cannot reliably determine whether a reaching failure was caused by external environmental occlusion, a high-frequency controller oscillation, or intrinsic morphological drift. Consequently, it cannot write an accurate, high-confidence diagnostic metric to the stigmergic ledger. A slow self-model pollutes the shared environment with stale, ambiguous data, causing subsequent agents to adapt inappropriately.
+
+By mathematically and empirically proving that the NeuroKin direct convolutional decoder provides robust, sub-millisecond visual self-diagnosis, this thesis establishes the stringent, non-negotiable computational prerequisite for swarm endurance. It proves that an individual embodied agent can execute the fast, highly localized state estimation necessary to generate reliable temporal traces, thereby anchoring the broader ambition of swarm robotics firmly in mathematically validated, real-time inference capabilities.
+
+% ==========================================
+% CHAPTER 3: BASELINE IMPLEMENTATIONS AND THE LATENCY BOTTLENECK
+% ==========================================
+\chapter{Baseline Implementations and the Latency Bottleneck}
+
+To rigorously substantiate the central hypothesis of this thesis—that implicit and explicit 3D neural rendering pipelines impose a catastrophic latency bottleneck on real-time robotic control—it is first necessary to establish a highly controlled, reproducible empirical foundation. This chapter details the comprehensive methodological framework utilized to generate, train, and evaluate the foundational baseline models of contemporary visual self-modeling. 
+
+We begin by explicitly defining the synthetic data generation pipeline. We unpack the physics-based simulation parameters, the optical properties of the virtual camera arrays, and the mathematically structured application of chaotic Lorenz attractors used to generate smooth, continuous, and highly diverse workspace exploration trajectories. Following the establishment of the dataset, this chapter provides a mathematically rigorous deconstruction of the two primary neural rendering baselines: the implicit Free-Form Kinematic Self-Model (FFKSM) based on NeRF, and the explicit Kinematic 3D Gaussian Splatting (K-3DGS) architecture. By reproducing these state-of-the-art models from scratch on identical hardware and datasets, we isolate the exact computational mechanisms that cause their inference speeds to fall catastrophically short of the $1\,\mathrm{kHz}$ sub-millisecond control requirement.
+
+\section{Synthetic Data Generation and Physical Simulation Pipeline}
+
+The empirical evaluation of robotic self-modeling architectures requires a dataset that flawlessly couples high-dimensional proprioceptive states (joint angles) with perfectly synchronized exteroceptive observations (camera images). In physical hardware deployments, acquiring thousands of precisely synchronized frames is severely confounded by sensor latency, encoder noise, camera motion blur, and network transmission delays. To completely isolate architectural inference efficiency from these extrinsic hardware flaws, all data generated for this study is constructed within a deterministic, high-fidelity physics simulator.
+
+\subsection{The PyBullet Simulation Environment}
+
+The physical simulation engine selected for this research is PyBullet. PyBullet utilizes a highly optimized implementation of Featherstone’s articulated body algorithm, providing mathematically exact forward and inverse kinematics calculations for complex, multi-link rigid body systems. 
+
+Within this synthetic environment, we instantiate a bespoke 4-Degree-of-Freedom (4-DOF) serial robotic manipulator. The manipulator is defined via a strict Unified Robot Description Format (URDF) file, which specifies the exact inertial tensors, center-of-mass offsets, joint limits, and geometric collision meshes (represented as stereolithography or STL files) for the base and the four sequential cascading linkages. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{pybullet_setup.png}
+    \caption{The PyBullet 3D simulated environment. The primary 4-DOF white segmented robotic arm is mounted centrally. Light blue frustums project into the scene to explicitly define the field of view and focal plane of the virtual exteroceptive camera sensors used for visual self-modeling data capture.}
+    \label{fig:pybullet_setup}
+\end{figure}
+
+As depicted in Figure \ref{fig:pybullet_setup}, the simulated environment is visually configured to minimize extraneous photometric noise. The robotic arm is rendered against a uniform background. This is a deliberate methodological constraint: the objective of this thesis is to evaluate the geometric mapping between motor commands and morphology, not to evaluate the robustness of background subtraction algorithms or semantic segmentation models. By isolating the robot within a controlled visual space, the neural networks are forced to dedicate their entire representational capacity to modeling the articulated kinematic chain itself.
+
+\subsection{The End-to-End Data Processing Workflow}
+
+The compilation of the training and validation datasets follows a strictly linear, automated pipeline designed to ensure perfect temporal synchronization between the joint state vectors and the rendered image frames. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{data_pipeline.png}
+    \caption{The end-to-end data generation and preprocessing pipeline. This flowchart summarizes the systematic execution steps from initial URDF parsing and physical PyBullet simulation, through trajectory execution, to the final formatted dataset compilation yielding paired joint-state and image tensors.}
+    \label{fig:data_pipeline}
+\end{figure}
+
+As illustrated in Figure \ref{fig:data_pipeline}, the pipeline initiates by loading the URDF and initializing the physics engine's boundary conditions. The virtual camera is statically positioned at a fixed spatial coordinate relative to the robot's base origin, utilizing a synthetic OpenGL rasterizer to capture frames. To maximize computational throughput during the subsequent neural network training phases, the spatial resolution of the virtual camera is aggressively downsampled to $100 \times 100$ pixels. 
+
+While $100 \times 100$ pixels represents a low-resolution observation compared to modern high-definition sensors, it provides mathematically sufficient spatial detail to resolve the geometric boundaries of the individual robotic linkages. More critically, minimizing the pixel count directly limits the number of volumetric rays (in NeRF) or rasterized pixels (in 3DGS) that must be processed, providing the baseline rendering architectures with the most forgiving possible latency environment. If the baselines fail to achieve real-time inference at a mere $100 \times 100$ resolution, their unsuitability for physical high-definition deployment is conclusively proven.
+
+\subsection{Chaotic Workspace Exploration via Lorenz Attractors}
+
+A critical challenge in generating synthetic datasets for robotic kinematics is the methodology of spatial sampling. A naive approach would utilize uniform random sampling, drawing joint configurations uniformly from the allowable bounds of the state space $\mathcal{Q} \subset \mathbb{R}^4$. However, generating visual frames from completely uncorrelated, randomized joint states fundamentally breaks the temporal continuity of physical motion. A neural network trained on randomly teleporting arm configurations struggles to learn the smooth, continuous geometric manifolds of true articulated motion, leading to erratic interpolation errors during inference.
+
+To solve this, the robotic arm must explore its reachable workspace through a continuous, smooth, yet highly unpredictable trajectory. To achieve this, the data generation pipeline leverages the mathematical chaos of the \textit{Lorenz System}. Originally developed to model atmospheric convection, the Lorenz system is defined by a system of three coupled, non-linear ordinary differential equations:
+
+\begin{align}
+\frac{dx}{dt} &= \sigma (y - x) \\
+\frac{dy}{dt} &= x (\rho - z) - y \\
+\frac{dz}{dt} &= x y - \beta z
+\end{align}
+
+By configuring the system parameters to the classic chaotic regime ($\sigma = 10$, $\rho = 28$, $\beta = 8/3$), the resulting mathematical trajectory exhibits deterministic chaos. The state vector traces a continuous, dual-lobed, butterfly-like path through 3D phase space that never intersects itself and never repeats.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{lorenz_trajectories.png}
+    \caption{The Lorenz System Trajectory projected in 3D space. The continuous, non-repeating dual-lobed spiral provides a mathematically smooth but highly chaotic path. When mapped to the robotic joint space, this ensures diverse workspace exploration while preventing artificial, discontinuous jumps in the training dataset.}
+    \label{fig:lorenz_trajectories}
+\end{figure}
+
+To map this mathematical abstraction to the physical robot, the continuous 3D coordinates generated by the numerical integration of the Lorenz equations (Figure \ref{fig:lorenz_trajectories}) are scaled and dynamically mapped as target setpoints for the physical joint controllers of the PyBullet manipulator. As the simulator steps forward in time, the robotic arm smoothly ``chases'' the chaotic attractor through its physical workspace.
+
+This continuous motion allows the virtual camera to capture $2,000$ distinct, temporally correlated poses. The dataset is subsequently divided utilizing an $80/20$ split, yielding $1,600$ training samples and $400$ rigorous validation samples. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{sample_poses.png}
+    \caption{A representative grid of 16 distinct physical configurations (poses) extracted from the final dataset. The white robotic arm is consistently rendered against a uniform blue background, providing clean geometric silhouettes for the neural architectures to process.}
+    \label{fig:sample_poses}
+\end{figure}
+
+As seen in Figure \ref{fig:sample_poses}, the resulting dataset captures immense morphological diversity, observing the robot in highly folded, fully extended, and heavily self-occluded states. This ensures that the self-modeling architectures are not merely memorizing a localized region of space, but must genuinely learn the complex, non-linear mapping between the four joint angles and the resultant global spatial geometry.
+
+\section{Reconstruction Baseline I: The Free-Form Kinematic Self-Model (FFKSM)}
+
+With the controlled dataset successfully generated, the empirical benchmarking phase begins by establishing the performance limits of the prevailing implicit rendering state-of-the-art. To achieve this, the thesis provides a ground-up reproduction of the Free-Form Kinematic Self-Model (FFKSM). Originally formulated by Hu et al. \cite{hu2024teaching}, FFKSM leverages the foundational mathematics of Neural Radiance Fields (NeRF) to create a view-dependent, fully continuous volumetric representation of the robot, parameterized entirely by its instantaneous joint configuration.
+
+\subsection{Architectural Mechanics of FFKSM}
+
+Unlike a standard static NeRF, which optimizes a field for a single, frozen scene, FFKSM must learn a dynamic, conditionally active volume. The input to the architecture is twofold: a 3D spatial query point $\mathbf{x} = (x, y, z)$ and the current physical joint configuration vector $\mathbf{q} \in \mathbb{R}^4$. 
+
+The architecture first passes the joint vector $\mathbf{q}$ through a positional encoding layer and a dedicated kinematic embedding Multi-Layer Perceptron (MLP). This generates a high-dimensional latent kinematic code. This latent code is subsequently concatenated with the positionally encoded spatial query coordinates and fed into the primary volumetric MLP. The network is explicitly tasked with predicting a single scalar value: the volumetric density $\sigma$ at that specific point in space, given the current joint angles. (For silhouette rendering against a uniform background, directional color emission $\mathbf{c}$ is vastly simplified, focusing the network's capacity on geometric occupancy).
+
+\subsection{Training Pathologies: Kinematic Blindness and Empty Space}
+
+Reproducing FFKSM reveals severe, inherent optimization pathologies stemming from its volumetric nature. In an image of a thin robotic arm, approximately $85\%$ to $90\%$ of the $10,000$ pixels in a $100 \times 100$ frame represent completely empty background space. 
+
+When a volumetric ray is cast into the background, the target density is zero. If the network naively predicts $\sigma = 0$ everywhere, it achieves a very low mean squared error loss, because the vast majority of rays hit nothing. This creates a severe gradient imbalance. The network rapidly learns to predict empty space perfectly, resulting in \textit{black-screen convergence}. 
+
+Furthermore, even when heavily weighted focal losses are applied to force the network to attend to the robotic foreground, the architecture frequently suffers from \textit{Kinematic Blindness}. The network realizes that the robot \textit{generally} occupies the center of the image. To minimize loss efficiently, the MLP collapses the influence of the latent kinematic code $\mathbf{q}$ entirely. It ignores the joint angles and simply learns to predict a static, heavily blurred, "mean" blob of density in the center of the frame. The model technically renders an image, but it becomes kinematically blind—the rendered blob does not move when the joint angles are manipulated.
+
+Overcoming these pathologies required exhaustive hyperparameter tuning, curriculum learning, and strict thresholding of the transmittance integration. While convergence was ultimately achieved, the difficulty of training FFKSM highlights a core flaw: forcing a network to explicitly model vast amounts of empty 3D space is a highly inefficient method for teaching a machine the boundary topology of its own body.
+
+\subsection{Empirical Latency and Render Fidelity}
+
+Upon successful convergence, the FFKSM reproduction was evaluated against the $400$-sample validation holdout set. The results are mathematically definitive. The architecture achieved a Peak Signal-to-Noise Ratio (PSNR) of $17.35\,\mathrm{dB}$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{ffksm_results.png}
+    \caption{Qualitative evaluation of the FFKSM baseline. The grid displays the Ground Truth target images (left), the FFKSM rendered predictions (center), and the computed difference maps highlighting absolute pixel error (right). FFKSM struggles with high-frequency edge details, resulting in blurry link boundaries and pronounced geometric failure at the distal end-effector.}
+    \label{fig:ffksm_results}
+\end{figure}
+
+As explicitly demonstrated in the difference maps within Figure \ref{fig:ffksm_results}, a PSNR of $17.35\,\mathrm{dB}$ correlates to significant geometric ambiguity. Because the network must guess density along discrete sample points across a ray, it struggles immensely to render sharp, high-frequency physical boundaries. The edges of the robotic links are smeared, appearing as semi-transparent clouds rather than solid metal. More critically, the distal end-effector—the most important coordinate for closed-loop manipulation—suffers the highest error rates due to its rapid variance across the state space.
+
+However, the geometric blur is entirely secondary to the catastrophic temporal failure of the architecture. Running inference on a dedicated NVIDIA GPU, the FFKSM baseline achieved a maximum throughput of just $5.22$ Frames Per Second (FPS). 
+
+This frame rate translates to a hard mathematical latency of $191.6$ milliseconds per single image generation. For an autonomous robotic system requiring a $1\,\mathrm{kHz}$ ($1.0\,\mathrm{ms}$) closed-loop update rate, attempting to integrate FFKSM would stall the controller for nearly $200$ consecutive cycles. If the robot detects a positional error, the FFKSM diagnostic state arrives $191.6\,\mathrm{ms}$ too late, causing the Jacobian controller to apply massive corrective torques based on hopelessly stale telemetry. 
+
+The empirical reproduction of FFKSM thus perfectly crystallizes the fundamental limitation of implicit neural rendering in robotics. The computational overhead of querying a deep MLP $640,000$ times per frame via volumetric ray-marching establishes a rigid, insurmountable latency wall. It proves definitively that continuous 3D field representations cannot serve as the active, real-time diagnostic engine for high-speed robotic autonomy.
+
+\section{Reconstruction Baseline II: Kinematic 3D Gaussian Splatting}
+
+Following the empirical confirmation that implicit volumetric ray-marching (FFKSM) imposes an insurmountable latency barrier, the benchmarking methodology transitions to evaluating the explicit rendering paradigm. To this end, the thesis implements Kinematic 3D Gaussian Splatting (K-3DGS) \cite{hu2025learning}. By replacing the deep Multi-Layer Perceptron (MLP) with a discrete point cloud of rasterizable Gaussian primitives attached to a dynamic kinematic tree, K-3DGS theoretically promises to bypass the computational bottleneck of NeRF while preserving 3D spatial fidelity.
+
+\subsection{Attaching Primitives to the Forward Kinematics Tree}
+
+The implementation of K-3DGS diverges fundamentally from static 3DGS. In a static scene, the 3D mean positions ($\mu$) of the Gaussians are optimized once and remain fixed in world space. For an articulated robotic manipulator, the geometry is highly dynamic. The K-3DGS architecture must parameterize the spatial location of every primitive as a continuous function of the robot's physical joint configuration vector $\mathbf{q} \in \mathbb{R}^4$.
+
+To achieve this, the architecture parses the robot's Unified Robot Description Format (URDF) file and constructs a fully differentiable Forward Kinematics (FK) tree. The thousands of individual Gaussian primitives are not initialized randomly in global space; instead, they are strictly partitioned and rigidly attached to the local coordinate frames of the robot's specific physical links (e.g., Base, Link 1, Link 2, Link 3, End-Effector). 
+
+During the forward inference pass, the network ingests the current joint angles $\mathbf{q}$. The differentiable FK solver computes the exact $4 \times 4$ homogeneous transformation matrix $T_k(\mathbf{q})$ for each kinematic link $k$. For any given Gaussian primitive $i$ attached to link $k$, its dynamic position in global world space, $\mu_i^{world}$, is calculated by multiplying its learned local coordinate $\mu_i^{local}$ by the transformation matrix:
+
+\begin{equation}
+\mu_i^{world}(\mathbf{q}) = T_k(\mathbf{q}) \cdot \mu_i^{local}
+\end{equation}
+
+Similarly, the learned local covariance matrix $\Sigma_i^{local}$ of the Gaussian must be rotated to match the physical orientation of the moving link. Extracting the $3 \times 3$ rotation matrix $R_k(\mathbf{q})$ from the homogeneous transform, the global covariance is updated as:
+
+\begin{equation}
+\Sigma_i^{world}(\mathbf{q}) = R_k(\mathbf{q}) \Sigma_i^{local} R_k(\mathbf{q})^T
+\end{equation}
+
+By mathematically binding the explicit geometric primitives to the FK tree, the K-3DGS architecture guarantees that the self-model remains physically contiguous as the manipulator explores its chaotic Lorenz-attractor trajectory. However, this dynamic transformation pipeline introduces severe new complexities during the optimization phase.
+
+\subsection{Optimization Dynamics and Training Metrics}
+
+The training regime for the K-3DGS baseline was strictly controlled, utilizing the same $2,000$-sample synthetic PyBullet dataset generated for the FFKSM architecture to ensure a rigorous, one-to-one comparative analysis. The optimization of explicit 3DGS relies heavily on adaptive density control—the algorithm periodically clones Gaussians in regions of high geometric complexity and prunes transparent or overly large Gaussians to maintain rendering efficiency.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{3dgs loss speed fps.png}
+    \caption{K-3DGS optimization metrics across 1,000 training iterations. Top: The MSE loss decreases sharply, indicating rapid geometric convergence. Middle: Training speed fluctuates between 200 and 400 FPS, reflecting the dynamic cloning and pruning of Gaussians. Bottom: Step time per iteration remains heavily bounded between 2.5 and 5.0 ms.}
+    \label{fig:3dgs_metrics}
+\end{figure}
+
+As documented in Figure \ref{fig:3dgs_metrics}, the optimization dynamics of K-3DGS exhibit distinct phase behaviors. The top graph illustrates the Mean Squared Error (MSE) loss versus training iteration. The loss drops precipitously within the first 200 iterations, indicating that the tile-based rasterizer is highly efficient at establishing the macro-scale geometric silhouette of the robotic arm. 
+
+The middle graph, depicting Training Speed (FPS) versus Iteration, is particularly illuminating. Unlike a standard CNN, where the batch processing time is strictly deterministic, the training FPS of 3DGS fluctuates wildly between 200 and 400 FPS. This volatility is a direct mathematical consequence of the adaptive density control algorithm. When the optimizer decides to clone thousands of Gaussians to better resolve a complex joint boundary, the memory bandwidth momentarily saturates, causing the FPS to dip. When low-opacity Gaussians are pruned, the rendering speed recovers. 
+
+However, it is absolutely critical to distinguish between \textit{training} throughput and single-batch \textit{inference} latency. While the training process can achieve batch throughputs approaching 400 FPS due to heavy parallelization, the true, isolated forward-pass inference speed of the fully trained K-3DGS model on a single frame drastically regresses. During deployment benchmarks on the project hardware, the K-3DGS baseline maxed out at $37\,\mathrm{FPS}$, corresponding to an inference latency of $27.0\,\mathrm{ms}$.
+
+\subsection{Geometric Aliasing and the Isotropic "Blobby" Failure}
+
+Beyond the numerical latency metrics, the K-3DGS baseline suffered from severe geometric aliasing, fundamentally compromising the visual fidelity of the self-model. As established in the literature synthesis (Chapter 2), robotic manipulators are composed primarily of elongated cylindrical geometries. Accurately representing these structures requires optimizing highly anisotropic (stretched) Gaussian primitives.
+
+During the empirical training of the K-3DGS baseline on the single-view synthetic dataset, the optimization of highly anisotropic scaling vectors ($s_x \neq s_y \neq s_z$) and rotational quaternions proved mathematically unstable. The visual uniformity of the white robotic links against the blue background deprived the optimizer of high-frequency textural gradients. Consequently, elongated Gaussians would frequently misalign, rotating slightly off the central axis of the robotic link and "poking through" the ground-truth silhouette, triggering massive localized loss spikes.
+
+To force convergence and prevent this anisotropic mode collapse, the K-3DGS implementation was heavily constrained. The scaling vectors were forced toward isotropy ($s_x \approx s_y \approx s_z$), compelling the explicit primitives to behave as perfectly rigid, undeformable spheres. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{k3dgs_results.png}
+    \caption{Qualitative evaluation of the K-3DGS baseline. Left: Target ground-truth images. Center: 3DGS renders exhibiting severe isotropic aliasing; the elongated robotic links are visibly approximated by chains of overlapping, rigid spheres ("blobby" artifacts). Right: Difference maps indicating boundary errors induced by the geometric mismatch.}
+    \label{fig:k3dgs_results}
+\end{figure}
+
+The visual consequences of this mathematical constraint are explicitly documented in Figure \ref{fig:k3dgs_results}. The rendered K-3DGS predictions (center column) successfully capture the global kinematic pose of the arm, but the localized surface geometry is entirely compromised. The straight, rigid edges of the manipulator's links are visibly corrugated. The algorithm has attempted to build a cylinder by chaining dozens of overlapping spheres together, yielding a pervasive, highly textured "blobby" artifact across the entire morphology. 
+
+This geometric aliasing limits the final precision of the baseline, yielding a Peak Signal-to-Noise Ratio (PSNR) of just $17.01\,\mathrm{dB}$. While the difference maps (right column) are generally darker than those of the FFKSM baseline—indicating better global color convergence—the faint structural outlines confirm that K-3DGS fails to accurately resolve the true spatial boundaries of the robot. For a closed-loop controller requiring exact geometric collision bounds to navigate a tight workspace, an internal model composed of ambiguous overlapping blobs presents an unacceptable safety risk.
+
+\section{Comparative Baseline Analysis and the Necessity for Paradigm Shift}
+
+The rigorous empirical reproduction and benchmarking of the FFKSM and K-3DGS architectures successfully isolates the computational boundaries of contemporary visual self-modeling. By forcing both an implicit continuous field representation and an explicit discrete primitive representation to solve the identical 4-DOF kinematic mapping task, this thesis distills the latency paradox into concrete mathematical evidence.
+
+\subsection{The Pareto Frontier of Volumetric Failure}
+
+The comparative analysis yields a stark, inescapable Pareto frontier of operational failure for volumetric self-modeling in high-frequency control regimes.
+
+\begin{itemize}
+    \item \textbf{Implicit Paradigm (FFKSM/NeRF):} Prioritizes continuous mathematical smoothing and avoids the geometric aliasing of discrete primitives, achieving $17.35\,\mathrm{dB}$ PSNR. However, the requirement to evaluate a deep MLP hundreds of thousands of times via volumetric ray-marching imposes a catastrophic $191.6\,\mathrm{ms}$ latency ($5.22\,\mathrm{FPS}$).
+    \item \textbf{Explicit Paradigm (K-3DGS):} Prioritizes rasterization speed, achieving a substantial $7.1\times$ computational acceleration over NeRF to reach $27.0\,\mathrm{ms}$ latency ($37\,\mathrm{FPS}$). However, this speed is achieved by retreating to isotropic constraints that yield unacceptable "blobby" geometric artifacts, dropping the fidelity to $17.01\,\mathrm{dB}$ PSNR.
+\end{itemize}
+
+Most critically, even the "fast" explicit baseline fails the absolute control requirement by an entire order of magnitude. A $1\,\mathrm{kHz}$ operational space controller, calculating stabilizing Jacobian torques for a manipulator holding a heavy payload, requires state estimations within a $1.0\,\mathrm{ms}$ budget. K-3DGS consumes $27.0\,\mathrm{ms}$ purely for inference, totally decoupling the diagnostic self-model from the active stabilizing feedback loop. 
+
+\subsection{The Inherent Overhead of 3D Intermediate Representations}
+
+This comprehensive baseline evaluation drives the central theoretical realization of this thesis: the latency bottleneck is not merely a byproduct of poorly optimized code or insufficiently powerful GPU hardware. It is an inherent, inescapable structural consequence of demanding a full 3D intermediate scene representation.
+
+Both FFKSM and K-3DGS assume that to understand its own morphology, a robot must possess a mathematically complete 3D replica of itself that can be queried from any arbitrary, $360^\circ$ spatial coordinate. While this capability is fascinating for digital twin visualization, it is computationally wasteful for localized feedback control. If an embodied agent utilizes statically mounted, fixed-extrinsic stereo cameras (e.g., eye-to-hand tracking), it does not need to render its morphology from a viewpoint that the cameras can never physically occupy. 
+
+Demanding that the neural network calculate massive $4 \times 4$ homogeneous transformation matrices, rotate thousands of covariance matrices, execute volumetric ray-integrals, or perform GPU-wide Radix sorting of discrete primitives introduces a massive computational penalty for geometric data that the closed-loop controller will never ultimately consume.
+
+To successfully break the sub-millisecond latency barrier, the self-modeling architecture must jettison the intermediate 3D representation entirely. The network must be redesigned to learn a direct, flat mapping from the 1D proprioceptive joint vector directly to the 2D exteroceptive observation plane. It is from this exact mathematical requirement that the NeuroKin direct sensorimotor decoding paradigm, detailed in the subsequent chapter, is synthesized.
+
+% ==========================================
+% CHAPTER 4: THE NEUROKIN ARCHITECTURE
+% ==========================================
+\chapter{The NeuroKin Architecture}
+
+The rigorous empirical evaluations conducted in Chapter 3 established a definitive and insurmountable latency paradox within contemporary volumetric self-modeling. Both implicit continuous fields (Neural Radiance Fields via FFKSM) and explicit geometric primitives (3D Gaussian Splatting via K-3DGS) fundamentally fail to achieve the sub-millisecond inference thresholds mandated by high-frequency, closed-loop robotic control. Their failure is not an artifact of poor software optimization, but rather a direct structural consequence of their foundational premise: the assumption that a robot must construct and manipulate a fully three-dimensional, queryable geometric volume to understand its own physical state. 
+
+This chapter introduces the core architectural contribution of this thesis: NeuroKin. NeuroKin is specifically engineered to shatter the volumetric latency bottleneck by forcing a fundamental paradigm shift away from 3D scene reconstruction and toward \textit{direct sensorimotor decoding}. This chapter mathematically formulates this new paradigm, exhaustively dissects the layer-by-layer topology of the proposed Convolutional Neural Network (CNN), details the geometric bridging mechanics between joint-space and pixel-space, and unpacks the dense pixel-wise supervision dynamics that enable NeuroKin to achieve its unprecedented $7{,}400\,\mathrm{FPS}$ ($0.135\,\mathrm{ms}$) inference rate.
+
+\section{The Direct Sensorimotor Decoding Paradigm}
+
+The philosophical and mathematical foundation of the NeuroKin architecture rests upon a radical epistemic simplification of the robotic self-modeling objective. In classical computer graphics and novel-view synthesis (the domains from which NeRF and 3DGS originated), the objective is to capture a scene such that it can be rendered from any arbitrary, previously unseen $360^\circ$ spatial perspective. To achieve this, the neural architecture is strictly required to learn the true 3D spatial occupancy, volumetric density, and directional light emission of the subject. 
+
+However, in the context of closed-loop robotic autonomy, the objective is fundamentally different. An embodied agent utilizing statically mounted exteroceptive sensors (such as an eye-to-hand stereoscopic camera array monitoring a workspace) does not inherently require the capability to render its own morphology from an arbitrary angle that its cameras can never physically occupy. For critical control tasks such as collision avoidance, spatial tracking, end-effector coordinate estimation, and localized damage detection, the controller requires only a highly accurate, high-speed projection of the robot's expected physical state from the \textit{known} observer locations.
+
+\subsection{Bypassing the Intermediate 3D Representation}
+
+By restricting the self-modeling problem to a fixed-viewpoint observation scenario, we can mathematically bypass the profound computational overhead of the intermediate 3D representation entirely. 
+
+In the FFKSM implicit paradigm, the mapping from joint space to image space is heavily indirect. The joint vector $\mathbf{q}$ is used to condition a spatial query at 3D coordinates $(x, y, z)$, yielding a localized density $\sigma$. Only after integrating thousands of these discrete density queries along a projected camera ray can a single 2D pixel color be resolved. In the explicit K-3DGS paradigm, the joint vector $\mathbf{q}$ drives a complex Forward Kinematics matrix $T_k(\mathbf{q})$, which spatially translates and rotates a massive point cloud of 3D covariance matrices in world space, which must then be algebraically projected into 2D screen space via the Jacobian, sorted, and rasterized.
+
+The NeuroKin direct sensorimotor decoding paradigm eradicates this intermediate 3D step. NeuroKin treats the entire morphological rendering process as a unified, end-to-end, flat mapping function. It mathematically asserts that there exists a highly complex, non-linear, but ultimately direct transform $\mathcal{F}$ that maps the low-dimensional proprioceptive joint space $\mathbf{q} \in \mathbb{R}^D$ directly to the high-dimensional exteroceptive pixel space $\mathbf{I} \in \mathbb{R}^{H \times W \times C}$. 
+
+\begin{equation}
+\hat{\mathbf{I}}_t = \mathcal{F}_\theta(\mathbf{q}_t)
+\end{equation}
+
+Where $\mathbf{q}_t$ is the physical joint configuration vector recorded by the motor encoders at time $t$, $\mathcal{F}_\theta$ represents the deep convolutional neural network parameterized by learned weights $\theta$, and $\hat{\mathbf{I}}_t$ is the predicted two-dimensional visual self-observation (rendered in grayscale or as a binary silhouette, such that $C=1$).
+
+\subsection{The Computational Advantage of Flat Mapping}
+
+This flat mathematical formulation fundamentally changes the computational character of the inference process. Because NeuroKin does not traverse physical 3D space, it requires zero volumetric sampling. Because it does not maintain discrete primitives, it requires zero algorithmic sorting or frustum culling. 
+
+Instead, the entire self-model image is generated in a single, unidirectional, highly deterministic forward pass through a convolutional network. The mathematical operations—dense matrix multiplications and highly parallelized 2D spatial convolutions—are the exact operations that Tensor Cores on modern GPUs (such as the NVIDIA Tesla T4 utilized in this research) are natively optimized to execute at maximum theoretical throughput. This strict adherence to hardware-native operations is what allows NeuroKin to execute its transformation from a 4-dimensional joint vector to a $10,000$-pixel silhouette in $0.135$ milliseconds, radically outperforming architectures that attempt to respect real-world geometric physics.
+
+\section{Network Topology and Feature Extraction}
+
+To successfully map a low-dimensional kinematic vector directly to a highly structured 2D spatial image without relying on physical ray-tracing, the internal topology of the NeuroKin architecture must execute a highly specific dimensional expansion. The network must ingest abstract angles, compress them into a holistic spatial understanding, and then sequentially inflate that understanding into recognizable pixel geometry. 
+
+The NeuroKin architecture is strictly structured as an asymmetric encoder-decoder pipeline, comprised of a fully connected Multilayer Perceptron (MLP) kinematic encoder, a critical spatial bridging layer, and a deep, fully Convolutional Neural Network (CNN) spatial decoder.
+
+![Figure 4.1: Proposed convolutional neural network architecture for direct sensorimotor decoding.](figures/architecture diagram.png)
+
+\subsection{The Kinematic Encoder and Noise Regularization}
+
+The processing pipeline initiates at the input layer, which receives the real-time physical joint state of the robot. For the 4-DOF serial manipulator evaluated in this study, the input is a continuous vector $\mathbf{q} \in \mathbb{R}^4$, where $\mathbf{q} = [\theta_1, \theta_2, \theta_3, \theta_4]^T$.
+
+Before the input vector passes into the dense layers, NeuroKin explicitly applies a critical regularization technique during the training phase: \textit{Kinematic Noise Augmentation}. Physical joint encoders deployed on actual robotic hardware are never perfectly mathematically precise; they suffer from quantization errors, electrical noise, and high-frequency jitter. If a self-model is trained on pristine, noise-free simulated joint angles, it will learn a highly brittle, overfitted mapping. When deployed, microscopic fluctuations in the physical encoder readings will trigger massive, cascading structural hallucination artifacts in the visual output.
+
+To force the network to learn a robust, smooth, and generalized geometric manifold, isotropic Gaussian noise is injected directly into the input vector during the forward training pass:
+
+\begin{equation}
+\mathbf{q}' = \mathbf{q} + \mathcal{N}(0, \sigma^2 I)
+\end{equation}
+
+Where the standard deviation $\sigma$ is set to $0.01$ radians. This mathematically forces the encoder to understand that a tiny perturbation in $\theta_2$ should not fundamentally alter the gross topology of the predicted robotic arm, thereby ensuring that the self-model remains visually stable under dynamic control conditions.
+
+Following noise augmentation, the vector $\mathbf{q}'$ is passed through a dense, fully connected Multi-Layer Perceptron. The purpose of this encoder is strictly non-linear dimensional expansion. The raw joint angles possess no inherent spatial correlation; the MLP must uncover the complex, non-linear kinematic correlations between the joints (e.g., how the rotation of the base joint fundamentally alters the spatial trajectory of the elbow joint). Through a sequence of dense layers utilizing Rectified Linear Unit (ReLU) activations, the 4-dimensional input is aggressively expanded into a highly compressed, holistic representation of the robot's entire spatial state, culminating in a \textit{latent kinematic vector} $\mathbf{z} \in \mathbb{R}^{1024}$.
+
+\subsection{The Spatial Bridge and Transposed Convolutions}
+
+The mathematical crux of the NeuroKin architecture lies in the transition from abstract, 1-dimensional latent features into 2D spatial geometry. The 1024-dimensional latent vector $\mathbf{z}$ contains all necessary information regarding the robot's physical pose, but it possesses no spatial structure; it has no concept of "top," "bottom," "left," or "right" relative to an image plane.
+
+To bridge this gap, the 1D latent vector is mathematically reshaped into a low-resolution, high-channel-depth 3D tensor. Specifically, the vector is reorganized into an initial spatial feature map $Z_{spatial} \in \mathbb{R}^{C_{init} \times H_0 \times W_0}$. In the project implementation, this initial spatial seed typically takes the form of a heavily downsampled grid, such as $64 \times 4 \times 4$. 
+
+Once the data possesses spatial dimensions ($H \times W$), the NeuroKin architecture shifts entirely to a Convolutional Neural Network (CNN) decoding paradigm. However, standard convolutions decrease spatial resolution. Because NeuroKin must inflate a $4 \times 4$ seed into a final $100 \times 100$ pixel observation, it relies extensively on \textit{Transposed Convolutions} (also mathematically referred to as fractionally strided convolutions or deconvolutions).
+
+A standard convolution applies a kernel over an input field to produce a single output scalar, compressing space. A transposed convolution reverses this dynamic: it takes a single scalar from the input feature map, multiplies it by a learned kernel, and projects the resulting matrix into the output space. By utilizing stride values greater than 1 (e.g., a stride of 2 with a $3 \times 3$ or $4 \times 4$ kernel), the transposed convolution mathematically upsamples the spatial resolution of the feature map while simultaneously extracting and refining the geometric boundaries of the robotic links.
+
+\subsection{Progressive Spatial Expansion and Output Activation}
+
+The NeuroKin decoder executes a progressive, multi-stage expansion. The architecture passes the spatial tensor through four sequential blocks of Transposed Convolution, Batch Normalization, and LeakyReLU activations.
+
+1. \textbf{Block 1:} Upsamples the initial spatial seed, expanding the height and width while reducing the channel depth (e.g., from 64 channels to 32 channels).
+2. \textbf{Block 2 \& 3:} Continues the progressive geometric inflation, refining the curvature of the cylindrical robotic links and establishing the specific spatial locations of the complex joint intersections based on the latent kinematic code.
+3. \textbf{Block 4 (Output):} The final layer applies a terminal transposed convolution that collapses the channel depth down to exactly $C=1$ (for a grayscale or binary silhouette output) and hits the target resolution of $H=100, W=100$.
+
+To ensure the network output mathematically conforms to standard pixel intensity bounds, the final tensor is passed through a Sigmoid activation function $\sigma(x) = \frac{1}{1 + e^{-x}}$. This strictly squashes all predicted pixel values into the continuous range $(0, 1)$, natively representing either normalized grayscale intensity or probabilistic binary occupancy (where $1$ represents absolute robotic occlusion and $0$ represents empty background space).
+
+\subsection{The Dense Supervision Advantage and Training Velocity}
+
+The architectural design of NeuroKin yields a massive, often overlooked mathematical advantage during the backpropagation training phase: \textit{Dense Pixel-Wise Supervision}.
+
+In the volumetric FFKSM architecture, the training signal is inherently sparse. When the NeRF model renders a batch of 1,024 random rays to compare against the ground truth image, the computed loss gradient can only backpropagate through the specific spatial coordinates that were actively sampled along those specific rays. The vast majority of the 3D volume—and the vast majority of the neural weights—receives zero gradient update during a given step. 
+
+Conversely, NeuroKin predicts the \textit{entire} image simultaneously in a single forward pass. The training objective utilizes a standard, dense Mean Squared Error (MSE) loss function computed across every single spatial coordinate of the predicted silhouette $\hat{\mathbf{I}}$ against the ground-truth PyBullet observation $\mathbf{I}$:
+
+\begin{equation}
+\mathcal{L}_{MSE} = \frac{1}{H \cdot W} \sum_{x=1}^{W} \sum_{y=1}^{H} \left( \hat{\mathbf{I}}(x, y) - \mathbf{I}(x, y) \right)^2
+\end{equation}
+
+Because the loss is calculated over all $10,000$ pixels simultaneously, every single pixel provides an active, highly structured gradient signal that flows backward through the transposed convolutions and directly into the latent space. The network is forced to instantly correlate how an adjustment in joint $\theta_2$ globally shifts the position of thousands of pixels across the entire rendered image.
+
+This dense, holistic supervision explains a critical architectural paradox. The complete NeuroKin CNN architecture possesses approximately $6,829,089$ learnable parameters—which is roughly $73$ times larger than the parameter count of the compact MLP utilized in the FFKSM baseline. Yet, despite being a massively larger network in terms of parameter volume, NeuroKin trains exponentially faster. 
+
+Due to the extreme efficiency of the dense gradient flow over the 2,000-sample Lorenz trajectory dataset, the NeuroKin architecture fully converges to a near-zero MSE loss state in an astonishing $33.5$ seconds on standard Tesla T4 hardware. The FFKSM baseline, crippled by the sparse gradient updates of ray-marching, requires over $50.0$ minutes to achieve inferior geometric convergence. By aligning the network topology directly with the geometry of the target output and the strengths of modern GPU tensor operations, NeuroKin entirely eradicates the computational bottlenecks that have historically plagued robotic visual self-modeling.
+
+\section{Stereoscopic 3D Recovery via Dual-View Decoding}
+
+While the direct prediction of a 2D morphological silhouette successfully eradicates the latency bottleneck associated with volumetric rendering, a purely monocular silhouette inherently suffers from fundamental geometric limitations. A single 2D projection heavily compresses the 3D spatial structure of the robotic manipulator. Due to the mathematical realities of projective geometry, infinite 3D configurations can theoretically map to highly similar 2D silhouettes, creating severe depth ambiguity. For a closed-loop controller tasked with guiding a physical end-effector to a precise Cartesian target coordinate, a 2D pixel mask is insufficient; the controller requires a continuous, mathematically rigorous estimation of the end-effector's spatial position $\mathbf{p}_t \in \mathbb{R}^3$.
+
+To bridge this gap without reverting to computationally disastrous 3D volumetric reconstruction, the NeuroKin architecture implements a highly optimized, \textit{stereoscopic dual-view decoding pipeline}. 
+
+\subsection{Orthogonal Camera Configuration and Feature Concatenation}
+
+Rather than attempting to regress a 3D coordinate from a single ambiguous viewpoint, the physical simulation environment is configured with two perfectly synchronized, statically mounted, orthogonal virtual cameras: Camera 1 (Front View) and Camera 2 (Side View). These cameras observe the identical physical joint configuration from complementary spatial perspectives, providing the absolute minimum parallax required to mathematically triangulate depth without executing a dense stereo-matching or point-cloud generation algorithm.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth,height=0.68\textheight,keepaspectratio]{"2 view data generation sample.png"}
+    \caption{Synchronized dual-camera observations mapping to end-effector coordinates. The grid illustrates the deterministic mapping from the Front View (Camera 1) and Side View (Camera 2) to a combined grayscale spatial output, providing the necessary orthogonal parallax to break depth ambiguity.}
+    \label{fig:dual_view_generation}
+\end{figure}
+
+The stereoscopic adaptation of the NeuroKin architecture utilizes a parallelized dual-encoder structure. The identical joint configuration vector $\mathbf{q}_t$ is processed to generate two distinct spatial feature maps corresponding to the expected silhouettes from the Front and Side cameras. Instead of merely outputting these images, the network extracts the high-dimensional latent spatial tensors immediately preceding the final activation layer. 
+
+These two orthogonal feature tensors, $\mathbf{Z}_{front}$ and $\mathbf{Z}_{side}$, are mathematically concatenated along their channel dimension to form a unified stereoscopic representation $\mathbf{Z}_{stereo} = [\mathbf{Z}_{front} \parallel \mathbf{Z}_{side}]$. This concatenated tensor acts as a highly compressed, implicit representation of the robot's 3D bounding volume.
+
+\subsection{Spatial Coordinate Regression}
+
+To extract the physical operational coordinate from this concatenated tensor, a dedicated Multilayer Perceptron (MLP) regression head is appended to the architecture. The regression head aggressively pools the spatial dimensions of the stereoscopic tensor and projects the resultant vector into exactly three dimensions, outputting the estimated Cartesian coordinate of the end-effector:
+
+\begin{equation}
+\hat{\mathbf{p}}_t = \mathcal{G}_\phi(\mathbf{Z}_{stereo}) \quad \text{where} \quad \hat{\mathbf{p}}_t = [\hat{X}_t, \hat{Y}_t, \hat{Z}_t]^T
+\end{equation}
+
+Where $\mathcal{G}_\phi$ represents the learned weights of the spatial regression head. The training objective for this specific sub-module utilizes a standard $L_2$ Euclidean loss against the ground-truth 3D end-effector coordinate $\mathbf{p}_t$ extracted directly from the PyBullet physics engine:
+
+\begin{equation}
+\mathcal{L}_{spatial} = || \hat{\mathbf{p}}_t - \mathbf{p}_t ||_2^2
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.70\textwidth]{"2 view end effector position.png"}
+    \caption{Target and current end-effector position estimated in 3D from synchronized stereoscopic observations. The minimal Cartesian distance establishes the precision of the direct coordinate regression.}
+    \label{fig:dual_view_position}
+\end{figure}
+
+The computational elegance of this approach lies in its extreme efficiency. Executing a second parallel pass of the lightweight NeuroKin decoder and computing the subsequent MLP regression adds a statistically negligible overhead to the inference latency. Profiling on the target hardware indicates that the total inference time for the complete stereoscopic pipeline—generating both orthogonal visual self-models and regressing the precise 3D end-effector coordinate—consumes approximately $0.27\,\mathrm{ms}$. While exactly double the latency of the monocular baseline ($0.135\,\mathrm{ms}$), $0.27\,\mathrm{ms}$ remains overwhelmingly within the strict $1.0\,\mathrm{ms}$ latency budget required for $1\,\mathrm{kHz}$ control integration.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{"end-effector-position gt vs prediction.png"}
+    \caption{Correlation of true versus predicted spatial coordinates. The validation plot tracks True X, Y, Z positions against the NeuroKin predictions across 100 sequential validation samples. The dashed predicted lines exhibit near-perfect overlap with the solid ground-truth lines, confirming the spatial validity of the dual-view regression.}
+    \label{fig:gt_vs_prediction}
+\end{figure}
+
+As documented in the validation tracking plot (Figure \ref{fig:gt_vs_prediction}), the spatial fidelity of this regression is extraordinarily high. Across $100$ complex, out-of-sample physical poses drawn from the chaotic Lorenz testing trajectory, the predicted Cartesian coordinates ($\hat{X}, \hat{Y}, \hat{Z}$) overlap the ground truth coordinates with sub-centimeter precision. This empirical confirmation mathematically authorizes the use of the NeuroKin output not merely as a diagnostic visualization, but as the active state-estimation feedback signal within a Jacobian-based inverse-kinematics control loop (as will be executed in Chapter 5).
+
+\section{Comprehensive Performance Evaluation}
+
+The validation of any novel neural architecture fundamentally requires a direct, mathematically rigorous benchmarking against the established state-of-the-art. The primary technical claim of this thesis—that the latency paradox of neural self-modeling can be eradicated via direct sensorimotor decoding—rests entirely upon the precise metrics extracted from the comprehensive evaluation of the NeuroKin architecture against the previously reproduced FFKSM (NeRF) and K-3DGS baselines.
+
+\subsection{Shattering the Latency Bottleneck}
+
+The most critical and transformative metric extracted during the architectural evaluation is pure inference throughput. Under identical hardware constraints (a dedicated NVIDIA Tesla T4 GPU) and processing identical input batches, the monolithic NeuroKin architecture achieved a sustained, deterministic inference rate of $7{,}400$ Frames Per Second (FPS).
+
+\begin{table}[H]
+\centering
+\caption{Quantitative comparison of self-modeling architectures on the standard simulated 4-DOF manipulator dataset.}
+\label{tab:final_baseline_metrics}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Method} & \textbf{PSNR (dB)} & \textbf{FPS} & \textbf{Latency (ms)} & \textbf{Training Time} \\
+\midrule
+FFKSM (Implicit NeRF) & 17.35 & 5.22 & 191.60 & 50.0 min \\
+K-3DGS (Explicit Splats) & 17.01 & 37.00 & 27.00 & 50.5 sec \\
+\textbf{NeuroKin (Direct 2D)} & \textbf{21.88} & \textbf{7,400.00} & \textbf{0.135} & \textbf{33.5 sec} \\
+ResNeuroKin-D (Depth Variant) & 21.23 & 2,500.00 & 0.400 & 365.5 sec \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This metric represents a staggering mathematical breakthrough for the field of embodied robotics. An inference rate of $7{,}400\,\mathrm{FPS}$ corresponds to an absolute hard latency of exactly $0.135$ milliseconds per geometric prediction. 
+
+To contextualize the magnitude of this advancement: within the strict $1.0\,\mathrm{ms}$ computational budget of a standard $1\,\mathrm{kHz}$ robotic feedback loop, the NeRF-based FFKSM baseline overshoots the deadline by $19,060\%$. The explicitly rendered K-3DGS architecture overshoots the deadline by $2,600\%$. The NeuroKin architecture consumes a mere $13.5\%$ of the available control cycle budget. 
+
+This extreme computational brevity leaves massive, unprecedented latency headroom ($0.865\,\mathrm{ms}$) within the control cycle. This remaining temporal budget can be seamlessly reallocated to highly complex, computationally demanding downstream tasks, such as running real-time collision checking along a planned trajectory, computing exact Jacobian transpositions, executing advanced inverse-dynamics torque calculations, or parsing higher-level stigmergic swarm communication protocols. By reducing self-modeling from a catastrophic bottleneck to a lightweight, virtually instantaneous matrix multiplication, NeuroKin transitions the concept of visual self-diagnosis from an offline curiosity to an actively deployable, real-time control mechanism.
+
+\subsection{Photometric Convergence and Structural Fidelity}
+
+While inference speed is the primary objective function of this thesis, extreme velocity is scientifically meaningless if it necessitates a total collapse in geometric reconstruction fidelity. A self-model that executes in $0.1$ milliseconds but outputs pure noise cannot stabilize a robot. 
+
+Remarkably, the transition from heavy 3D volumetric rendering to direct 2D decoding actually \textit{improved} the photometric accuracy of the self-model within the fixed-camera operational envelope. As documented in Table \ref{tab:final_baseline_metrics}, the NeuroKin architecture achieved a Peak Signal-to-Noise Ratio (PSNR) of $21.88\,\mathrm{dB}$, mathematically outperforming both the FFKSM ($17.35\,\mathrm{dB}$) and K-3DGS ($17.01\,\mathrm{dB}$) volumetric baselines.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{"neurokin 2d loss training.png"}
+    \caption{MSE loss converging near zero during NeuroKin training. Both Training Loss (blue) and Validation Loss (orange) drop precipitously before Epoch 20, confirming the extreme efficiency of dense pixel-wise gradient supervision.}
+    \label{fig:neurokin_training_loss}
+\end{figure}
+
+This counter-intuitive increase in visual fidelity is driven entirely by the mathematical superiority of dense supervision. As outlined in Figure \ref{fig:neurokin_training_loss}, the Mean Squared Error (MSE) loss curve for NeuroKin converges radically faster and lower than the comparable implicit networks. Because the CNN predicts the entire $100 \times 100$ image in a single pass, every single pixel provides an active loss gradient back to the latent space during every single backpropagation step. In contrast, the NeRF architecture receives sparse gradients only from the specific sub-sample of rays cast during a training batch, leaving massive regions of the latent volume under-supervised and highly susceptible to blurring.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{"neurokin_results.png"}
+    \caption{High-fidelity NeuroKin renders versus Target Images. Unlike the volumetric blurs of FFKSM or the isotropic blobs of K-3DGS, the NeuroKin architecture perfectly resolves the sharp, linear boundaries of the physical robotic links. The difference maps (right) demonstrate that residual errors are strictly localized to complex geometric extremities (end-effector orientation) rather than the main structural body.}
+    \label{fig:neurokin_qualitative}
+\end{figure}
+
+The qualitative analysis of the rendered outputs (Figure \ref{fig:neurokin_qualitative}) explicitly confirms the numerical PSNR advantage. Unlike the FFKSM architecture, which generates semi-transparent, blurred edges due to the inherent uncertainty of ray-integration, and unlike the K-3DGS architecture, which generates corrugated, "blobby" edges due to isotropic mode collapse, the NeuroKin decoder renders perfectly sharp, hard-surface boundaries. 
+
+The physical dimensions of the cylindrical robotic links are perfectly preserved. Analysis of the high-contrast difference maps reveals that virtually all structural errors along the main body of the manipulator have been eradicated. The remaining minor discrepancies are strictly localized to the extreme distal components—specifically the rapid, high-frequency rotational changes of the end-effector tip. For a robotic motion planner, preserving the rigid boundary geometry of the main physical linkages is the absolute highest priority for ensuring safe, collision-free movement. 
+
+\section{Architectural Extensions: ResNeuroKin-D}
+
+To ensure complete scientific rigor and to address potential critiques regarding the total abandonment of explicit 3D geometric reasoning, the thesis evaluated an auxiliary, multi-task variant of the direct decoder: \textbf{ResNeuroKin-D}.
+
+A valid theoretical critique of the base NeuroKin architecture is that its $1024$-dimensional latent vector may lack true, structured geometric depth organization. A specific latent dimension might simultaneously encode a combination of joint pose, lighting intensity, and 2D pixel overlap, rather than isolating the true 3D physical depth of the link. While this entanglement is perfectly acceptable for ultra-fast, fixed-view silhouette rendering, it could present generalization issues if the robot's physical morphology sustains complex, non-linear twisting damage that alters the z-axis depth ordering of the linkages.
+
+To force the CNN to embed true geometric structure into its latent representation without reverting to volumetric ray-marching, the ResNeuroKin-D variant appends a parallel, secondary decoder head to the architecture. This auxiliary head is explicitly supervised to predict a dense, normalized synthetic \textit{depth map} ($Z$-buffer), in tandem with the primary visual silhouette.
+
+The total objective function is modified to a weighted multi-task loss:
+
+\begin{equation}
+\mathcal{L}_{total} = \mathcal{L}_{silhouette} + \lambda \mathcal{L}_{depth}
+\end{equation}
+
+Where the hyperparameter $\lambda = 0.5$ balances the gradient flow. By demanding that the identical latent vector simultaneously decode both 2D visual appearance and 2.5D geometric depth, the network is mathematically forced to logically organize the robot's physical occlusion relationships. If Link 3 passes in front of Link 2, the latent space must intrinsically understand which object is physically closer to the camera plane.
+
+The empirical results of this multi-task geometric variant, documented in Table \ref{tab:final_baseline_metrics}, validate the flexibility of the decoding paradigm. ResNeuroKin-D achieves $21.23\,\mathrm{dB}$ PSNR. Because the architecture must push data through two parallel deep convolutional decoders, the inference rate naturally decreases. However, it still maintains an extraordinary $2{,}500\,\mathrm{FPS}$ throughput ($0.400\,\mathrm{ms}$ latency). 
+
+While slightly slower than the base NeuroKin model, $0.400\,\mathrm{ms}$ remains deeply submerged below the $1.0\,\mathrm{ms}$ latency ceiling required for $1\,\mathrm{kHz}$ control. This proves that direct sensorimotor decoding is not a fragile, one-dimensional parlor trick. The architecture can seamlessly be expanded to provide highly complex, geometrically structured 2.5D physical representations, while completely bypassing the catastrophic computational penalties permanently inherent to NeRFs and 3D Gaussian point clouds.
+
+% ==========================================
+% CHAPTER 5: VISUAL CLOSED-LOOP CONTROL AND DAMAGE ADAPTATION
+% ==========================================
+\chapter{Visual Closed-Loop Control and Damage Adaptation}
+
+The previous chapters of this thesis rigorously established the computational superiority of the NeuroKin direct sensorimotor decoding architecture. By bypassing explicit three-dimensional volumetric reconstruction, NeuroKin successfully reduced morphological inference latency to a deterministic $0.135$ milliseconds. However, extreme computational velocity is scientifically meaningless if the resulting predictions cannot be actively operationalized. A self-model is not a passive visualization tool; it is a critical diagnostic engine designed to maintain the physical stability of an autonomous agent.
+
+This chapter transitions the empirical evaluation from static rendering and spatial regression metrics to dynamic, real-time closed-loop control. It formally defines the mathematical integration of the NeuroKin stereoscopic spatial estimates into a Jacobian-based inverse-kinematics feedback controller. Through a series of highly structured simulated experiments, this chapter provides an exhaustive analysis of end-effector convergence dynamics under nominal operating conditions. Subsequently, the system is subjected to simulated structural damage—specifically, an unmodeled state disturbance injected mid-trajectory. The empirical results definitively prove that sub-millisecond visual estimates can effectively override corrupted proprioceptive data, allowing the control loop to absorb the physical shock, dynamically recompute its spatial error, and re-stabilize the manipulator's trajectory.
+
+\section{Controller Integration and Mathematical Formulation}
+
+To actively guide a robotic manipulator to a desired spatial coordinate, the system must continuously solve the Inverse Kinematics (IK) problem. The standard IK problem seeks to find the specific joint configuration $\mathbf{q} \in \mathbb{R}^D$ (where $D=4$ in this thesis) that places the robot's end-effector at a target Cartesian position $\mathbf{p}_{target} \in \mathbb{R}^3$. Because the mapping from joint space to Cartesian space is highly non-linear, analytical closed-form solutions are often impossible or structurally fragile when physical damage alters the kinematic tree. Therefore, autonomous systems rely heavily on numerical, Jacobian-based iterative solvers.
+
+\subsection{The Jacobian-Based Feedback Loop}
+
+The Jacobian matrix $J(\mathbf{q}) \in \mathbb{R}^{3 \times D}$ defines the linear mapping between the instantaneous joint velocities $\dot{\mathbf{q}}$ and the Cartesian end-effector velocities $\dot{\mathbf{p}}$:
+
+\begin{equation}
+\dot{\mathbf{p}} = J(\mathbf{q}) \dot{\mathbf{q}}
+\end{equation}
+
+In a discrete-time digital control system, this continuous relationship is approximated using small finite differences ($\Delta \mathbf{p} \approx J(\mathbf{q}) \Delta \mathbf{q}$). To drive the robot toward the target, the controller must calculate the necessary joint update $\Delta \mathbf{q}$ given a measured Cartesian error $\mathbf{e}_t$. Inverting the non-square Jacobian matrix requires the computation of the Moore-Penrose pseudo-inverse $J^+$, mathematically defined (for a redundant or non-square system) as:
+
+\begin{equation}
+J^+ = J^T (J J^T)^{-1}
+\end{equation}
+
+In classical robotics, the Cartesian error $\mathbf{e}_t$ is computed by taking the mathematical difference between the absolute target position and the current end-effector position. Crucially, the current position is traditionally calculated by feeding the raw proprioceptive encoder readings $\mathbf{q}_t$ through the rigid, hardcoded Forward Kinematics (FK) equations: $\mathbf{e}_t = \mathbf{p}_{target} - \text{FK}(\mathbf{q}_t)$.
+
+This classical reliance on the FK equation is the exact vulnerability that embodiment drift exploits. If a physical link bends, or an encoder slips, the rigid FK equation mathematically assumes the robot is occupying a healthy spatial coordinate, entirely blinding the controller to its actual, damaged physical reality. 
+
+\subsection{Integration of the NeuroKin Visual Override}
+
+The control architecture developed in this thesis structurally severs the controller's reliance on the blind, hardcoded Forward Kinematics equation. Instead, the control loop derives its localized spatial awareness directly from the sub-millisecond visual predictions generated by the NeuroKin stereoscopic decoder.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{"control loop flowchart.png"}
+    \caption{Standard closed-loop control flow integrating the NeuroKin self-model. The classical reliance on mathematical Forward Kinematics is structurally replaced by the continuous, real-time spatial predictions $\hat{P}_t$ generated from the synchronized dual-camera observations. This establishes a visually closed feedback loop capable of detecting physical discrepancies that bypass proprioceptive encoders.}
+    \label{fig:control_loop_flowchart}
+\end{figure}
+
+As explicitly detailed in the control flow diagram (Figure \ref{fig:control_loop_flowchart}), the process initiates at time $t=0$ with the initial joint state $\theta_0$. As the main loop executes, the physical (or physically simulated) robot is observed by the synchronized dual cameras. These high-speed observations are fed directly into the NeuroKin Convolutional Neural Network, which instantly decodes the images and regresses the predicted, true physical position of the end-effector: $\hat{P}_t$.
+
+The modified Cartesian error $\mathbf{e}_t$ is subsequently computed by subtracting this \textit{visually verified} state from the target:
+
+\begin{equation}
+\mathbf{e}_t = \mathbf{p}_{target} - \hat{P}_t
+\end{equation}
+
+The control update is then numerically resolved using the pseudo-inverse Jacobian:
+
+\begin{equation}
+\Delta \theta_t = J^+(\theta_t) \mathbf{e}_t
+\end{equation}
+
+Before the command is physically transmitted to the actuators, the software strictly enforces the hardware joint limits to prevent catastrophic self-collision or actuator burn-out. The next joint state command $\theta_{t+1}$ is calculated using an iterative step size (learning rate) $\alpha$:
+
+\begin{equation}
+\theta_{t+1} = \text{clip}(\theta_t + \alpha \Delta \theta_t, \, \theta_{min}, \, \theta_{max})
+\end{equation}
+
+This loop evaluates continuously. A decision diamond dictates termination: if the absolute Euclidean error falls below a predefined millimeter threshold ($||\mathbf{e}_t|| < \epsilon$), or if the iterative temporal step $t$ exceeds the maximum permissible timeout $t_{max}$, the controller halts. By placing the neural network directly inside this critical high-frequency loop, the system’s mathematical definition of "reality" is continuously anchored to its actual physical appearance.
+
+\section{Nominal Control Dynamics and Baseline Stabilization}
+
+Before evaluating the system's resilience to physical damage, it is scientifically imperative to prove that the integration of a neural network into the feedback loop does not fundamentally destabilize the nominal operation of the manipulator. Neural networks approximate non-linear manifolds; they are rarely mathematically perfect. If the NeuroKin spatial regression head produces noisy or highly erratic coordinate estimations, the resulting Cartesian error vector $\mathbf{e}_t$ will wildly fluctuate. A fluctuating error vector fed into a pseudo-inverse Jacobian will command massive, erratic joint torques, forcing the robotic arm into violent, destructive oscillations.
+
+To validate nominal stability, the integrated controller was tasked with reaching a sequence of out-of-distribution spatial targets within the PyBullet workspace under zero-fault conditions. The empirical results definitively confirm robust, monotonic stabilization.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{"closedloop-endeffector-error.png"}
+    \caption{Baseline error convergence over time steps. The Euclidean distance between the NeuroKin-estimated end-effector position and the target coordinate drops rapidly and monotonically, asymptotically approaching zero within $40$ control iterations without triggering resonant oscillations.}
+    \label{fig:nominal_error_convergence}
+\end{figure}
+
+Figure \ref{fig:nominal_error_convergence} explicitly documents the Euclidean error ($\mathcal{L}_2$ norm) of the end-effector across discrete time steps. The manipulator initializes at a distance greater than $0.20$ meters from the target. As the loop executes, the error curve plummets rapidly, exhibiting classic exponential decay typical of a well-tuned proportional controller. Crucially, the curve is remarkably smooth. It does not exhibit the high-frequency "chatter" or severe overshoot that would indicate latent noise in the NeuroKin coordinate predictions. The visual self-model provides a signal sufficiently clean and mathematically reliable to smoothly guide the physical hardware.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.78\textwidth]{"closedloop-endeffector-position-plot.png"}
+    \caption{End-effector trajectory during closed-loop reaching. The blue trajectory line maps the path of the end-effector from the start position (green dot) through 3D Cartesian space to the final target position (red 'X'), demonstrating smooth, physically plausible continuous motion.}
+    \label{fig:nominal_3d_trajectory}
+\end{figure}
+
+The 3D spatial interpretation of this stabilization is provided in Figure \ref{fig:nominal_3d_trajectory}. The generated end-effector trajectory reveals a smooth, sweeping arc through three-dimensional space ($X$, $Y$, $Z$). The absence of jagged, zigzagging trajectory artifacts confirms that the Jacobian transpositions computed from the NeuroKin visual estimates are mathematically sound and physically continuous. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{"closedloop-joint-error.png"}
+    \caption{Joint error convergence during closed-loop reaching. The convergence traces for all four distinct physical joints ($\theta_1, \theta_2, \theta_3, \theta_4$) demonstrate coordinated, distributed mechanical correction, proving that the pseudo-inverse solver efficiently disperses the Cartesian error across the entire kinematic chain.}
+    \label{fig:nominal_joint_convergence}
+\end{figure}
+
+Furthermore, examining the stabilization process in the joint-space domain (Figure \ref{fig:nominal_joint_convergence}) reveals the sophisticated mechanical distribution of the corrective commands. The four independent physical joints initialize at varying degrees of absolute error in radians. As the NeuroKin visual estimate updates the Cartesian error vector, the pseudo-inverse Jacobian efficiently disperses the necessary physical corrections across all available degrees of freedom. All four joints smoothly and simultaneously converge toward their steady-state values. This coordinated multi-joint convergence proves that the visual self-model successfully captures the holistic, interconnected spatial state of the entire kinematic tree, rather than merely tracking an isolated Cartesian point.
+
+\section{Simulating Embodiment Drift: Structural Damage Injection}
+
+Having rigorously proven that the NeuroKin visual integration successfully stabilizes the manipulator under ideal conditions, the empirical evaluation transitions to the primary objective: mitigating embodiment drift. 
+
+In a physical deployment, embodiment drift can occur instantly (e.g., a severe physical collision causing a linkage to yield and bend plastically) or gradually (e.g., a continuous, slow accumulation of encoder slip across hundreds of operational cycles). Regardless of the temporal onset, the fundamental mathematical crisis remains identical: the physical spatial coordinates of the robot's hardware permanently decouple from the abstract mathematical assumptions held by the motion controller. 
+
+To systematically evaluate the architecture's adaptive capabilities, this thesis employs a highly controlled, deterministic damage injection protocol. During an active, closed-loop reaching trajectory, a severe, unmodeled state disturbance is artificially injected into the simulation exactly at Time Step $5$. 
+
+This injected fault mechanically simulates a massive calibration slip. The true, physical configuration of the robotic joints is violently altered within the physics engine, displacing the end-effector significantly in Cartesian space. However, this mechanical displacement is completely hidden from the classical proprioceptive pipeline. If the robot were relying purely on its internal, hardcoded Forward Kinematics math, it would be utterly blind to the physical shift. The controller would erroneously believe it was still perfectly on track, continuing to issue the original sequence of torques. In reality, because the physical base had shifted, these old torques would now drive the damaged arm completely away from the target, resulting in total trajectory divergence and task failure.
+
+\section{Dynamic Error Recovery via Visual Self-Estimation}
+
+The resilience of the NeuroKin-integrated control loop is evaluated directly against this catastrophic mechanical disturbance. Because the control loop fundamentally relies on the $0.135\,\mathrm{ms}$ stereoscopic visual predictions rather than blind proprioception, it possesses an independent, uncorrupted observation pathway to physical reality.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{"closedloop-endeffector-error-with-damage.png"}
+    \caption{Dynamic error recovery following structural damage injected at Step 5. The Euclidean error initially drops, then sharply spikes as the unmodeled physical disturbance violently displaces the robotic arm. Relying on high-speed visual estimates, the controller instantly registers the true physical displacement, recomputes the Cartesian error, and successfully re-stabilizes the trajectory toward zero within $9$ subsequent time steps.}
+    \label{fig:damage_recovery}
+\end{figure}
+
+The dynamics of this adaptive recovery process are captured explicitly in Figure \ref{fig:damage_recovery}. At $t=0$, the manipulator initiates the reaching task, and the Euclidean distance begins its expected smooth descent from $0.16$ meters. 
+
+At precisely Time Step $5$ (demarcated by the dashed red vertical line), the massive physical damage is injected into the simulation. The graph records an immediate, sharp stabilization halt, followed by an inflection as the error temporarily worsens due to the physical shock throwing the end-effector off course. 
+
+If this architecture relied on an implicit NeRF requiring $191.6\,\mathrm{ms}$ to render an updated diagnostic frame, the controller would be functionally blind during this critical recovery window. It would compute dozens of incorrect, highly destructive torque commands before the delayed visual diagnosis finally arrived, likely triggering a catastrophic resonant collapse. 
+
+However, because the NeuroKin direct decoder processes the stereoscopic camera feeds at an unprecedented $7{,}400\,\mathrm{FPS}$, the visual reality of the structural damage is immediately registered by the neural network on the very next control cycle ($t=6$). The network instantly processes the new, damaged physical geometry appearing in the camera feeds, re-evaluates its spatial latent features, and outputs a highly accurate, updated estimate of the end-effector's true, displaced physical location in Cartesian space.
+
+The controller instantly ingests this verified visual coordinate. It mathematically realizes that the end-effector is no longer where the prior kinematics predicted it should be. The control loop computes a massive, completely new Cartesian error vector $\mathbf{e}_t$. This new error vector generates a drastically altered set of Jacobian transpositions, forcing the physical joints to apply immediate corrective torques. 
+
+As clearly shown in the recovery tail of Figure \ref{fig:damage_recovery} (from Step $6$ to Step $14$), the controller completely absorbs the mechanical shock. It overrides the corrupted proprioceptive assumptions and utilizes the clean visual signal to steadily drive the physically damaged hardware back down toward zero Euclidean error. 
+
+This single-agent recovery result is the definitive empirical culmination of the latency breakthrough. It proves that extreme computational velocity is not a theoretical novelty; it is the absolute mechanical enabler of active damage resilience. The visual self-model cannot physically repair a bent metal link or replace a stripped gear, but by providing mathematically pristine, sub-millisecond physical state awareness, it allows the overarching control logic to adapt, survive, and complete the mission. This capacity for robust individual survival serves as the strict computational foundation required for the scaling of decentralized, multi-agent systems, which will be extensively evaluated through the lens of temporal stigmergy in Chapter 6.
+
+% ==========================================
+% CHAPTER 6: SEQUENTIAL SWARM COORDINATION UNDER COMPOUNDING FAULTS
+% ==========================================
+\chapter{Sequential Swarm Coordination under Compounding Faults}
+
+The preceding chapters established that the NeuroKin direct sensorimotor decoding architecture entirely eradicates the volumetric latency bottleneck. Furthermore, Chapter 5 empirically validated that this sub-millisecond visual inference capability grants an individual robotic agent the capacity to actively override corrupted proprioceptive telemetry, enabling dynamic trajectory re-stabilization after a severe mechanical disturbance. However, true operational resilience in industrial or exploratory deployments rarely depends solely on the isolated survival of a single unit. It depends on \textit{collective endurance}—the capacity of a multi-agent system to adapt to, mitigate, and ultimately survive deteriorating environmental or mechanical conditions as a cohesive whole.
+
+This chapter scales the empirical validation from the individual level to the collective level. It introduces a 100-stage continuous operational pipeline designed to formally evaluate multi-agent coordination. Critically, to maintain absolute scientific rigor, this thesis rejects unverified claims of concurrent spatial swarm deployment. Instead, coordination is strictly evaluated through the theoretical framework of \textit{Temporal Stigmergy}. This chapter unpacks the architecture of the sequential swarm, dissects the algorithmic mechanics of the inter-agent communication ledger, and exhaustively analyzes the statistical performance gap between the standard inverse-kinematics baseline and the NeuroKin-enabled collective under conditions of compounding, progressive fault injection.
+
+\section{The Sequential Swarm Pipeline}
+
+To construct a mathematically rigorous framework for multi-agent evaluation without invoking the confounding variables of radio-frequency mesh networking or physical inter-robot collision avoidance, this research abstracts the swarm into a sequential, temporal pipeline. 
+
+In this temporal architecture, the "swarm" consists of $100$ discrete, sequential operational stages. Each stage mathematically represents the deployment of a single robotic agent tasked with executing a complex spatial reaching objective within the PyBullet simulation environment. These agents do not occupy the physical workspace simultaneously. Instead, they operate chronologically: Agent 1 completes its lifecycle, followed by Agent 2, continuing sequentially through Agent 100. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth,height=0.68\textheight,keepaspectratio]{"swarm control loop flowchart.png"}
+    \caption{Decentralized control loop enabling temporal coordination across sequential agents. The flowchart illustrates the cyclical interaction between the individual agent's policy network, its execution in the physical/simulated environment, and the critical continuous state-action updates that ultimately feed back into the shared stigmergic ledger.}
+    \label{fig:swarm_control_loop}
+\end{figure}
+
+As depicted in Figure \ref{fig:swarm_control_loop}, the control loop for each individual agent within the sequence remains fundamentally decentralized. Each agent possesses its own localized policy network, executes its own physical trajectory, and independently determines its own success or failure based on whether its end-effector Cartesian error falls below the required tolerance threshold within the maximum allowable step limit ($t_{max} = 200$). 
+
+\subsection{Establishing the Nominal Performance Baseline}
+
+Before subjecting the 100-stage sequence to adversarial mechanical faults, it is methodologically imperative to establish the nominal, pre-fault efficiency of both the classical proprioceptive baseline (relying purely on standard Jacobian inverse kinematics) and the NeuroKin-integrated pipeline. If the classical baseline cannot complete the sequence under pristine conditions, any subsequent failure under fault injection cannot be uniquely attributed to embodiment drift.
+
+The simulated pipeline was executed for 100 continuous stages under zero-fault conditions. The empirical results confirm that both architectures are highly competent when the physical hardware perfectly matches the digital internal model. The classical baseline achieved a perfect $100\%$ task success rate across all 100 trials, converging on the target coordinates with a mean efficiency of $42.16$ steps.
+
+The NeuroKin-enabled sequence similarly demonstrated exceptional nominal performance, achieving a $98\%$ overall success rate. The $2\%$ failure rate represents the stochastic reality of neural network approximation; in extremely rare boundary conditions, the sub-millisecond spatial regression may lack the millimeter precision required to trigger the strict termination tolerance before timing out. However, the NeuroKin sequence compensated for this negligible failure rate with superior overall convergence speed, achieving a lower mean efficiency of $35.93$ steps.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{"Algorithm Efficiency in Steps.png"}
+    \caption{Algorithm Efficiency in Steps. The scatter plot evaluates the efficiency of the baseline (blue dots) against the NeuroKin architecture (orange dots) under nominal, pre-fault conditions across 100 independent trials. The blue baseline dots are generally positioned higher on the y-axis, validating that the NeuroKin integration not only preserves nominal stability but actually accelerates convergence toward the spatial target.}
+    \label{fig:algorithm_efficiency_nominal}
+\end{figure}
+
+The distribution of these nominal convergence speeds is explicitly mapped in Figure \ref{fig:algorithm_efficiency_nominal}. The concentration of orange NeuroKin data points lower on the y-axis visually confirms the statistical mean, proving that the continuous, high-speed visual state estimation effectively streamlines the Jacobian trajectory optimization, minimizing oscillatory overshoot. This nominal evaluation definitively establishes that the baseline controller is structurally sound; therefore, its subsequent collapse under adversarial conditions will be strictly attributable to its inability to dynamically adapt to compounding physical faults.
+
+\section{The Inter-Agent Communication Ledger}
+
+Having established the sequence, the architecture requires a mechanism to bind these $100$ independent, chronological agents into a cohesive, adaptive swarm. In a standard spatial swarm, coordination is achieved via high-bandwidth, continuous state-sharing (e.g., broadcasting position, velocity, and intended trajectory via ROS2 topics over a Wi-Fi mesh network). In this sequential framework, coordination is achieved strictly via \textit{Temporal Stigmergy}.
+
+Stigmergy requires an environment that can be altered by one agent, where that alteration serves as a behavioral trigger for subsequent agents. In this thesis, the "environment" is algorithmically distilled into a highly compact, persistent digital memory ledger, instantiated programmatically as the \texttt{factory\_state} dictionary.
+
+\subsection{Ledger Architecture and the Persistence Threshold}
+
+The \texttt{factory\_state} ledger is intentionally designed to be mathematically minimalist, reflecting the severe bandwidth and memory constraints often encountered in distributed embedded systems. The ledger tracks only two variables:
+
+\begin{itemize}
+    \item \texttt{consecutive\_failures}: An integer tracking the continuous streak of unsuccessful agent deployments.
+    \item \texttt{mode}: A string explicitly defining the current operational protocol of the swarm (e.g., "standard" or "recovery").
+\end{itemize}
+
+At the initiation of the pipeline, the ledger is initialized as: \texttt{\{"consecutive\_failures": 0, "mode": "standard"\}}. 
+
+As each agent completes its temporal lifecycle, it executes a strict read-write protocol against this ledger. Following its control loop execution, the agent evaluates its terminal state. If the agent successfully reaches the target within the step limit, it explicitly resets the \texttt{consecutive\_failures} integer back to $0$, signaling to the swarm that the operational environment remains viable. However, if the agent exhausts its 200-step budget without converging—due to severe unmodeled drift or environmental occlusion—it increments the \texttt{consecutive\_failures} integer by $1$.
+
+When the next agent in the chronological sequence powers on, its absolute first algorithmic action is to query this shared ledger. The swarm logic is governed by a strict persistence threshold. If the \texttt{consecutive\_failures} variable equals $1$, the new agent maintains standard operational parameters, treating the prior failure as a statistical anomaly or isolated noise spike. 
+
+However, if \texttt{consecutive\_failures} $\geq 2$, the swarm intelligence identifies a systemic, compounding deterioration of the physical environment or hardware platform. In response, the swarm dynamically alters the \texttt{mode} variable to "recovery," triggering a cascade of state-dependent behavioral adaptations for all subsequent agents.
+
+\subsection{State-Dependent Behavioral Adaptation}
+
+The transition into "recovery" mode is not merely a descriptive flag; it fundamentally alters the underlying mathematics of the agent's inverse kinematics control loop. 
+
+When an agent reads the recovery flag from the stigmergic ledger, it autonomously abandons its original, potentially hazardous, randomized spatial target. Instead, the agent artificially shifts its objective to a predefined, highly conservative, centralized Cartesian coordinate (e.g., $\mathbf{p}_{target} = [0.15, 0.0, 0.15]$) that minimizes required joint torques and avoids the complex kinematic singularities located at the outer boundaries of the manipulator's reachable workspace.
+
+Simultaneously, the agent mathematically expands its Cartesian success tolerance. If the nominal distance threshold for target convergence is defined as $\epsilon$, the agent in recovery mode expands this parameter to $2\epsilon$. 
+
+This autonomous relaxation of operational parameters perfectly mimics the survival strategies of biological swarms and highly distributed industrial fleets. If recent units are experiencing catastrophic failure, subsequent units do not stubbornly attempt to execute the exact same high-risk parameters. They act conservatively, prioritizing sequence survival, structural preservation, and task completion (even at a lower precision) over absolute performance. This entirely decentralized, history-aware parameter scaling constitutes the foundational algorithm of temporal swarm coordination.
+
+\section{State-Dependent Collective Adaptation under Progressive Faults}
+
+To evaluate the true efficacy of this stigmergic coordination, the 100-stage sequence must be subjected to systemic degradation. The simulation environment introduces an adversarial fault-injection protocol designed to mimic the compounding physical decay of a deployed robotic fleet operating in a harsh, unmaintained environment.
+
+\subsection{The Compounding Fault Injection Protocol}
+
+The fault injection protocol is fundamentally progressive. During the initial 50 stages of the pipeline, the system operates nominally, allowing the sequence to establish a baseline of success. However, as the sequence crosses the 50th deployment threshold, the physics engine begins to stochastically inject severe, unmodeled mechanical faults directly into the simulated hardware. 
+
+These faults primarily take the form of massive, instantaneous encoder slips—violently decoupling the true physical angle of the manipulator's joints from the digital values read by the proprioceptive sensors. As the sequence advances toward Stage 100, both the statistical probability of a fault occurring during an agent's lifecycle and the absolute mathematical magnitude of that fault (measured in radians) escalate exponentially. This creates an aggressively deteriorating operational landscape that actively attempts to sever the control loop's mapping of reality.
+
+\subsection{The Structural Collapse of the Kinematic Baseline}
+
+The performance of the classical inverse-kinematics baseline under these compounding fault conditions is nothing short of catastrophic. During the first 50 pre-fault stages, the baseline sequence naturally achieves a $100\%$ success rate. However, once the progressive fault injection initiates, the purely proprioceptive architecture suffers immediate, cascading structural failure.
+
+As documented in the summary metrics extracted from the empirical dataset, the baseline sequence's post-fault success rate plummets to a devastating $13\%$. Out of the final 50 agents deployed into the deteriorating environment, 43 suffer total operational failure. The mean step count skyrockets to $75.79$, heavily skewed by the massive number of agents that exhaust their maximum allowable step budget ($t_{max} = 200$) while uselessly flailing in incorrect Cartesian space.
+
+The reason for this collapse is mathematically straightforward. When a severe encoder slip occurs, the classical baseline's internal Forward Kinematics (FK) model is permanently corrupted. The agent continues to compute pseudo-inverse Jacobian updates based on the assumption that it is located at coordinate $A$, when the physical hardware is actually located at coordinate $B$. 
+
+Crucially, the baseline swarm \textit{does} possess access to the stigmergic communication ledger. After two consecutive failures, the ledger correctly transitions the swarm into "recovery" mode, shifting the target and expanding the tolerance. However, because the baseline agent is completely blind to its true physical state, expanding the spatial tolerance is mathematically useless. It cannot guide its end-effector into the expanded target zone because it literally does not know where its end-effector is. The baseline architecture proves that high-level swarm communication is entirely futile if the localized, individual agent lacks the sensory capability to perceive reality.
+
+\subsection{NeuroKin Swarm Survival and Efficiency Maintenance}
+
+In stark contrast, the NeuroKin-integrated sequence demonstrates exceptional resilience, successfully leveraging both its individual sub-millisecond visual inference and the collective stigmergic ledger to survive the deteriorating environment.
+
+Despite facing the exact same aggressive, compounding fault injection probabilities as the baseline, the NeuroKin sequence achieves a remarkable $88\%$ overall task success rate across the entire 100-stage pipeline. It incurs a total of only 12 isolated failures throughout the entire catastrophic fault regime. Furthermore, the NeuroKin collective maintains an impressively tight step efficiency, exhibiting a post-fault mean of $57.04$ steps and a median of just $34.5$ steps.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.94\textwidth]{"Neurokin vs Basline with fault.png"}
+    \caption{Algorithm Efficiency in Steps under injected faults. The scatter plot explicitly tracks step count per trial across the 100-stage sequence. A dashed red vertical line at Trial 50 indicates the onset of progressive fault injection. The IK baseline (blue dots) fails structurally, overwhelmingly capping out at the maximum 201 steps. Conversely, the NeuroKin swarm (orange dots) reads shared states, adapts its behavior, and maintains high-speed efficiency predominantly clustered between 20-40 steps.}
+    \label{fig:swarm_fault_efficiency}
+\end{figure}
+
+The profound disparity in collective endurance is visually mapped in Figure \ref{fig:swarm_fault_efficiency}. The right half of the scatter plot (Trials 50-100) reveals a near-solid horizontal line of blue baseline data points pinned exactly at the $201$-step failure cap. The baseline agents are trapped in a state of terminal unrecoverability.
+
+Conversely, the orange NeuroKin data points remain densely clustered low on the y-axis, primarily between 20 and 40 steps. The occurrence of a few isolated orange outliers (e.g., near 150 steps) perfectly illustrates the dynamics of the stigmergic adaptation. When a NeuroKin agent suffers an exceptionally severe fault, it may occasionally fail to converge before the 200-step timeout, generating a high step count. This failure increments the \texttt{consecutive\_failures} ledger. When this happens twice, the swarm shifts into "recovery" mode. 
+
+Because the subsequent NeuroKin agents possess sub-millisecond stereoscopic visual tracking ($0.135\,\mathrm{ms}$ latency), they are not blind. They actively perceive the true, displaced physical location of their hardware. They ingest the new, centralized "recovery" target coordinate from the ledger, visually calculate their actual Cartesian error, and successfully guide their physically damaged arms into the expanded tolerance zone. The ledger allows the swarm to define a mathematically easier task, and the NeuroKin visual architecture provides the individual sensory capability required to execute it.
+
+\subsection{Validating the Computational Prerequisite for Swarms}
+
+This empirical result solidifies the central thesis of this research. The successful survival of the 100-stage NeuroKin sequence definitively validates that temporal stigmergy is a highly effective, low-bandwidth mechanism for decentralized multi-agent adaptation. 
+
+More importantly, it mathematically proves that this collective adaptation is impossible without the resolution of the latency paradox. If the individual agents relied on implicit NeRF architectures (FFKSM) requiring $191.6\,\mathrm{ms}$ per inference, they would be unable to actively guide their arms toward the new recovery targets, mirroring the catastrophic failure of the blind proprioceptive baseline. 
+
+The individual architectural breakthrough—reducing 3D volumetric reconstruction to ultra-fast 2D direct sensorimotor decoding—is thus proven to be the absolute, non-negotiable computational prerequisite for swarm intelligence. By empowering the individual agent to diagnose its own reality in real-time, the system ensures that the communication ledger is populated with accurate, actionable diagnostic traces, effectively forging a resilient, decentralized swarm capable of surviving compounding mechanical degradation.
+
+% ==========================================
+% CHAPTER 7: DISCUSSION
+% ==========================================
+\chapter{Discussion}
+
+The empirical evaluations detailed in Chapters 3 through 6 systematically deconstructed the latency paradox inherent to volumetric neural rendering and subsequently validated the computational superiority of the NeuroKin direct sensorimotor decoding architecture. The integration of this sub-millisecond visual model into a dynamic feedback controller proved that rapid self-diagnosis is the definitive mechanical enabler of active damage resilience. Furthermore, the 100-stage sequential simulation mathematically validated that this individual diagnostic capacity serves as the foundational prerequisite for decentralized, stigmergic swarm coordination. 
+
+However, scientific rigor demands that these empirical successes be critically contextualized within the broader theoretical landscape of embodied artificial intelligence. This chapter shifts the focus from raw mathematical metrics to a comprehensive analytical discussion. It rigorously evaluates the inherent architectural trade-offs accepted by the direct decoding paradigm, vigorously defends the theoretical framing of the temporal swarm hypothesis, and transparently acknowledges the methodological threats to validity—particularly concerning the bounds of physical simulation.
+
+\section{The Architectural Trade-Offs of Direct Decoding}
+
+The NeuroKin architecture resolves the latency bottleneck by deliberately and surgically discarding the intermediate three-dimensional scene representation. While this architectural pivot is entirely responsible for the unprecedented $7{,}400\,\mathrm{FPS}$ inference velocity, it is mathematically crucial to acknowledge that direct sensorimotor decoding is not a universal, panacea replacement for neural rendering across all robotic applications. It represents a highly specific, strictly optimized engineering compromise situated along a complex Pareto frontier.
+
+\subsection{Analyzing the Pareto Frontier of Complexity and Speed}
+
+In traditional deep learning literature, computational complexity and inference latency are frequently, and incorrectly, treated as strictly correlated functions of absolute parameter count. The comparative analysis of the FFKSM, K-3DGS, and NeuroKin architectures fundamentally disproves this linear assumption in the context of spatially mapped visual models.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{"pareto_frontier.jpg"}
+    \caption{Pareto frontier illustrating the optimal trade-off between model accuracy (PSNR), computational parameter count, and architectural inference latency. NeuroKin achieves the highest visual accuracy while maintaining the lowest latency, despite possessing a drastically higher absolute parameter count than the implicit rendering baselines.}
+    \label{fig:pareto_frontier}
+\end{figure}
+
+As conceptualized in the Pareto evaluation (Figure \ref{fig:pareto_frontier}), the implicit NeRF-based FFKSM architecture occupies a highly specific region of the theoretical design space: it possesses an exceptionally small memory footprint (utilizing a relatively shallow Multi-Layer Perceptron) but demands an astronomically high computational execution cost due to the repetitive sampling required by volumetric ray-marching. 
+
+Conversely, the NeuroKin architecture possesses approximately $6,829,089$ learnable parameters. It is mathematically massive compared to the FFKSM neural weights. Yet, it operates orders of magnitude faster. The Pareto optimality of NeuroKin is achieved by heavily exploiting the specific hardware architecture of modern Graphics Processing Units (GPUs). GPUs are natively designed to execute massive, dense, highly parallelized 2D matrix multiplications (convolutions) virtually instantaneously. By transforming the complex geometric problem of 3D rendering into a dense 2D convolutional upsampling task, NeuroKin accepts a much larger static memory footprint in exchange for explosive execution velocity. This is the optimal trade-off for edge-compute robotic controllers where RAM is relatively abundant, but millisecond temporal latency is strictly bounded.
+
+\subsection{The Loss of Novel-View Synthesis}
+
+The most significant functional capability sacrificed by the NeuroKin architecture is general, unrestricted \textit{novel-view synthesis}. A fully optimized Neural Radiance Field or a 3D Gaussian Splatting point cloud possesses a continuous, globally consistent understanding of the 3D space. Once trained on a sparse set of images, a NeRF can mathematically synthesize a perfectly accurate observation of the robotic manipulator from an infinite number of camera angles, including viewpoints that the physical camera array has never physically occupied.
+
+NeuroKin fundamentally lacks this capability. Because it learns a flat, direct mapping from joint space ($\mathbf{q}$) to a specific 2D pixel space ($\mathbf{I}$), its geometric knowledge is strictly bound to the extrinsic and intrinsic calibration matrices of the specific training cameras. If the physical camera mounted in the robotic workspace is bumped, altering its pitch or yaw by even a few degrees, the direct $2D$ projection learned by NeuroKin will no longer align with the physical environment. The model would require immediate fine-tuning or the implementation of an auxiliary spatial-transformer network to re-align the coordinate frames.
+
+Therefore, the direct decoding paradigm is strictly optimal for operational regimes characterized by fixed-extrinsic observation setups—such as factory-mounted inspection cameras, eye-to-hand stereoscopic tracking arrays, or fixed chassis-mounted diagnostic cameras on autonomous rovers. If a robotic mission requires dynamic, moving-camera introspection or complex physical interaction with previously unseen 3D object geometries, the computational overhead of 3DGS or NeRF is mathematically justified. The thesis explicitly recommends a layered deployment strategy: utilizing NeuroKin for the ultra-fast, sub-millisecond inner-control loop, while asynchronously running a slower, explicit K-3DGS model in the background to maintain a globally consistent 3D digital twin for long-horizon path planning.
+
+\section{Validating the "Toward Swarm Coordination" Hypothesis}
+
+The title of this thesis, \textit{"Toward Swarm Coordination,"} carries a heavy burden of scientific precision. It deliberately avoids claiming the complete deployment of a spatial multi-agent system, instead asserting that the integration of sub-millisecond self-models mathematically validates the foundational computational prerequisites for such a system. This section aggressively defends this theoretical framing against potential critiques of the temporal stigmergy abstraction.
+
+\subsection{Temporal Stigmergy as a Mathematically Valid Swarm Proxy}
+
+A common critique of abstract swarm literature is the reduction of concurrent spatial interaction into simplified temporal sequences. However, demanding concurrent spatial simulation (e.g., hundreds of robots navigating a single factory floor simultaneously) conflates the \textit{mechanics of navigation} with the \textit{logic of collective adaptation}. 
+
+The 100-stage sequential pipeline evaluated in Chapter 6 utilizes the \texttt{factory\_state} ledger to transmit failure history across time. When the \texttt{consecutive\_failures} integer breaches the critical threshold of $2$, subsequent agents autonomously alter their behavior by shifting to a highly conservative recovery target and doubling their Cartesian error tolerances. 
+
+This mechanism contains the absolute essential, mathematically verifiable logic of stigmergic swarm coordination: individual agents do not require direct peer-to-peer negotiation or centralized, global motion planning to adapt collectively. They respond strictly to a shared, minimal trace of prior environmental activity. The adaptation is fundamentally localized—no single agent computes a global policy for the entire 100-stage fleet—yet the sequence as a holistic entity alters its macro-behavior in direct response to repeated structural failures. 
+
+Whether the physical robotic agents execute their reaching tasks simultaneously in parallel workspaces, or sequentially across time on the same assembly line, the computational logic of the state-sharing ledger remains mathematically identical. Therefore, proving that NeuroKin's $0.135\,\mathrm{ms}$ inference latency allows an individual agent to survive a fault long enough to write an accurate, verifiable diagnostic failure to the ledger legitimately validates the "Toward Swarm Coordination" hypothesis. It proves the causal chain required for future physical multi-robot systems: an individual must diagnose its own morphological state instantly, compress that local outcome into a low-bandwidth communication variable, and broadcast it to enable the behavioral adaptation of its peers.
+
+\section{Threats to Validity and Epistemological Limitations}
+
+To maintain absolute academic integrity, it is necessary to formally document the methodological limitations of the empirical experiments conducted within this thesis. The primary threats to validity arise from the reliance on physics-based simulation and the abstraction of mechanical degradation.
+
+\subsection{The Simulation-to-Reality (Sim-to-Real) Gap}
+
+All empirical data, performance metrics, and fault-injection protocols detailed in this study were generated exclusively within the synthetic PyBullet simulation environment. While PyBullet provides highly accurate Featherstone articulated body dynamics, it fundamentally operates in a mathematically pristine vacuum. 
+
+The physical deployment of the NeuroKin architecture will inevitably encounter severe photometric noise. Physical RGB cameras suffer from dynamic range clipping, motion blur during high-speed trajectories, and lens distortion. Furthermore, lighting conditions in a physical laboratory or industrial factory are rarely perfectly uniform. Cast shadows, specular highlights reflecting off metallic robotic linkages, and occlusions caused by external payloads will introduce high-frequency noise directly into the Convolutional Neural Network's input tensors. 
+
+Because NeuroKin maps directly to pixel space, it is highly sensitive to background variation. A model trained on a clean, solid blue background (as utilized in this dataset) will experience latent space collapse if deployed in a visually cluttered environment unless sophisticated, real-time background subtraction or semantic segmentation algorithms are applied as a preprocessing step. While the thesis proves that the mathematical matrix multiplications required for self-modeling can be executed in $0.135\,\mathrm{ms}$, the absolute deployment latency on physical hardware will unavoidably include the overhead of these critical preprocessing layers.
+
+\subsection{Constraints of Simulated Damage Modeling}
+
+The second major threat to validity concerns the mathematical modeling of embodiment drift. In Chapter 5 and Chapter 6, physical damage was deterministically simulated by injecting severe, unmodeled state disturbances—specifically, large instantaneous shifts in the base coordinate frame or massive encoder slips that abruptly decoupled the physical joint angle from the controller's internal state.
+
+While this effectively simulates severe calibration loss, it does not fully encompass the highly complex, non-linear realities of continuous physical degradation. Real-world structural damage often involves plastic deformation (e.g., a physical link bends by $5^\circ$ after a collision). In such scenarios, the actual geometric shape of the rigid body changes. The NeuroKin model trained in this thesis was structurally optimized to predict the movement of pristine, undeformed cylinders. While the CNN could detect that the bent arm is occupying an incorrect spatial coordinate, it has not been trained to generate the visual silhouette of a \textit{bent} linkage. 
+
+To achieve true, hardware-level continual damage adaptation, the NeuroKin architecture would require the implementation of the safety-gated, online fine-tuning protocols theorized in Chapter 2. The robot would need to halt, observe the new bent geometry, and execute a few hundred backpropagation steps to update the spatial weights of the transposed convolutional layers before resuming closed-loop operation. 
+
+% ==========================================
+% CHAPTER 8: CONCLUSION AND FUTURE WORK
+% ==========================================
+\chapter{Conclusion and Future Work}
+
+The pursuit of fully autonomous, physically embodied artificial intelligence is fundamentally bound by a system's ability to maintain a continuously synchronized understanding of its own physical morphology. When hardware wear, dynamic impacts, and mechanical friction inevitably induce embodiment drift, a robot blindly relying on rigid, pre-programmed mathematical kinematics will rapidly diverge into catastrophic operational failure. 
+
+This thesis systematically investigated the adaptive design of embodied robotic systems, specifically targeting the computational latency bottlenecks that have historically prohibited the integration of high-fidelity visual self-models into real-time feedback control loops.
+
+\section{Summary of Contributions}
+
+The rigorous empirical benchmarking conducted in the initial phases of this research mathematically crystallized the latency paradox of neural rendering. By reproducing the implicit Neural Radiance Field baseline (FFKSM) and the explicit geometric primitive baseline (K-3DGS) under tightly controlled simulation constraints, this thesis documented their fundamental incompatibility with high-frequency robotics. Driven by the massive computational overhead of volumetric ray-marching and 3D point-cloud sorting, FFKSM and K-3DGS suffered crippling inference latencies of $191.6\,\mathrm{ms}$ and $27.0\,\mathrm{ms}$, respectively—rendering them entirely unusable for integration within a standard $1.0\,\mathrm{ms}$ ($1\,\mathrm{kHz}$) feedback control cycle.
+
+To violently shatter this computational bottleneck, this thesis introduced the \textbf{NeuroKin} architecture. By enforcing a paradigm shift away from continuous 3D scene reconstruction and toward direct 2D sensorimotor decoding, NeuroKin transformed the complex geometric inference problem into a highly optimized, fully convolutional matrix expansion. 
+
+The empirical results were mathematically definitive. NeuroKin achieved a superior morphological reconstruction fidelity of $21.88\,\mathrm{dB}$ PSNR while executing inference at an unprecedented $7{,}400\,\mathrm{FPS}$. This equates to an absolute hard latency of just $0.135$ milliseconds. By consuming a mere $13.5\%$ of the available sub-millisecond control budget, NeuroKin transitioned visual self-modeling from a passive, offline visualization tool into an active, aggressively deployable control mechanism.
+
+Furthermore, the thesis successfully synthesized this high-speed visual estimator into a Jacobian-based inverse-kinematics control loop. Utilizing synchronized, dual-camera stereoscopic decoding, the system proved highly capable of dynamically re-stabilizing a 4-DOF manipulator's end-effector trajectory following the injection of severe, unmodeled physical state disturbances, effectively overriding the corrupted proprioceptive telemetry.
+
+Finally, the research scaled this localized diagnostic resilience to the multi-agent level. By deploying a 100-stage continuous sequential pipeline under aggressively compounding hardware fault probabilities, the thesis mathematically validated the theoretical framework of Temporal Stigmergy. The standard kinematic baseline suffered an $87\%$ post-fault failure rate, culminating in total systemic collapse. Conversely, the NeuroKin-enabled sequence leveraged a decentralized, minimal inter-agent communication ledger (\texttt{factory\_state}) to dynamically trigger localized recovery modes. Reading the shared history of \texttt{consecutive\_failures}, the sub-millisecond agents scaled their spatial tolerances and altered their Cartesian targets, achieving an extraordinary $88\%$ overall task success rate. This proven capacity for state-dependent collective adaptation formally establishes the computational prerequisites required for eventual swarm coordination.
+
+\section{Roadmap for Future Work}
+
+While the theoretical and empirical milestones achieved in this thesis are highly significant, they represent a foundational step rather than a terminal conclusion. The transition of these adaptive, real-time architectures from idealized simulated environments to physical, unstructured deployments dictates a highly specific roadmap for future scientific inquiry.
+
+\subsection{Physical Hardware Validation and the Sim-to-Real Bridge}
+
+The absolute highest priority for immediate subsequent research is the physical hardware validation of the NeuroKin architecture. The network must be deployed onto a physical 4-DOF or 6-DOF industrial manipulator equipped with a synchronized, high-speed stereoscopic camera array. 
+
+This deployment will inherently necessitate the development of a robust Simulation-to-Reality (Sim-to-Real) bridge. Future architectures must integrate highly efficient, lightweight semantic segmentation modules—such as optimized variants of U-Net or MobileNet—to aggressively strip away unpredictable background photometric noise, humans operating in the workspace, and dynamic lighting variations before the raw camera feed is passed into the NeuroKin convolutional encoder. Furthermore, extensive Domain Randomization techniques must be applied to the PyBullet training data to force the direct decoder to learn lighting-invariant geometric features.
+
+\subsection{Evolving the Stigmergic Communication Ledger}
+
+The temporal stigmergic coordination demonstrated in Chapter 6 utilized a highly minimalist communication ledger, tracking only a binary integer of \texttt{consecutive\_failures}. While mathematically sufficient to prove the core hypothesis of collective adaptation, physical swarm deployments will require substantially richer diagnostic manifolds.
+
+Future research should focus on expanding the inter-agent ledger to transmit highly compressed, low-dimensional latent confidence vectors. Rather than merely flagging a binary "failure," an individual NeuroKin agent should be capable of publishing a probabilistic diagnostic trace, indicating exactly \textit{which} physical joint is experiencing drift, and providing a quantified estimate of its own internal geometric uncertainty. This would allow the subsequent agents in the swarm to execute highly nuanced, joint-specific trajectory adaptations rather than resorting to a generalized, centralized recovery target.
+
+\subsection{Transitioning to Spatially Concurrent Swarms}
+
+Finally, upon successful hardware validation and the expansion of the communication ledger, the sequential temporal abstraction must be escalated to a fully concurrent spatial swarm deployment. 
+
+Deploying multiple physically instantiated agents simultaneously within a shared workspace will reintroduce the immense complexities of peer-to-peer radio-frequency networking, dynamic physical collision avoidance, and distributed spatial task allocation. However, by equipping every individual agent within that physical swarm with a sub-millisecond, highly resilient NeuroKin diagnostic engine, the swarm will be built upon an unbreakable foundation of localized geometric truth. 
+
+The ultimate culmination of this technological trajectory is an embodied robotic collective that does not merely survive physical degradation, but autonomously perceives it, communicates it, and elegantly reconfigures its entire operational strategy in real-time, achieving true resilience in the most adversarial environments.
+
+
+

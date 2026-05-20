@@ -1,0 +1,156 @@
+
+**1. 2 view data generation sample.png**
+A grid containing four rows and three columns of images. The first column, labeled "Camera 1 (Front)", shows a white robotic arm in four different poses against a solid blue background. The second column, labeled "Camera 2 (Side)", shows the same robotic arm in corresponding poses from a side angle, also against a blue background. The third column, labeled "Combined Output", displays a grayscale image for each row that horizontally concatenates the front and side views.
+
+**2. 2 view end effector position.png**
+A 3D scatter plot titled "Target vs Current End Effector Position". The plot features X, Y, and Z axes with light blue grid lines on the background planes. It contains two plotted points: a red dot labeled "Target" and a blue dot labeled "Current". A black dashed line connects the two dots, with an accompanying text label that reads "Distance: 0.08".
+
+**3. 3dgs loss speed fps.png**
+A vertical arrangement of three line graphs sharing an x-axis labeled "Iteration" from 0 to 1000. The top graph, "Loss vs. Iteration", shows a blue line that decreases sharply before leveling off near zero. The middle graph, "Training Speed (FPS) vs. Iteration", displays an orange line fluctuating primarily between 200 and 400. The bottom graph, "Step Time (ms) vs. Iteration", features a green line fluctuating mainly between 2.5 and 5.0.
+
+**4. Algorithm Efficiency in Steps.png**
+A scatter plot titled "Algorithm Efficiency in Steps". The x-axis is labeled "Trial" and ranges from 0 to 100. The y-axis is labeled "Steps". The plot contains two sets of data points: blue dots labeled "Baseline" and orange dots labeled "Neurokin". The blue baseline dots are generally positioned higher on the y-axis than the orange neurokin dots.
+
+**5. architecture diagram.png**
+A schematic block diagram illustrating the proposed neural network architecture, detailing the flow of data from input sensory observations, through the convolutional feature extraction layers, to the final predicted target variables.
+
+**6. closedloop-endeffector-error.png**
+A line graph titled "Closed-Loop Reaching: End-Effector Error". The x-axis is labeled "Time Step" and ranges from 0 to 40. The y-axis is labeled "Euclidean Distance". A single blue line begins above 0.20 on the y-axis and curves downwards, approaching zero as the time steps increase.
+
+**7. closedloop-endeffector-error-with-damage.png**
+A line graph titled "Closed-Loop Reaching: End-Effector Error". The x-axis is labeled "Time Step" and ranges from 0 to 14. The y-axis is labeled "Euclidean Distance". A blue line starts around 0.16 and decreases towards zero. A vertical, dashed red line intersects the graph at Time Step 5, accompanied by the text label "Damage Injected".
+
+**8. closedloop-endeffector-position-plot.png**
+A 3D plot titled "End-Effector Trajectory". The axes are labeled X, Y, and Z. A blue line, labeled "Trajectory" in the legend, traces a curving path through the 3D space. A green dot marks the "Start Position", and a red 'X' marks the "Target Position".
+
+**9. closedloop-joint-error.png**
+A line graph titled "Closed-Loop Reaching: Joint Error". The x-axis is labeled "Time Step" and ranges from 0 to 40. The y-axis is labeled "Joint Error (radians)". The graph plots four distinct lines representing four joints: Joint 1 (blue), Joint 2 (orange), Joint 3 (green), and Joint 4 (red). All four lines begin at different non-zero values on the y-axis and converge towards zero as the time steps progress.
+
+**10. CNN architecture.png**
+A schematic block diagram illustrating the proposed neural network architecture, detailing the flow of data from input sensory observations, through the convolutional feature extraction layers, to the final predicted target variables.
+
+**11. control loop flowchart.png**
+A flowchart titled "Closed-Loop Control Flow". It begins with an initialization block containing $t=0$ and initial joint state $\theta_0$. This enters a main loop starting at "Current joints $\theta_t$". The flow proceeds linearly through "Physical / Simulated Robot", "Dual Cameras", and "Self-Model (CNN)" to generate "Predicted Position $P_t$". An external input labeled "Target $P_{target}$" joins the flow at a block labeled "Calculate Error: $e_t = P_{target} - P_t$". The next step is "Calculate Update: $\Delta \theta_t = J^+ e_t$", followed by "Apply Joint Limits & Execute: $\theta_{t+1} = \theta_t + \alpha \Delta \theta_t$". A decision diamond then asks "Error < Threshold or $t > t_{max}$?". If "Yes", the process points to "Stop". If "No", an arrow loops back to "Current joints $\theta_t$" for the next iteration.
+
+**12. data_pipeline.png**
+A flowchart outlining the end-to-end data generation and preprocessing pipeline, summarizing the systematic steps from physical simulation and state recording to the final formatted dataset compilation.
+
+**13. end-effector-position gt vs prediction.png**
+A line graph titled "Validation Phase: True vs Predicted Positions". The x-axis is "Sample Index" (ranging from 0 to 100) and the y-axis is "Position Value" (ranging from -0.4 to 0.4). The legend indicates six lines: True X (solid blue), True Y (solid orange), True Z (solid green), Predicted X (dashed red), Predicted Y (dashed purple), and Predicted Z (dashed brown). The dashed predicted lines closely overlap the solid true lines across the entire chart.
+
+**14. end-effector-position-and-joint-angles-error.png**
+A vertical arrangement of three distinct graphs:
+
+* Top: A line graph titled "Euclidean Error of End Effector". The x-axis is "Sample Index" and the y-axis is "Error (m)". A single blue line fluctuates horizontally, staying generally below the 0.04 mark.
+* Middle: A 3D plot titled "Target vs Prediction: End-Effector Trajectory". It features a solid blue "Target Trajectory" line and a dashed orange "Predicted Trajectory" line tracing nearly identical curving paths through 3D space with labeled X, Y, and Z axes.
+* Bottom: A line graph titled "Training vs Validation Loss". The x-axis is "Epoch" and the y-axis is "MSE Loss". Two lines, "Train Loss" (blue) and "Val Loss" (orange), start high on the y-axis and curve sharply downwards, leveling out near zero.
+
+**15. ffksm_results.png**
+A grid comparing images across two rows and three columns. The columns are labeled "Target Image", "Self-Model Render", and "Difference Map". Each row shows a different pose of a robotic arm. The first two columns display the arm against a blue background, while the "Difference Map" column shows a dark background highlighting the visual discrepancies between the target and the render in bright colors.
+
+**16. k3dgs_results.png**
+A grid structure identical to the previous image, consisting of two rows and three columns labeled "Target Image", "3DGS Render", and "Difference Map". The rows display two different poses of the same robotic arm. The "Difference Map" column displays mostly dark/black images with faint outlines marking the differences between the target and rendered images.
+
+**17. lorenz_trajectories.png**
+A 3D scatter plot titled "Lorenz System Trajectory in 3D Space". The axes are labeled X, Y, and Z. The plot displays a continuous line forming a dense, dual-lobed, butterfly-like spiral shape. The line features a color gradient transitioning from dark purple/blue to yellow. A vertical color bar on the right side of the plot indicates the color mapping corresponds to a numerical scale from 0 to 2000.
+
+**18. neurokin 2d loss training.png**
+A line graph titled "Training vs Validation Loss". The x-axis is labeled "Epoch" and ranges from 0 to 100. The y-axis is labeled "MSE Loss" and ranges from 0.00 to 0.04. There are two lines plotted: a solid blue line for "Train Loss" and a solid orange line for "Val Loss". Both lines start between 0.035 and 0.040, drop steeply before Epoch 20, and then level out near zero for the remainder of the graph. The "Val Loss" line shows slightly more vertical fluctuation than the "Train Loss" line.
+
+**19. Neurokin vs Basline with fault.png**
+A scatter plot titled "Algorithm Efficiency in Steps with injected faults". The x-axis is labeled "Trial" and ranges from 0 to 100. The y-axis is labeled "Steps" and ranges from 0 to over 200. There are two sets of data points: blue dots labeled "Baseline" and orange dots labeled "Neurokin". The blue baseline dots are predominantly clustered in a straight horizontal line at exactly 201 steps, with a few scattered lower. The orange neurokin dots are clustered much lower on the y-axis, mostly between 20 and 40 steps, with one outlier near 150 steps. A dashed red vertical line intersects the x-axis at Trial 50 and is labeled "Fault Injected".
+
+**20. neurokin_results.png**
+A grid containing two rows and three columns of images. The columns are labeled "Target Image", "NeuroKin Render", and "Difference Map". Each row depicts a different pose of a white robotic arm. The "Target Image" and "NeuroKin Render" columns show the arm against a solid blue background. The "Difference Map" column shows a dark background with bright, multi-colored pixels (red, green, yellow) highlighting areas where the target and rendered images differ.
+
+**21. neurokin_training_gt_prediction.png**
+A line graph titled "Validation Phase: True vs Predicted Positions". The x-axis is labeled "Sample Index" (0 to 100) and the y-axis is labeled "Position Value" (-0.3 to 0.3). The legend displays six lines: True X (solid blue), True Y (solid orange), True Z (solid green), Predicted X (dashed red), Predicted Y (dashed purple), and Predicted Z (dashed brown). The dashed predicted lines closely trace and overlap the corresponding solid true lines across various fluctuating patterns.
+
+**22. pareto_frontier.png**
+A scatter plot evaluating the trade-off between model accuracy and computational complexity (parameter count) across the proposed method and various established baselines, highlighting the optimal models along the Pareto frontier.
+
+**23. pybullet_setup.png**
+A screenshot of a 3D simulated environment showing a white, segmented robotic arm mounted on a base. A smaller red manipulator is positioned next to it. A red sphere floats in the space near the white arm. Light blue lines form pyramidal or frustum shapes projecting into the scene, indicating the field of view for virtual cameras or sensors.
+
+**24. sample_poses.png**
+A grid of images arranged in four rows and four columns, totaling 16 individual squares. Each square contains a rendering of the same white robotic arm in a distinct physical configuration or pose, consistently set against a solid blue background.
+
+**25. swarm control loop flowchart.png**
+A block diagram depicting the closed-loop control mechanism, showing the cyclical interaction between the agent's policy network, execution in the environment, and continuous state-action updates.
+
+**26. neural_rendering_pareto.pdf**
+A line graph depicting a "Conceptual Pareto-style trend (not to scale)". The y-axis represents "Fidelity / geometric detail" and the x-axis measures "Real-time deployability". The x-axis is segmented into three operational domains: "offline" , "real-time GPU" , and "edge / on-robot". A dashed trendline connects four data points that progress downward and to the right: "NeRF" , "Instant-NGP" , "3DGS" , and finally "3DGS-SLAM".
+
+**27. neural_rendering_tradeoff.pdf**
+A three-panel diagram titled "Foundational Source-Paper Visuals". A subtitle indicates these are "Representative figures from seminal robot self-modeling papers, replacing the generic trade-off map with concrete source visuals".
+
+* The first panel, bordered in blue, shows a robotic arm alongside matrices of numerical data.
+
+
+* The second panel, bordered in green, illustrates an "Unknown/irregular robot" with an "Unavailable kinematic model". It depicts a pipeline using "Annotated RGB-only images of rotating base and joints" to perform "Training dynamic neural field self-supervised" , outputting "Neural-field-encoded kinematics".
+
+
+* The third panel, bordered in red, displays a complex flowchart structure representing a neural architecture.
+A text block at the bottom states that utilizing these actual figures makes the narrative less generic, tracing a progression from "depth-free occupancy queries to high-DOF neural fields and articulated 3D Gaussian splatting".
+
+
+
+**28. realisim_digital_twin_source.pdf**
+A diagram contrasting a physical and simulated environment. On the left, under the heading "Real World" , a physical robotic arm labeled "Follower"  is shown. On the right, under "Real Policy" , a rendered robotic arm labeled "Leader" is depicted, accompanied by the term "Embodied Gaussians". The process flow indicates that "Images from the real world correct the simulation" , while a "Sim Policy" operates at "60 Hz" , meaning the "Policy consumes state derived from sim" and the "Policy controls simulated robot". A gap labeled "Sim to Real Gap" spans the bottom, where the "Real robot tracks simulated robot".
+
+**29. self_modeling_pipeline.pdf**
+A flowchart titled "Closed-Loop Robot Self-Modeling Pipeline". A subtitle explains that a "usable self-model updates from sensor evidence and improves closed-loop control". The pipeline consists of five sequential blocks:
+
+* "Sensing RGB, depth, IMU".
+
+
+* "Encoding features and state".
+
+
+* "Self-Model morphology, kinematics, and dynamics".
+
+
+* "Planning control and recovery".
+
+
+* "Actuation motion and manipulation".
+An arrow representing "Training / adaptation"  feeds directly into the "Self-Model" block. A feedback loop connects the final "Actuation" step back to the initial "Sensing" step. A caption asserts that the survey emphasizes systems utilizing a usable self-model to "improve closed-loop control rather than only appearance metrics".
+
+
+
+**30. sim2real_digital_twin.pdf**
+A flowchart titled "Digital Twin Loop for Sim-to-Real Transfer" , describing a process to "Measure, model, deploy, correct mismatch". The flow connects four main stages:
+
+* "Real Robot hardware and sensors".
+
+
+* "Data Capture RGB, depth, proprioception".
+
+
+* "Digital Twin geometry, physics, appearance" , which receives an input from "Training / calibration".
+
+
+* "Deployment policy execution and recovery".
+A feedback line labeled "Residual correction" loops from "Deployment" back to the "Real Robot", triggered by a "deployment mismatch". A caption states that a useful twin must "absorb real measurements, improve the policy, and then be corrected again when deployment exposes mismatch".
+
+
+
+**31. survey_taxonomy.pdf**
+A taxonomy diagram grouping concepts under the title "Survey Taxonomy and Evaluation Priorities" , indicating a "progression from explicit models to deployable neural self-models". The categorizations include:
+
+* "Symbolic 2006-2015" , containing "Topology inference" and "Active exploration".
+
+
+* "Learned 2015-2023" , containing "Behavioral Adaptation" and "Control policies".
+
+
+* "Visual 2020s" , containing "SDFs/NeRF Implicit morphology Prediction" , and "RGB-D/dynamics".
+
+
+* "Deployable 2023-present" , containing "3DGS / twins" , "Scene geometry" , "Better fidelitv" , and "Real-time control" with "Verified transfer".
+The document specifies that the survey prioritizes papers improving real robots with elements like "6+ DOF arms, humanoids, legged platforms, closed-loop control, damage recovery, and verifiable transfer to hardware". A dedicated "Evaluation priorities" section reiterates "Real HW", "6+ DoF", "Humanoid", "Control", and "Recovery".
+
+
+
+**32. timeline_self_modeling.pdf**
+A horizontal timeline tracing the evolution of robotics self-modeling. The timeline originates at "2000" , marking "Bongard '06" under the era of "Symbolic self-modeling" involving "topology inference; active exploration". It moves through "2015" , marking "Cully '15" and transitioning into "Visual / learned models" focused on "dynamics predic-tion; implicit fields". By "2023" , it denotes "Chen '22 3DGS '23" , advancing toward the "present" with "Hu '25" and highlighting the current phase of "Real-time neural rendering" utilizing "3DGS; deployable digital twins".

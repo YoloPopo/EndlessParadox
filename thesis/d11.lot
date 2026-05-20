@@ -1,0 +1,12 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Baseline self-modeling architecture performance comparison.}}{24}{table.caption.26}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces NeuroKin parameter distribution by component.}}{32}{table.caption.39}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces Nominal performance comparison (no faults, mean $\pm $ std over 100 trials).}}{46}{table.caption.51}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Fault-tolerant performance comparison (100 trials, random fault magnitude $\pm 5^\circ $ to $\pm 20^\circ $).}}{50}{table.caption.55}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Sequential swarm performance comparison (100 stages, progressive fault injection).}}{61}{table.caption.63}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }

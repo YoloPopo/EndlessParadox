@@ -1,0 +1,609 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {chapter}{Abstract}{i}{chapter*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {1.1}Background}{1}{section.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.2}The Computational Bottleneck}{2}{section.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.3}Problem Statement and Scope}{3}{section.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.4}Contributions}{4}{section.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.5}Research Questions}{5}{section.1.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1.6}Thesis Organization}{6}{section.1.6}\protected@file@percent }
+\citation{bongard2006resilient}
+\citation{cully2015robots}
+\citation{kwiatkowski2019task}
+\citation{chen2022full}
+\citation{hu2024teaching}
+\citation{mildenhall2020nerf}
+\citation{kerbl20233d}
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {section}{Chapter 1 References}{7}{section*.5}\protected@file@percent }
+\citation{bongard2006resilient}
+\citation{cully2015robots}
+\citation{mouret2015illuminating}
+\@writefile{toc}{\contentsline {chapter}{\numberline {2}Literature Synthesis}{8}{chapter.2}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {2.1}Evolution of Self-Modeling}{8}{section.2.1}\protected@file@percent }
+\citation{kwiatkowski2019task}
+\citation{chen2022full}
+\citation{hu2024teaching}
+\citation{hu2025learning}
+\citation{mildenhall2020nerf}
+\@writefile{toc}{\contentsline {section}{\numberline {2.2}The Latency Paradox}{9}{section.2.2}\protected@file@percent }
+\citation{kerbl20233d}
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Theoretical Foundations of Swarm Coordination}{11}{section.2.3}\protected@file@percent }
+\citation{chen2022full}
+\citation{hu2024teaching}
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}Visual Self-Modeling and Functional Evaluation}{12}{section.2.4}\protected@file@percent }
+\citation{kirkpatrick2017overcoming}
+\citation{frankle2018lottery}
+\@writefile{toc}{\contentsline {section}{\numberline {2.5}Digital Twins, Sim-to-Real Transfer, and the Role of Simulation}{13}{section.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.6}Continual Learning and Damage Adaptation}{13}{section.2.6}\protected@file@percent }
+\citation{bongard2006resilient}
+\citation{cully2015robots}
+\citation{mouret2015illuminating}
+\citation{kwiatkowski2019task}
+\citation{chen2022full}
+\citation{hu2024teaching}
+\citation{mildenhall2020nerf}
+\citation{kerbl20233d}
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {section}{\numberline {2.7}Collective Endurance}{14}{section.2.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Chapter 2 References}{14}{section*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Baseline Implementations and the Latency Bottleneck}{16}{chapter.3}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Synthetic Data Generation}{16}{section.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces PyBullet simulation setup with robotic arm, target marker, and virtual camera geometry.}}{17}{figure.caption.7}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:pybullet_setup}{{3.1}{17}{PyBullet simulation setup with robotic arm, target marker, and virtual camera geometry}{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces End-to-end data generation and preprocessing pipeline.}}{17}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:data_pipeline}{{3.2}{17}{End-to-end data generation and preprocessing pipeline}{figure.caption.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Lorenz System Trajectory generating smooth, chaotic workspace exploration.}}{18}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:lorenz}{{3.3}{18}{Lorenz System Trajectory generating smooth, chaotic workspace exploration}{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Representative simulated robot poses used for visual self-model training and validation.}}{19}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:sample_poses}{{3.4}{19}{Representative simulated robot poses used for visual self-model training and validation}{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Free-Form Kinematic Self-Model}{19}{section.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces FFKSM target versus render showing visual discrepancies.}}{20}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:ffksm_results}{{3.5}{20}{FFKSM target versus render showing visual discrepancies}{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Kinematic 3D Gaussian Splatting}{20}{section.3.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces K-3DGS iteration metrics highlighting FPS limitations.}}{21}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:3dgs_metrics}{{3.6}{21}{K-3DGS iteration metrics highlighting FPS limitations}{figure.caption.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces K-3DGS render artifacts and spatial difference map.}}{21}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:k3dgs_results}{{3.7}{21}{K-3DGS render artifacts and spatial difference map}{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Comparative Baseline Analysis}{22}{section.3.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3.1}{\ignorespaces Quantitative comparison of self-modeling architectures.}}{22}{table.caption.14}\protected@file@percent }
+\newlabel{tab:baseline_metrics}{{3.1}{22}{Quantitative comparison of self-modeling architectures}{table.caption.14}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.5}Metric Definitions and Evaluation Protocol}{23}{section.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.6}FFKSM Implementation Diagnostics}{23}{section.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.7}K-3DGS Optimization Lessons}{24}{section.3.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.8}Why the Baselines Remain Essential}{24}{section.3.8}\protected@file@percent }
+\citation{hu2024teaching}
+\citation{mildenhall2020nerf}
+\citation{kerbl20233d}
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {section}{Chapter 3 References}{25}{section*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}The NeuroKin Architecture}{26}{chapter.4}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Direct Sensorimotor Decoding}{26}{section.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Architecture Design}{27}{section.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Proposed convolutional neural network architecture for direct sensorimotor decoding.}}{27}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:architecture}{{4.1}{27}{Proposed convolutional neural network architecture for direct sensorimotor decoding}{figure.caption.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Supplementary CNN architecture schematic emphasizing the convolutional feature extraction and prediction pathway used for direct sensorimotor decoding.}}{28}{figure.caption.17}\protected@file@percent }
+\newlabel{fig:cnn_architecture_supplement}{{4.2}{28}{Supplementary CNN architecture schematic emphasizing the convolutional feature extraction and prediction pathway used for direct sensorimotor decoding}{figure.caption.17}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Stereoscopic 3D Recovery}{29}{section.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Synchronized dual-camera observations mapping to end-effector coordinates.}}{30}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:dual_view}{{4.3}{30}{Synchronized dual-camera observations mapping to end-effector coordinates}{figure.caption.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Target and current end-effector position estimated in 3D from synchronized observations.}}{31}{figure.caption.19}\protected@file@percent }
+\newlabel{fig:dual_view_position}{{4.4}{31}{Target and current end-effector position estimated in 3D from synchronized observations}{figure.caption.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Correlation of true versus predicted spatial coordinates.}}{32}{figure.caption.20}\protected@file@percent }
+\newlabel{fig:gt_prediction}{{4.5}{32}{Correlation of true versus predicted spatial coordinates}{figure.caption.20}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces End-effector error, target-prediction trajectory agreement, and training-validation loss for spatial recovery.}}{33}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:ee_joint_error}{{4.6}{33}{End-effector error, target-prediction trajectory agreement, and training-validation loss for spatial recovery}{figure.caption.21}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Performance Evaluation}{33}{section.4.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces MSE loss converging near zero during NeuroKin training.}}{33}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:neurokin_loss}{{4.7}{33}{MSE loss converging near zero during NeuroKin training}{figure.caption.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces High-fidelity NeuroKin renders versus Target Images.}}{34}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:neurokin_results}{{4.8}{34}{High-fidelity NeuroKin renders versus Target Images}{figure.caption.23}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Validation true and predicted positions during NeuroKin spatial training.}}{35}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:neurokin_training_gt}{{4.9}{35}{Validation true and predicted positions during NeuroKin spatial training}{figure.caption.24}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Supervision Efficiency}{35}{section.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.6}Ablation Interpretation}{36}{section.4.6}\protected@file@percent }
+\citation{mildenhall2020nerf}
+\citation{hu2024teaching}
+\citation{kerbl20233d}
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {section}{\numberline {4.7}ResNeuroKin-D and Geometric Structure}{37}{section.4.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.8}Deployment Envelope}{37}{section.4.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Chapter 4 References}{38}{section*.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Visual Closed-Loop Control and Damage Adaptation}{39}{chapter.5}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Controller Integration}{39}{section.5.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Standard closed-loop control flow integrating the self-model.}}{39}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:control_loop}{{5.1}{39}{Standard closed-loop control flow integrating the self-model}{figure.caption.26}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Baseline Closed-Loop Stabilization}{40}{section.5.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Baseline error convergence over time steps.}}{40}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:closed_loop_error}{{5.2}{40}{Baseline error convergence over time steps}{figure.caption.27}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces End-effector trajectory during closed-loop reaching.}}{41}{figure.caption.28}\protected@file@percent }
+\newlabel{fig:closed_loop_position}{{5.3}{41}{End-effector trajectory during closed-loop reaching}{figure.caption.28}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces Joint error convergence during closed-loop reaching.}}{42}{figure.caption.29}\protected@file@percent }
+\newlabel{fig:joint_error}{{5.4}{42}{Joint error convergence during closed-loop reaching}{figure.caption.29}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Single-Agent Recovery Results}{42}{section.5.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces Dynamic error recovery following structural damage injected at Step 5.}}{42}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:closed_loop_damage}{{5.5}{42}{Dynamic error recovery following structural damage injected at Step 5}{figure.caption.30}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}Implications for Self-Model Maintenance}{43}{section.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.5}Damage as State-Estimation Failure}{44}{section.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.6}Control Stability and Latency Headroom}{44}{section.5.6}\protected@file@percent }
+\citation{kwiatkowski2019task}
+\citation{chen2022full}
+\citation{hu2024teaching}
+\@writefile{toc}{\contentsline {section}{\numberline {5.7}From Recovery to Safe Operation}{45}{section.5.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Chapter 5 References}{45}{section*.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Sequential Swarm Coordination under Compounding Faults}{46}{chapter.6}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}The Sequential Swarm Pipeline}{46}{section.6.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.1}{\ignorespaces Decentralized control loop enabling temporal coordination across sequential agents.}}{47}{figure.caption.32}\protected@file@percent }
+\newlabel{fig:swarm_loop}{{6.1}{47}{Decentralized control loop enabling temporal coordination across sequential agents}{figure.caption.32}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6.2}{\ignorespaces Algorithm efficiency in steps for the no-fault 100-stage comparison.}}{48}{figure.caption.33}\protected@file@percent }
+\newlabel{fig:algorithm_no_fault}{{6.2}{48}{Algorithm efficiency in steps for the no-fault 100-stage comparison}{figure.caption.33}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}The Inter-Agent Communication Ledger}{48}{section.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}State-Dependent Collective Adaptation}{49}{section.6.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.3}{\ignorespaces Algorithm Efficiency in Steps under injected faults. The IK baseline fails structurally (capped at 201 steps), while the NeuroKin swarm reads shared states and adapts behavior, maintaining efficiency between 20-40 steps.}}{50}{figure.caption.34}\protected@file@percent }
+\newlabel{fig:swarm_fault}{{6.3}{50}{Algorithm Efficiency in Steps under injected faults. The IK baseline fails structurally (capped at 201 steps), while the NeuroKin swarm reads shared states and adapts behavior, maintaining efficiency between 20-40 steps}{figure.caption.34}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.4}Why This Counts as ``Toward'' Swarm Coordination}{50}{section.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.5}Formalizing Temporal Stigmergy}{51}{section.6.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.6}Failure Cascade and Recovery Threshold}{52}{section.6.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.7}Sequential Swarm as an Experimental Abstraction}{52}{section.6.7}\protected@file@percent }
+\citation{bongard2006resilient}
+\citation{cully2015robots}
+\citation{kwiatkowski2019task}
+\@writefile{toc}{\contentsline {section}{\numberline {6.8}Interpreting Success and Failure Rates}{53}{section.6.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Chapter 6 References}{53}{section*.35}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {7}Discussion}{54}{chapter.7}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {7.1}Trade-offs of Direct Decoding}{54}{section.7.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7.1}{\ignorespaces Pareto frontier illustrating the optimal trade-off between model accuracy and computational parameter count.}}{55}{figure.caption.36}\protected@file@percent }
+\newlabel{fig:pareto}{{7.1}{55}{Pareto frontier illustrating the optimal trade-off between model accuracy and computational parameter count}{figure.caption.36}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7.2}Validating the ``Toward Swarm Coordination'' Hypothesis}{56}{section.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.3}Methodological Lessons}{57}{section.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.4}Threats to Validity}{57}{section.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.5}Design Principles Derived from the Study}{58}{section.7.5}\protected@file@percent }
+\citation{mildenhall2020nerf}
+\citation{kerbl20233d}
+\citation{hu2024teaching}
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {section}{\numberline {7.6}Ethical and Safety Considerations}{59}{section.7.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.7}What Would Falsify the Thesis Hypothesis}{59}{section.7.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Chapter 7 References}{60}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {8}Conclusion and Future Work}{61}{chapter.8}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {8.1}Summary}{61}{section.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.2}Future Roadmap}{62}{section.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.3}Milestone Plan for Continuation}{63}{section.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.4}Path to Spatial Swarms}{63}{section.8.4}\protected@file@percent }
+\citation{bongard2006resilient}
+\citation{cully2015robots}
+\citation{kwiatkowski2019task}
+\citation{chen2022full}
+\citation{hu2024teaching}
+\citation{kerbl20233d}
+\citation{hu2025learning}
+\@writefile{toc}{\contentsline {section}{\numberline {8.5}Final Statement}{64}{section.8.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Chapter 8 References}{64}{section*.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {A}Figure Inventory and Evidence Mapping}{65}{appendix.A}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {chapter}{\numberline {B}Core Sequential Stigmergy Rule}{66}{appendix.B}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {chapter}{\numberline {C}Reproducibility and Audit Protocol}{67}{appendix.C}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {C.1}Source Boundary}{67}{section.C.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {C.2}Metric Audit}{68}{section.C.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {C.3}Figure Audit}{68}{section.C.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {C.4}Terminology Audit}{69}{section.C.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {D}Expanded Figure-Based Evidence Narrative}{70}{appendix.D}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {D.1}Data and Baseline Evidence}{70}{section.D.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {D.2}NeuroKin Evidence}{71}{section.D.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {D.3}Control Evidence}{71}{section.D.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {D.4}Sequential Swarm Evidence}{72}{section.D.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {E}Expanded Methodological Notes}{73}{appendix.E}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {E.1}Why Page Length Should Come from Content}{73}{section.E.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {E.2}Recommended Compilation Practice}{73}{section.E.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {E.3}Recommended Examination Framing}{74}{section.E.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {F}Claim Boundaries and Defense Notes}{75}{appendix.F}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {F.1}Claims Supported Directly}{75}{section.F.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {F.2}Claims Not Supported}{76}{section.F.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {F.3}Likely Examiner Questions}{76}{section.F.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {F.4}Core Defense Summary}{77}{section.F.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {F.5}Final Consistency Checklist}{77}{section.F.5}\protected@file@percent }
+\citation{bongard2006resilient}
+\citation{cully2015robots}
+\citation{carrozza2006cyberhand}
+\citation{koos2013fast}
+\citation{mouret2015illuminating}
+\citation{kwiatkowski2019task}
+\citation{kwiatkowski2019zeroshot}
+\citation{hu2024reconfigurable}
+\citation{dogra2022unified}
+\citation{farghdani2025robust}
+\citation{yu2026kinematicself}
+\citation{chen2022full}
+\citation{hu2024teaching}
+\citation{schulze2024high}
+\citation{hu2024egocentric}
+\citation{liu2024differentiable}
+\citation{rezvani2024robust}
+\citation{hu2025learning}
+\citation{yu2024shape}
+\citation{lee2026tactiverse}
+\citation{li2024flowtouch}
+\@writefile{toc}{\contentsline {chapter}{\numberline {G}Integrated Literature Coverage}{79}{appendix.G}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\@writefile{toc}{\contentsline {section}{\numberline {G.1}Purpose of This Integration}{79}{section.G.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {G.2}Visual and Neural Self-Modeling Context}{79}{section.G.2}\protected@file@percent }
+\citation{barron2021mip}
+\citation{li2021nerf}
+\citation{mildenhall2020nerf}
+\citation{pumarola2021d}
+\citation{muller2022instant}
+\citation{barron2023zipnerf}
+\citation{park2021nerfies}
+\citation{kerbl20233d}
+\citation{matsuki2024gaussian}
+\citation{keetha2024splattam}
+\citation{lassanske2024gaurast}
+\citation{guedon2024sugar}
+\citation{kim2024garfield}
+\citation{thirgood2025featureslam}
+\citation{tran2025varsplat}
+\citation{weng2024neural}
+\citation{li2025art}
+\citation{wu2024aomgen}
+\citation{wu2025urdfanything}
+\citation{xu2025motionanymesh}
+\citation{wang2025kinematify}
+\citation{zhang2025simart}
+\citation{wang2025artllm}
+\citation{guo2025articulatedgs}
+\citation{yu2025artgs}
+\citation{wu2025reartgs}
+\citation{dai2025freeartgs}
+\citation{chen2025freegaussian}
+\citation{lu2024manigaussian}
+\citation{pan2025selfcorrecting}
+\citation{yang2025robosplat}
+\citation{tao2025robopearls}
+\citation{lin2025pogs}
+\citation{xie2025robmrag}
+\citation{lu2025gsmem}
+\citation{zhang2025actron3d}
+\citation{lou2024robogs}
+\citation{lou2026drex}
+\citation{sun2026digitaltwin}
+\citation{li2024explicit}
+\citation{gao2024mirage2matter}
+\citation{jiang2024phystwin}
+\citation{jiang2025gsworld}
+\citation{wang2026fast}
+\citation{guo2026moeact}
+\citation{chen2026adacleargrasp}
+\citation{li2026forcevla2}
+\citation{miyamichi2025flexible}
+\citation{tan2018simtoreal}
+\citation{tan2026characterization}
+\citation{thomas2026embodied}
+\citation{wu2025dexgrasp}
+\citation{patel2024getzero}
+\citation{patrizi2026rlagmpc}
+\citation{liang2025wholebody}
+\citation{levy2024simdist}
+\citation{wang2026exogs}
+\citation{escontrela2025gaussgym}
+\citation{jin2026grounding}
+\citation{zhao2026agile}
+\citation{he2024h2o}
+\citation{he2024viral}
+\@writefile{toc}{\contentsline {section}{\numberline {G.3}Embodiment Scaling and Cross-Embodiment Learning}{80}{section.G.3}\protected@file@percent }
+\citation{torne2024rialto}
+\citation{hadi2021webots}
+\citation{hathaway2024cutting}
+\citation{hathaway2026neuralstyle}
+\citation{huang2024enerverse}
+\citation{heiden2022inferring}
+\citation{abou2024realissim}
+\citation{jiang2024digitaltwin}
+\citation{zhang2025unipr}
+\citation{cai2025gausstwin}
+\citation{aljalbout2026realitygap}
+\citation{jain2025polaris}
+\citation{li2024simpler}
+\citation{yu2025real2render2real}
+\citation{xu2025expertgen}
+\citation{xu2025twinrl}
+\citation{zhang2026vlambpo}
+\citation{deshpande2025molmobot}
+\citation{tu2025sgvla}
+\citation{he2025vdreamer}
+\citation{mei2026mobrt}
+\citation{zhu2025vrrobo}
+\citation{liu2024cyclerl}
+\citation{liu2025geoloco}
+\citation{zhang2026rpl}
+\citation{bao2026phygile}
+\citation{cho2026safeflow}
+\citation{choi2025scalingsim}
+\citation{liu2025navgsim}
+\citation{mari2024digitaltwin}
+\citation{murugesan2024digitaltwin}
+\citation{wen2024foundationpose}
+\citation{crotti2024softfoot}
+\citation{collins2023ca2t}
+\citation{cho2025rafl}
+\citation{kotecha2026stride}
+\citation{wang2025odyssey}
+\citation{wang2026westworld}
+\citation{wu2026parkour}
+\citation{pan2025learningfly}
+\citation{qureshi2025splatsim}
+\citation{tang2025semantic}
+\citation{zhao2026tabletop}
+\citation{zhao2026robosimgs}
+\citation{jiang2026omnidirectional}
+\citation{li2026haic}
+\citation{zhang2025latent}
+\citation{niu2026synchronizedonline}
+\citation{miki2022anymal}
+\citation{miki2024legged}
+\citation{peng2026eagle}
+\citation{xing2025agile}
+\citation{yao2026generalized}
+\citation{yin2024geniesim}
+\citation{yin2025womap}
+\citation{rajeswaran2025embodiedynamics}
+\citation{ren2026cybowaiter}
+\citation{rigo2024hierarchical}
+\citation{xu2026antenna}
+\citation{xu2026dualhorizon}
+\citation{daneshmand2026slowrl}
+\citation{meng2026riskbounded}
+\citation{ma2025softmap}
+\citation{brunke2021safe}
+\citation{sun2026prism}
+\citation{domberg2026selfadapting}
+\citation{lim2025splat2real}
+\citation{jiang2024transic}
+\citation{qiu2024swim2real}
+\citation{bytedance2025closing}
+\citation{grambow2026anomaly}
+\citation{fu2025contrastive}
+\citation{chen2024vlm}
+\citation{jayasinghe2026residual}
+\citation{briscoe2025deft}
+\citation{poddar2026embedding}
+\citation{li2026pchc}
+\citation{li2025dream2fix}
+\citation{lee2026tolebi}
+\citation{mccloskey1989catastrophic}
+\citation{french1999catastrophic}
+\citation{grossberg1987competitive}
+\citation{mermillod2013stability}
+\citation{kirkpatrick2017overcoming}
+\citation{frankle2018lottery}
+\citation{mocanu2018scalable}
+\citation{han2015deep}
+\citation{finn2017maml}
+\citation{pathak2017curiosity}
+\citation{an2025dexterous}
+\citation{zhao2025vitactracing}
+\citation{cui2025pilot}
+\citation{huang2026steadytray}
+\citation{pudasaini2026fame}
+\citation{li2025m2resipolicy}
+\citation{micklem2026aquatic}
+\citation{tian2026sensoropt}
+\citation{tian2024salamander}
+\citation{zheng2025dapl}
+\@writefile{toc}{\contentsline {section}{\numberline {G.4}Damage Recovery, Safety, and Continual Adaptation}{82}{section.G.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{84}{appendix*.39}\protected@file@percent }
+\bibcite{bongard2006resilient}{1}
+\bibcite{cully2015robots}{2}
+\bibcite{carrozza2006cyberhand}{3}
+\bibcite{koos2013fast}{4}
+\bibcite{mouret2015illuminating}{5}
+\bibcite{kwiatkowski2019task}{6}
+\bibcite{kwiatkowski2019zeroshot}{7}
+\bibcite{hu2024reconfigurable}{8}
+\bibcite{dogra2022unified}{9}
+\bibcite{farghdani2025robust}{10}
+\bibcite{yu2026kinematicself}{11}
+\bibcite{chen2022full}{12}
+\bibcite{hu2024teaching}{13}
+\bibcite{schulze2024high}{14}
+\bibcite{hu2024egocentric}{15}
+\bibcite{liu2024differentiable}{16}
+\bibcite{rezvani2024robust}{17}
+\bibcite{hu2025learning}{18}
+\bibcite{yu2024shape}{19}
+\bibcite{lee2026tactiverse}{20}
+\bibcite{li2024flowtouch}{21}
+\bibcite{barron2021mip}{22}
+\bibcite{li2021nerf}{23}
+\bibcite{mildenhall2020nerf}{24}
+\bibcite{pumarola2021d}{25}
+\bibcite{muller2022instant}{26}
+\bibcite{barron2023zipnerf}{27}
+\bibcite{kerbl20233d}{28}
+\bibcite{matsuki2024gaussian}{29}
+\bibcite{keetha2024splattam}{30}
+\bibcite{lassanske2024gaurast}{31}
+\bibcite{guedon2024sugar}{32}
+\bibcite{kim2024garfield}{33}
+\bibcite{weng2024neural}{34}
+\bibcite{li2025art}{35}
+\bibcite{wu2024aomgen}{36}
+\bibcite{wu2025urdfanything}{37}
+\bibcite{xu2025motionanymesh}{38}
+\bibcite{wang2025kinematify}{39}
+\bibcite{zhang2025simart}{40}
+\bibcite{wang2025artllm}{41}
+\bibcite{wang2026fast}{42}
+\bibcite{guo2025articulatedgs}{43}
+\bibcite{guo2026moeact}{44}
+\bibcite{yu2025artgs}{45}
+\bibcite{wu2025reartgs}{46}
+\bibcite{dai2025freeartgs}{47}
+\bibcite{chen2025freegaussian}{48}
+\bibcite{chen2026adacleargrasp}{49}
+\bibcite{li2026forcevla2}{50}
+\bibcite{miyamichi2025flexible}{51}
+\bibcite{tan2018simtoreal}{52}
+\bibcite{tan2026characterization}{53}
+\bibcite{thomas2026embodied}{54}
+\bibcite{lou2024robogs}{55}
+\bibcite{lou2026drex}{56}
+\bibcite{sun2026digitaltwin}{57}
+\bibcite{li2024explicit}{58}
+\bibcite{sun2026prism}{59}
+\bibcite{lu2024manigaussian}{60}
+\bibcite{pan2025selfcorrecting}{61}
+\bibcite{yang2025robosplat}{62}
+\bibcite{tao2025robopearls}{63}
+\bibcite{wu2025dexgrasp}{64}
+\bibcite{patel2024getzero}{65}
+\bibcite{patrizi2026rlagmpc}{66}
+\bibcite{lin2025pogs}{67}
+\bibcite{wen2024foundationpose}{68}
+\bibcite{xie2025robmrag}{69}
+\bibcite{liang2025wholebody}{70}
+\bibcite{levy2024simdist}{71}
+\bibcite{lu2025gsmem}{72}
+\bibcite{zhang2025actron3d}{73}
+\bibcite{wang2026exogs}{74}
+\bibcite{gao2024mirage2matter}{75}
+\bibcite{jiang2024phystwin}{76}
+\bibcite{jiang2025gsworld}{77}
+\bibcite{escontrela2025gaussgym}{78}
+\bibcite{jin2026grounding}{79}
+\bibcite{aljalbout2026realitygap}{80}
+\bibcite{zhao2026agile}{81}
+\bibcite{he2024h2o}{82}
+\bibcite{he2024viral}{83}
+\bibcite{torne2024rialto}{84}
+\bibcite{hadi2021webots}{85}
+\bibcite{hathaway2024cutting}{86}
+\bibcite{hathaway2026neuralstyle}{87}
+\bibcite{huang2024enerverse}{88}
+\bibcite{heiden2022inferring}{89}
+\bibcite{abou2024realissim}{90}
+\bibcite{jiang2024digitaltwin}{91}
+\bibcite{zhang2025unipr}{92}
+\bibcite{cai2025gausstwin}{93}
+\bibcite{crotti2024softfoot}{94}
+\bibcite{collins2023ca2t}{95}
+\bibcite{park2021nerfies}{96}
+\bibcite{cho2025rafl}{97}
+\bibcite{kotecha2026stride}{98}
+\bibcite{wang2025odyssey}{99}
+\bibcite{wang2026westworld}{100}
+\bibcite{wu2026parkour}{101}
+\bibcite{pan2025learningfly}{102}
+\bibcite{qureshi2025splatsim}{103}
+\bibcite{tang2025semantic}{104}
+\bibcite{zhao2026tabletop}{105}
+\bibcite{zhao2026robosimgs}{106}
+\bibcite{jiang2026omnidirectional}{107}
+\bibcite{li2026haic}{108}
+\bibcite{zhang2025latent}{109}
+\bibcite{yu2025real2render2real}{110}
+\bibcite{xu2025expertgen}{111}
+\bibcite{xu2025twinrl}{112}
+\bibcite{zhang2026vlambpo}{113}
+\bibcite{deshpande2025molmobot}{114}
+\bibcite{tu2025sgvla}{115}
+\bibcite{he2025vdreamer}{116}
+\bibcite{mei2026mobrt}{117}
+\bibcite{zhu2025vrrobo}{118}
+\bibcite{liu2024cyclerl}{119}
+\bibcite{liu2025geoloco}{120}
+\bibcite{zhang2026rpl}{121}
+\bibcite{bao2026phygile}{122}
+\bibcite{cho2026safeflow}{123}
+\bibcite{choi2025scalingsim}{124}
+\bibcite{liu2025navgsim}{125}
+\bibcite{mari2024digitaltwin}{126}
+\bibcite{niu2026synchronizedonline}{127}
+\bibcite{murugesan2024digitaltwin}{128}
+\bibcite{miki2022anymal}{129}
+\bibcite{miki2024legged}{130}
+\bibcite{peng2026eagle}{131}
+\bibcite{xing2025agile}{132}
+\bibcite{yao2026generalized}{133}
+\bibcite{yin2024geniesim}{134}
+\bibcite{yin2025womap}{135}
+\bibcite{rajeswaran2025embodiedynamics}{136}
+\bibcite{ren2026cybowaiter}{137}
+\bibcite{rigo2024hierarchical}{138}
+\bibcite{xu2026antenna}{139}
+\bibcite{xu2026dualhorizon}{140}
+\bibcite{jain2025polaris}{141}
+\bibcite{li2024simpler}{142}
+\bibcite{daneshmand2026slowrl}{143}
+\bibcite{meng2026riskbounded}{144}
+\bibcite{ma2025softmap}{145}
+\bibcite{brunke2021safe}{146}
+\bibcite{domberg2026selfadapting}{147}
+\bibcite{lim2025splat2real}{148}
+\bibcite{jiang2024transic}{149}
+\bibcite{qiu2024swim2real}{150}
+\bibcite{bytedance2025closing}{151}
+\bibcite{grambow2026anomaly}{152}
+\bibcite{fu2025contrastive}{153}
+\bibcite{chen2024vlm}{154}
+\bibcite{jayasinghe2026residual}{155}
+\bibcite{briscoe2025deft}{156}
+\bibcite{poddar2026embedding}{157}
+\bibcite{li2026pchc}{158}
+\bibcite{li2025dream2fix}{159}
+\bibcite{lee2026tolebi}{160}
+\bibcite{mccloskey1989catastrophic}{161}
+\bibcite{french1999catastrophic}{162}
+\bibcite{grossberg1987competitive}{163}
+\bibcite{mermillod2013stability}{164}
+\bibcite{kirkpatrick2017overcoming}{165}
+\bibcite{frankle2018lottery}{166}
+\bibcite{mocanu2018scalable}{167}
+\bibcite{han2015deep}{168}
+\bibcite{finn2017maml}{169}
+\bibcite{pathak2017curiosity}{170}
+\bibcite{an2025dexterous}{171}
+\bibcite{zhao2025vitactracing}{172}
+\bibcite{cui2025pilot}{173}
+\bibcite{huang2026steadytray}{174}
+\bibcite{pudasaini2026fame}{175}
+\bibcite{li2025m2resipolicy}{176}
+\bibcite{micklem2026aquatic}{177}
+\bibcite{thirgood2025featureslam}{178}
+\bibcite{tian2026sensoropt}{179}
+\bibcite{tian2024salamander}{180}
+\bibcite{tran2025varsplat}{181}
+\bibcite{zheng2025dapl}{182}
+\gdef \@abspage@last{109}
