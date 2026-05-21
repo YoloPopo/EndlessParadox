@@ -1,0 +1,32 @@
+```
+# LaTeX and document build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.idx
+*.ind
+*.ilg
+*.synctex.gz
+*.pdf
+*.ps
+*.dvi
+
+# Backup and temporary files
+*~
+\#*\#
+*.bak
+*.backup
+*.tmp
+
+# System files
+.DS_Store
+Thumbs.db
+```
